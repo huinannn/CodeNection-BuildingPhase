@@ -2,18 +2,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
 :root {
-    --background: #e9b55b;
-    --surface: #f2ece4;
+    --primary: #e8b45e;
     --white: #ffffff;
     --black: #000000;
-    --primary: #de8625;
-    --primary-dark: #c85f1d;
-    --loading: #e2c19b;
-    --primary-light: #e7a134;
-    --unknown-color: #d97f36; /*anyone used pls name this color tq*/
-    --accent: #d8b6b4; 
-    --text: #a7773d; 
-    --text-muted: #e1bf96;
     --max-width: 480px;
 }
 
@@ -22,6 +13,8 @@ html, body {
     margin: 0 auto;
     padding: 0;
 }
+
+/* Index & Loading */
 
 .index {
     display: flex;
@@ -50,7 +43,7 @@ html, body {
     width: 80px;
     height: 80px;
     border-radius: 50%;
-    background: conic-gradient( var(--white) 20%, var(--loading));
+    background: conic-gradient( var(--white) 20%, #e2c19b);
     -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 7px), black 0) center/100% 100% no-repeat;
     mask: radial-gradient(farthest-side, transparent calc(100% - 7px), black 0) center/100% 100% no-repeat;
     animation: spin 5s linear infinite;
@@ -67,4 +60,51 @@ html, body {
 @keyframes spin {
     0% {transform: rotate(0deg);}
     100% {transform: rotate(360deg);}
+}
+
+/* Navigation Bar */
+
+.bottom_nav {
+    position: fixed;
+    bottom: 0;
+    /* left: auto;
+    right: auto; */
+    width: 100%;
+    max-width: var(--max-width);
+    z-index: 1000;
+}
+
+.bottom_nav .nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    border-top: 5px solid #c96319;
+    background-color: var(--white);
+}
+
+.bottom_nav .nav > * {
+    flex: 1;            /* each nav is distributed equally*/
+}
+
+.bottom_nav .nav .each_nav {
+    text-align: center;
+    padding: 10px;
+    margin: 15px 0 10px 0;
+}
+
+.bottom_nav .nav .each_nav img {
+    width: 35px;
+    height: 35px;
+}
+
+.bottom_nav .nav .each_nav p {
+    margin: 5px 0;
+    font-family: 'Itim', cursive;
+    font-size: .8rem;
+}
+
+
+.bottom_nav .nav .each_nav.active p {
+    color: var(--primary);
 }
