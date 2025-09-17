@@ -23,7 +23,7 @@
         }, 2000);
 
         setTimeout(() => {
-            window.location.href = 'test.php';
+            window.location.href = 'dashboard.php';
         }, 3000);
     </script>
 </body>
