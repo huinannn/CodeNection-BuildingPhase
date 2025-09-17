@@ -6,6 +6,7 @@
     --white: #ffffff;
     --black: #000000;
     --max-width: 480px;
+    --itim: 'Itim', cursive;
 }
 
 html, body {
@@ -14,9 +15,14 @@ html, body {
     padding: 0;
 }
 
+.spacer {
+    flex: 1;
+}
+
 /* Index & Loading */
 
 .index {
+    /* background-color: red; */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -67,8 +73,6 @@ html, body {
 .bottom_nav {
     position: fixed;
     bottom: 0;
-    /* left: auto;
-    right: auto; */
     width: 100%;
     max-width: var(--max-width);
     z-index: 1000;
@@ -89,22 +93,129 @@ html, body {
 
 .bottom_nav .nav .each_nav {
     text-align: center;
-    padding: 10px;
-    margin: 15px 0 10px 0;
+    padding: 5px;
+    margin: 10px 0;
 }
 
 .bottom_nav .nav .each_nav img {
-    width: 35px;
-    height: 35px;
+    width: 30px;
+    height: 30px;
 }
 
 .bottom_nav .nav .each_nav p {
     margin: 5px 0;
-    font-family: 'Itim', cursive;
+    font-family: var(--itim);
     font-size: .8rem;
 }
 
 
 .bottom_nav .nav .each_nav.active p {
     color: var(--primary);
+}
+
+/* Confessions */
+
+.confessions {
+    height: 100vh;
+}
+
+.confessions .header {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    max-width: var(--max-width);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--white);
+}
+
+.confessions .header .header_left, .confessions .header .header_right {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px;
+}
+
+.confessions .header .header_left img, .confessions .header .header_right img {
+    width: 40px;
+    height: 40px;
+}
+
+.confessions .header .header_left h1 {
+    font-family: var(--itim);
+    font-size: 1.7rem;
+    font-weight: 400;
+    margin-left: 10px;
+}
+
+.confessions .header .header_right .dark_light input[type="checkbox"] {
+    position: relative;
+    width: 52px;
+    height: 30px;
+    border-radius: 14px;
+    outline: none;
+    border: none;
+    -webkit-appearance: none;
+    background-color: #efefef;
+    transition: .1s;
+}
+
+.confessions .header .header_right .dark_light input[type="checkbox"]::before {
+    content: "";
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    border-radius: 14px;
+    top: 2px;
+    left: 2px;
+    background-color: var(--white);
+    transition: .3s;
+    box-shadow: 0 3px 8px rgba(0,0,8,0.15);
+}
+
+.confessions .header .header_right .dark_light input[type="checkbox"]:checked {
+    background-color: #b07c5c;
+}
+
+.confessions .header .header_right .dark_light input[type="checkbox"]:checked::before {
+    left: 23px;
+}
+
+.confessions .content {
+    margin: 100px 20px 30px 20px;
+    padding-bottom: 200px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 20px;
+    justify-items: center;
+}
+
+.confessions .content .each_content {
+    width: 160px;
+    height: 220px;
+    border-radius: 10px;
+    background-color: #f2ece5;
+}
+
+.confessions .content .each_content img {
+    width: 160px;
+    height: 160px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    object-fit: cover;
+}
+
+.confessions .content .each_content p {
+    font-family: var(--itim);
+    padding: 5px;
+    height: 33px;
+    margin: 0;
+    text-align: center;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;      /* max 2 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
