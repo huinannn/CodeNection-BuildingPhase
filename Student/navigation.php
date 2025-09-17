@@ -6,23 +6,23 @@
 <div class="bottom_nav">
     <div class="nav">
         <div class="each_nav" onclick="window.location.href='answers.php'">
-            <img src="image/icons/answers.png" alt="">
+            <img src="../image/icons/answers.png" alt="">
             <p>Answers</p>
         </div>
         <div class="each_nav" onclick="window.location.href='happy_zone.php'">
-            <img src="image/icons/confessions.png" alt="">
+            <img src="../image/icons/confessions.png" alt="">
             <p>Confessions</p>
         </div>
         <div class="each_nav" onclick="window.location.href='dashboard.php'">
-            <img src="image/icons/home.png" alt="">
+            <img src="../image/icons/home.png" alt="">
             <p>Home</p>
         </div>
         <div class="each_nav" onclick="window.location.href='leisure.php'">
-            <img src="image/icons/leisure.png" alt="">
+            <img src="../image/icons/leisure.png" alt="">
             <p>Leisure</p>
         </div>
         <div class="each_nav" onclick="window.location.href='counseling.php'">
-            <img src="image/icons/counseling.png" alt="">
+            <img src="../image/icons/counseling.png" alt="">
             <p>Counseling</p>
         </div>
     </div>
@@ -37,13 +37,13 @@
             t.classList.remove('active');
             const img = t.querySelector('img');
             const name = t.querySelector('p').innerText.toLowerCase();
-            img.src = `image/icons/${name}.png`;
+            img.src = `../image/icons/${name}.png`;
         });
 
         tab.classList.add('active');
         const activeImg = tab.querySelector('img');
         const activeName = tab.querySelector('p').innerText.toLowerCase();
-        activeImg.src = `image/icons/${activeName}_brown.png`;
+        activeImg.src = `../image/icons/${activeName}_brown.png`;
     }
 
     // Highlight the correct tab based on current URL

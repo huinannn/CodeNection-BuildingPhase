@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Unicare</title>
-    <link rel="icon" href="image/favicon.png" type="image/x-icon" />
+    <link rel="icon" href="../image/favicon.png" type="image/x-icon" />
     <link rel="stylesheet" href="style.css" />
     <style>
       .each_content {
@@ -20,12 +20,12 @@
     <div class="confessions">
       <div class="header" style="background-color: #1e293b">
         <div class="header_left">
-          <img src="image/icons/moon.png" alt="">
+          <img src="../image/icons/moon.png" alt="">
           <h1 style="color: white">Sad Corner</h1>
         </div>
         <div class="spacer"></div>
         <div class="header_right">
-          <img src="image/icons/user.png" alt="">
+          <img src="../image/icons/user.png" alt="">
           <div class="dark_light">
             <input type="checkbox" onchange="window.location.href='happy_zone.php'" checked>
           </div>
@@ -33,55 +33,55 @@
       </div>
       <div class="content">
         <div class="each_content" onclick="window.location.href='#'">
-          <img src="image/confessions/happy.jpg" alt="">
+          <img src="../image/confessions/happy.jpg" alt="">
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
         </div>
         <div class="each_content" onclick="window.location.href='#'">
-          <img src="image/confessions/happy.jpg" alt="">
+          <img src="../image/confessions/happy.jpg" alt="">
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
         </div>
         <div class="each_content" onclick="window.location.href='#'">
-          <img src="image/confessions/happy.jpg" alt="">
+          <img src="../image/confessions/happy.jpg" alt="">
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
         </div>
         <div class="each_content" onclick="window.location.href='#'">
-          <img src="image/confessions/happy.jpg" alt="">
+          <img src="../image/confessions/happy.jpg" alt="">
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
         </div>
         <div class="each_content" onclick="window.location.href='#'">
-          <img src="image/confessions/happy.jpg" alt="">
+          <img src="../image/confessions/happy.jpg" alt="">
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
         </div>
         <div class="each_content" onclick="window.location.href='#'">
-          <img src="image/confessions/happy.jpg" alt="">
+          <img src="../image/confessions/happy.jpg" alt="">
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
         </div>
         <div class="each_content" onclick="window.location.href='#'">
-          <img src="image/confessions/happy.jpg" alt="">
+          <img src="../image/confessions/happy.jpg" alt="">
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
         </div>
         <div class="each_content" onclick="window.location.href='#'">
-          <img src="image/confessions/happy.jpg" alt="">
+          <img src="../image/confessions/happy.jpg" alt="">
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
         </div>
         <div class="each_content" onclick="window.location.href='#'">
-          <img src="image/confessions/happy.jpg" alt="">
+          <img src="../image/confessions/happy.jpg" alt="">
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
         </div>
         <div class="each_content" onclick="window.location.href='#'">
-          <img src="image/confessions/happy.jpg" alt="">
+          <img src="../image/confessions/happy.jpg" alt="">
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
         </div>
         <div class="each_content" onclick="window.location.href='#'">
-          <img src="image/confessions/happy.jpg" alt="">
+          <img src="../image/confessions/happy.jpg" alt="">
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
         </div>
         <div class="each_content" onclick="window.location.href='#'">
-          <img src="image/confessions/happy.jpg" alt="">
+          <img src="../image/confessions/happy.jpg" alt="">
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
         </div>
         <div class="each_content" onclick="window.location.href='#'">
-          <img src="image/confessions/happy.jpg" alt="">
+          <img src="../image/confessions/happy.jpg" alt="">
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
         </div>
       </div>
