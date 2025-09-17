@@ -3,31 +3,44 @@
     include 'navigation.php' 
     in php environment -->
 
+<link rel="stylesheet" href="style.css" />
+<style>
+    .bottom_nav .nav {
+        background-color: #1e293b !important;
+    }
+
+    .bottom_nav .nav .each_nav p {
+        color: white !important;
+    }
+
+    .bottom_nav .nav .each_nav.active p {
+        color: var(--primary) !important;
+    }
+</style>
 <div class="bottom_nav">
     <div class="nav">
         <div class="each_nav" onclick="window.location.href='answers.php'">
-            <img src="image/icons/answers.png" alt="">
+            <img src="image/icons/answers_white.png" alt="">
             <p>Answers</p>
         </div>
-        <div class="each_nav" onclick="window.location.href='happy_zone.php'">
-            <img src="image/icons/confessions.png" alt="">
+        <div class="each_nav" onclick="window.location.href='sad_corner.php'">
+            <img src="image/icons/confessions_white.png" alt="">
             <p>Confessions</p>
         </div>
         <div class="each_nav" onclick="window.location.href='dashboard.php'">
-            <img src="image/icons/home.png" alt="">
+            <img src="image/icons/home_white.png" alt="">
             <p>Home</p>
         </div>
         <div class="each_nav" onclick="window.location.href='leisure.php'">
-            <img src="image/icons/leisure.png" alt="">
+            <img src="image/icons/leisure_white.png" alt="">
             <p>Leisure</p>
         </div>
         <div class="each_nav" onclick="window.location.href='counseling.php'">
-            <img src="image/icons/counseling.png" alt="">
+            <img src="image/icons/counseling_white.png" alt="">
             <p>Counseling</p>
         </div>
     </div>
 </div>
-
 <script>
     const tabs = document.querySelectorAll('.bottom_nav .nav .each_nav');
 
@@ -37,7 +50,7 @@
             t.classList.remove('active');
             const img = t.querySelector('img');
             const name = t.querySelector('p').innerText.toLowerCase();
-            img.src = `image/icons/${name}.png`;
+            img.src = `image/icons/${name}_white.png`;
         });
 
         tab.classList.add('active');
@@ -66,4 +79,5 @@
             setActiveTab(homeTab);
         }
     }
+
 </script>
