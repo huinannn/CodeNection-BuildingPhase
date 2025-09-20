@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>Watercolor Splash Paint</title>
+  <style>
+    :root {
+        --primary: #e8b45e;
+        --white: #ffffff;
+        --black: #000000;
+        --max-width: 480px;
+        --itim: 'Itim', cursive;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body {margin:0;line-height:normal;font-family:system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial;background:var(--white);display:flex;align-items:center;justify-content:center;padding:12px;}
+    .app { width:100%; max-width: var(--max-width); height:100vh; display:flex; flex-direction:column; gap:8px; }
+    header{ display:flex; gap:8px; align-items:center; justify-content:space-between; }
+    .controls{ display:flex; gap:8px; align-items:center; padding:8px; background:rgba(255,255,255,0.85); border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,0.06); backdrop-filter: blur(6px); }
+    .palette{display:flex;gap:6px;align-items:center}
+    .swatch{ width:32px;height:32px;border-radius:8px;border:1px solid rgba(0,0,0,0.08);cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,0.06); }
+    .slider{width:110px}
+    button{background:var(--primary);border:none;padding:8px 10px;border-radius:8px;color:var(--white);font-weight:600;cursor:pointer}
+    button.secondary{background:#efefef;color:#111}
+    .toolbar{display:flex;gap:8px;align-items:center}
+    .canvas-wrap{flex:1;position:relative;border-radius:12px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.08)}
+    canvas{display:block;width:100%;height:100%;touch-action:none;}
+    .hint{font-size:12px;color:#666;margin-left:6px}
+    .bottom-bar{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:6px}
+    select {padding:6px;border-radius:6px;border:1px solid #ccc;}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="controls">
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <div style="font-weight:700">Watercolor Paint</div>
+          <div class="hint">Tap to splash or draw</div>
+        </div>
+        <div style="flex:1"></div>
+        <div class="toolbar">
+          <div class="palette" id="palette"></div>
+          <input id="colorPicker" type="color" />
+          <input id="sizeRange" type="range" min="6" max="120" value="28" class="slider" />
+          <div id="sizeLabel" class="hint">28</div>
+          <select id="brushType">
+            <option value="splash">Splash</option>
+            <option value="water">Watercolor</option>
+            <option value="pen">Pen</option>
+            <option value="marker">Marker</option>
+            <option value="spray">Spray</option>
+            <option value="drip">Drip</option>
+            <option value="expand">Expanding Splash</option>
+          </select>
+          <select id="bgPicker">
+            <option value="white">White</option>
+            <option value="grid">Grid</option>
+            <option value="paper">Paper</option>
+            <option value="dark">Dark</option>
+          </select>
+        </div>
+      </div>
+    </header>
+
+    <div class="canvas-wrap">
+      <canvas id="canvas"></canvas>
+    </div>
+
+    <div class="bottom-bar">
+      <div style="display:flex;gap:8px">
+        <button id="undoBtn" class="secondary">Undo</button>
+        <button id="redoBtn" class="secondary">Redo</button>
+        <button id="clearBtn" class="secondary">Clear</button>
+        <button id="saveBtn">Save</button>
+      </div>
+      <div class="hint">Try switching brushes for animated effects!</div>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const colorPicker = document.getElementById('colorPicker');
+    const palette = document.getElementById('palette');
+    const sizeRange = document.getElementById('sizeRange');
+    const sizeLabel = document.getElementById('sizeLabel');
+    const brushType = document.getElementById('brushType');
+    const bgPicker = document.getElementById('bgPicker');
+
+    let brushSize = parseInt(sizeRange.value);
+    let brushColor = colorPicker.value;
+    let currentBrush = brushType.value;
+
+    sizeLabel.textContent = brushSize;
+
+    const swatches = ['#ff3b30','#ff9500','#ffcc00','#34c759','#5856d6','#0a84ff','#8e8e93','#000000'];
+    swatches.forEach(c=>{
+      const s=document.createElement('div');
+      s.className='swatch';
+      s.style.background=c;
+      s.addEventListener('click',()=>{ brushColor=c; colorPicker.value=c; });
+      palette.appendChild(s);
+    });
+
+    let history = [];
+    let historyStep = -1;
+
+    function saveState(){
+      history = history.slice(0, historyStep+1);
+      history.push(canvas.toDataURL());
+      historyStep++;
+    }
+
+    function restoreState(step){
+      if(step<0 || step>=history.length) return;
+      const img=new Image();
+      img.src=history[step];
+      img.onload=()=>{ ctx.clearRect(0,0,canvas.width,canvas.height); ctx.drawImage(img,0,0,canvas.width,canvas.height); }
+    }
+
+    document.getElementById('undoBtn').addEventListener('click',()=>{ if(historyStep>0){ historyStep--; restoreState(historyStep); }});
+    document.getElementById('redoBtn').addEventListener('click',()=>{ if(historyStep<history.length-1){ historyStep++; restoreState(historyStep); }});
+    document.getElementById('clearBtn').addEventListener('click',()=>{ ctx.clearRect(0,0,canvas.width,canvas.height); saveState(); });
+    document.getElementById('saveBtn').addEventListener('click',()=>{ const link=document.createElement('a'); link.href=canvas.toDataURL(); link.download='painting.png'; link.click(); });
+
+    function fitCanvas(){
+      const ratio = window.devicePixelRatio || 1;
+      canvas.width = canvas.clientWidth * ratio;
+      canvas.height = canvas.clientHeight * ratio;
+      ctx.setTransform(ratio,0,0,ratio,0,0);
+      setBackground(bgPicker.value);
+      saveState();
+    }
+
+    function setBackground(type){
+      ctx.fillStyle=(type==='white')?'#fff':(type==='dark')?'#111':'#fff';
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+      if(type==='grid'){
+        for(let x=0;x<canvas.width;x+=20){for(let y=0;y<canvas.height;y+=20){ctx.strokeStyle='#eee';ctx.strokeRect(x,y,20,20);}}
+      }
+      if(type==='paper'){
+        const img=new Image(); img.src='https://www.transparenttextures.com/patterns/paper-fibers.png';
+        img.onload=()=>{ctx.drawImage(img,0,0,canvas.width,canvas.height); saveState();};
+      } else { saveState(); }
+    }
+
+    function hexToRgba(hex,a=1){
+      if(hex.startsWith('#')) hex=hex.slice(1);
+      if(hex.length===3) hex=hex.split('').map(c=>c+c).join('');
+      const n=parseInt(hex,16);
+      const r=(n>>16)&255, g=(n>>8)&255, b=n&255;
+      return `rgba(${r},${g},${b},${a})`;
+    }
+
+    function drawBrush(x,y){
+      const size=brushSize;
+      switch(currentBrush){
+        case 'splash':
+          for(let i=0;i<6;i++){
+            const angle=Math.random()*Math.PI*2;
+            const dist=Math.random()*size;
+            const sx=x+Math.cos(angle)*dist;
+            const sy=y+Math.sin(angle)*dist;
+            const r=size*0.3*(Math.random()+0.5);
+            const g=ctx.createRadialGradient(sx,sy,0,sx,sy,r);
+            g.addColorStop(0,brushColor);
+            g.addColorStop(1,hexToRgba(brushColor,0));
+            ctx.fillStyle=g; ctx.beginPath(); ctx.arc(sx,sy,r,0,Math.PI*2); ctx.fill();
+          } break;
+        case 'water':
+          const g=ctx.createRadialGradient(x,y,0,x,y,size*1.2);
+          g.addColorStop(0,hexToRgba(brushColor,0.35));
+          g.addColorStop(1,hexToRgba(brushColor,0));
+          ctx.fillStyle=g; ctx.beginPath(); ctx.arc(x,y,size*1.2,0,Math.PI*2); ctx.fill(); break;
+        case 'pen': ctx.fillStyle=brushColor; ctx.beginPath(); ctx.arc(x,y,size/2,0,Math.PI*2); ctx.fill(); break;
+        case 'marker': ctx.fillStyle=hexToRgba(brushColor,0.5); ctx.beginPath(); ctx.arc(x,y,size,0,Math.PI*2); ctx.fill(); break;
+        case 'spray': for(let i=0;i<size;i++){ const angle=Math.random()*2*Math.PI; const dist=Math.random()*size; ctx.fillStyle=hexToRgba(brushColor,0.3); ctx.fillRect(x+Math.cos(angle)*dist,y+Math.sin(angle)*dist,1,1);} break;
+        case 'drip': ctx.fillStyle=brushColor; ctx.fillRect(x,y,size/3,size); break;
+        case 'expand': for(let i=0;i<8;i++){ const angle=Math.random()*Math.PI*2; const dist=Math.random()*size*1.5; ctx.fillStyle=hexToRgba(brushColor,0.4); ctx.beginPath(); ctx.arc(x+Math.cos(angle)*dist,y+Math.sin(angle)*dist,size*0.2,0,Math.PI*2); ctx.fill();} break;
+      }
+    }
+
+    let pointerDown=false;
+    canvas.addEventListener('pointerdown',e=>{pointerDown=true; drawBrush(e.offsetX,e.offsetY); saveState();});
+    canvas.addEventListener('pointermove',e=>{if(pointerDown) drawBrush(e.offsetX,e.offsetY);});
+    canvas.addEventListener('pointerup',()=>{pointerDown=false;});
+
+    sizeRange.addEventListener('input',()=>{brushSize=parseInt(sizeRange.value); sizeLabel.textContent=brushSize;});
+    colorPicker.addEventListener('input',()=>{brushColor=colorPicker.value;});
+    brushType.addEventListener('change',()=>{currentBrush=brushType.value;});
+    bgPicker.addEventListener('change',()=>{setBackground(bgPicker.value);});
+
+    window.addEventListener('resize',fitCanvas);
+    window.onload=fitCanvas;
+  </script>
+</body>
+</html>
