@@ -23,7 +23,7 @@
         }, 2000);
 
         setTimeout(() => {
-            window.location.href = 'dashboard.php';
+            window.location.href = 'Login/welcome.php';
         }, 3000);
     </script>
 </body>

@@ -1,3 +1,12 @@
+<?php
+    session_start();
+    include '../conn.php';
+    if(!isset($_SESSION['student_id'])){
+        header("Location: login.php");
+        exit();
+    }
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -122,6 +131,41 @@
             margin-left: 6px;
             vertical-align: middle;
         }
+
+        .profile-dropdown {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .profile-dropdown-content {
+            display: none;
+            position: absolute;
+            top: 36px;
+            right: 0;
+            background: white;
+            box-shadow: 0px 8px 24px rgba(0,0,0,0.12);
+            border-radius: 8px;
+            min-width: 140px;
+            z-index: 10;
+        }
+
+        .profile-dropdown-content a {
+            display: block;
+            padding: 12px 16px;
+            text-decoration: none;
+            color: #3D3D3D;
+            font-family: 'Poppins', Arial, sans-serif;
+            font-size: 0.95rem;
+        }
+
+        .profile-dropdown-content a:hover {
+            background-color: #f1f1f1;
+            font-weight: bold;
+        }
+
+        .profile-dropdown:hover .profile-dropdown-content {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -132,7 +176,12 @@
                 <img src="../image/icons/notification.png" alt="Notifications" />
                 <span id="notificationRedDot" class="notification-red-dot" style="display:none;"></span>
             </span>
-            <img src="../image/icons/profile.png" alt="Profile" />
+            <div class="profile-dropdown">
+                <img src="../image/icons/profile.png" alt="Profile" />
+                <div class="profile-dropdown-content">
+                    <a href="../Student/Login/logout.php">Log Out</a>
+                </div>
+            </div>
         </div>
     </div>
 
