@@ -18,7 +18,7 @@
 </style>
 <div class="bottom_nav">
     <div class="nav">
-        <div class="each_nav" onclick="window.location.href='answers.php'">
+        <div class="each_nav" onclick="window.location.href='AnswerBook/answerbook.php'">
             <img src="../image/icons/answers_white.png" alt="">
             <p>Answers</p>
         </div>
