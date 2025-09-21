@@ -11,7 +11,7 @@
 </head>
 <body>
     <div class="leisure">
-        <div class = "header">
+        <div class = "header" style="background-color: white;">
             <div class="header1">
                 <a href="dashboard.php">
                     <img src="../image/icons/arrow.png" alt="Back arrow" class = "back-arrow">           
@@ -21,22 +21,35 @@
 
             </div>
             <div class="header2">
-
+                <div class = "header-scroller">
+                    <button class="All">All</button>
+                    <button class="Sleep">Sleep</button>
+                    <button class="Game">Game</button>
+                    <button class="Music">Music</button>
+                    <button class="Breathing">Breathing</button>
+                    <button class="Meditation">Meditation</button>
+                </div>
             </div>
         </div>
         <div class="content">
-            <div class="Calm_Meditation" id="Calm_Meditation">
-                <div class="CM_rec">
-                    <a href="calm-meditation.php">
-                        <img src="../image/leisure/Meditation.png" alt="">
-                    </a>
-                </div>
-                <div class="calm-meditation">
-                    <p>Calm Meditation</p>
-                </div>
-            </div>
-            
+            <a href="calm-meditation.php" class="leisure-card">
+                <img src="../image/leisure/Meditation.png" alt="Calm Meditation">
+                <p>Calm Meditation</p>
+            </a>
+
+            <a href="Splash.html" class="leisure-card">
+                <img src="../image/leisure/Splash.png" alt="Colour Splash">
+                <p>Colour Splash</p>
+            </a>
+
+            <a href="Splash.html" class="leisure-card">
+                <img src="../image/leisure/Splash.png" alt="Motivation Music">
+                <p>Motivation Music</p>
+            </a>
+
+            <!-- Add more cards here -->
         </div>
+
     </div>
 
     <?php include 'navigation.php' ?>

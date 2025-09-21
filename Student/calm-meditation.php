@@ -13,58 +13,61 @@
     --primary: #c3944eff;
     --secondary: #dec5a6ff;
     --bar-grey: #c3944eff;
+    --maxwidth: 480px;
 }
 
 body {
-    font-family: var(--itim);
-    background: url('../image/leisure/MeditationBG.png') no-repeat center center fixed;
-    background-size: cover;
-    color: gray;
     margin: 0;
+    font-family: var(--itim);
+    display: flex;
+    justify-content: center; /* center entire container */
+    background-color: #fff; /* optional fallback */
+}
+
+.leisure {
+    width: 100%;
+    max-width: var(--maxwidth);
     display: flex;
     flex-direction: column;
+    align-items: center;
+    background: url('../image/leisure/MeditationBG.png') no-repeat center top;
+    background-size: cover; /* background fits container */
+    padding-bottom: 120px;
+    /* padding-top: ; */
 }
 
-.leisure .header {
+.header {
     width: 100%;
-    position: fixed;
-    padding-top: 25px;
-    padding-left: 15px;
-    z-index: 9999;
-
+    /* padding: 20px 0 10px 0; */
 }
 
-.leisure .header .header1{
+.header1 {
+    padding-left: 15px;
+    padding-top: 5px;
     display: flex;
     align-items: center;
-    /* padding: 10px 15px; */
-    padding-bottom: 8px;
-    /* padding-top: env(safe-area-inset-top); */
-    font-size: 27px;
-
+    justify-content: flex-start; /* left align inside container */
 }
 
-.leisure .header .header1 a img.back-arrow {
+.header1 a img.back-arrow {
     width: 24px;
     height: 24px;
     cursor: pointer;
 }
 
-.leisure .header .header1 h1 {
+.header1 h1 {
     font-size: 27px;
     color: black;
-    padding-left: 15px;
-    padding-bottom: 8px;
-    margin: 0;
+    margin-left: 10px;
+    padding-bottom: 4px;
 }
 
 .content {
-    font-family: var(--itim);
-    margin-top: 100px;
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%;
+    margin-top: 20px;
 }
 
 #timerContainer {
@@ -84,7 +87,6 @@ body {
 }
 
 #timerText {
-    font-family: var(--itim);
     font-size: 48px;
     color: var(--primary);
     margin-bottom: 20px;
@@ -96,19 +98,21 @@ select, #toggleBtn {
     margin: 10px;
     font-size: 16px;
     cursor: pointer;
-    border: 2px solid none;
     border-radius: 30px;
+    border: none;
     background-color: #e0c090ff;
     color: white;
 }
-#toggleBtn:hover { background-color: #e0c090ff; color: #fff; }
+
+#toggleBtn:hover {
+    background-color: #c3944eff;
+    color: #fff;
+}
 
 #quote {
-    font-family: var(--itim);
-    margin-top: 20px;
     font-size: 18px;
     text-align: center;
-    max-width: 480px;
+    max-width: var(--maxwidth);
     color: var(--primary);
 }
 
@@ -148,7 +152,6 @@ select, #toggleBtn {
 
 #modalContent img {
     width: 150px;
-    padding-bottom: -15px;
 }
 
 #modalContent h2 {
@@ -172,18 +175,15 @@ select, #toggleBtn {
     cursor: pointer;
     font-size: 16px;
 }
+
 #modalContent button#endBtn {
     background-color: var(--secondary);
     color: #fff;
 }
+
 #modalContent button#againBtn {
     background-color: var(--primary);
     color: #fff;
-}
-
-@keyframes slideUp {
-    from { transform: translateY(100%); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
 }
 </style>
 </head>
@@ -198,29 +198,29 @@ select, #toggleBtn {
             <h1>Calm Meditation</h1>
         </div>
     </div>
-</div>
 
-<div class="content">
-    <svg id="timerContainer"></svg>
-    <div id="timerText">00:00</div>
+    <div class="content">
+        <svg id="timerContainer"></svg>
+        <div id="timerText">00:00</div>
 
-    <label for="timeSelect">Select duration:</label>
-    <select id="timeSelect">
-        <option value="30">30 sec</option>
-        <option value="60">1 min</option>
-        <option value="300">5 min</option>
-        <option value="600">10 min</option>
-        <option value="900">15 min</option>
-        <option value="1200">20 min</option>
-        <option value="1500">25 min</option>
-        <option value="1800">30 min</option>
-        <option value="2700">45 min</option>
-        <option value="3600">60 min</option>
-    </select>
+        <label for="timeSelect">Select duration:</label>
+        <select id="timeSelect">
+            <option value="30">30 sec</option>
+            <option value="60">1 min</option>
+            <option value="300">5 min</option>
+            <option value="600">10 min</option>
+            <option value="900">15 min</option>
+            <option value="1200">20 min</option>
+            <option value="1500">25 min</option>
+            <option value="1800">30 min</option>
+            <option value="2700">45 min</option>
+            <option value="3600">60 min</option>
+        </select>
 
-    <button id="toggleBtn" >Start Session</button>
+        <button id="toggleBtn">Start Session</button>
 
-    <div id="quote">"Take a deep breath and relax."</div>
+        <div id="quote">"Take a deep breath and relax."</div>
+    </div>
 </div>
 
 <!-- Modal -->
@@ -246,6 +246,7 @@ select, #toggleBtn {
 </audio>
 
 <script>
+// Timer JS (same as before)
 const timerContainer = document.getElementById('timerContainer');
 const timerText = document.getElementById('timerText');
 const toggleBtn = document.getElementById('toggleBtn');
@@ -263,7 +264,6 @@ let isRunning = false;
 let bars = [];
 const maxBars = 45;
 
-// Initialize clock with all grey bars
 function drawBars(count){
     timerContainer.innerHTML = '';
     bars = [];
@@ -285,8 +285,6 @@ function drawBars(count){
         bars.push(line);
     }
 }
-
-// Show full grey before start
 drawBars(maxBars);
 
 function updateBars(){
@@ -347,13 +345,12 @@ toggleBtn.addEventListener('click',()=>{
         meditationAudio.pause();
         meditationAudio.currentTime=0;
         timerText.textContent="00:00";
-        drawBars(maxBars); // reset to full grey
+        drawBars(maxBars);
         toggleBtn.textContent='Start Session';
         isRunning=false;
     }
 });
 
-// Modal buttons
 endBtn.addEventListener('click',()=> window.location.href='leisure.php');
 againBtn.addEventListener('click',()=> modal.style.display='none');
 </script>
