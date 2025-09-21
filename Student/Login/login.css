@@ -362,3 +362,11 @@ html, body {
     width: 40%;             
     margin: 50px auto 0 auto; 
 }
+
+/* daily quote */
+.subsubtext {
+    margin: 30px 15px 50px 15px;
+    font-size: 20px;
+    line-height: 1.5;         
+    text-align: center;       
+}

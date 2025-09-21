@@ -36,7 +36,7 @@
                 <span>!</span>
             </div>
 
-            <div class="subtext"><?= htmlspecialchars($quote) ?></div>
+            <div class="subsubtext"><?= htmlspecialchars($quote) ?></div>
 
             <a href="../dashboard.php" class="button">Okay</a>
         </div>
