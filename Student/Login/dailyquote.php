@@ -1,12 +1,15 @@
 <?php
     $quote = "🌱 Every day is a new chance to grow stronger, calmer, and happier 🌱";
 
-    $response = file_get_contents("https://zenquotes.io/api/random");
-    if($response) {
-        $data = json_decode($response, true);
-        if(isset($data[0]['q'])) {
-            $quote = "🌱 " . $data[0]['q'] . " — " . $data[0]['a'] . " 🌱";
+    try {
+        $response = @file_get_contents("https://zenquotes.io/api/random");
+        if ($response !== false) {
+            $data = @json_decode($response, true);
+            if (isset($data[0]['q']) && isset($data[0]['a'])) {
+                $quote = "🌱 " . $data[0]['q'] . " — " . $data[0]['a'] . " 🌱";
+            }
         }
+    } catch (Exception $e) {
     }
 ?>
 
