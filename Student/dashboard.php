@@ -2,7 +2,7 @@
     session_start();
     include '../conn.php';
     if(!isset($_SESSION['student_id'])){
-        header("Location: ../Student/Login/login.php");
+        header("Location: Login/login.php");
         exit();
     }
 
@@ -118,7 +118,7 @@
             display: block;
         }
         .action-buttons { display: flex; gap: 18px; margin: 0 20px 18px 20px; }
-        .action-btn { flex: 1; background: #E6D3C7; border-radius: 12px; padding: 14px 0; text-align: center; font-size: 1.1rem; font-weight: 500; color: #7A5C3A; border: none; cursor: pointer; }
+        .action-btn { font-family: 'Itim', cursive; flex: 1; background: #E6D3C7; border-radius: 12px; padding: 14px 0; text-align: center; font-size: 1.1rem; font-weight: 500; color: #7A5C3A; border: none; cursor: pointer; }
         .calendar-section { margin: 0 20px 20px 20px; }
         .calendar-title { color: #F48C8C; font-size: 1.2rem; font-weight: bold; margin-bottom: 8px; }
         .calendar-table { width: 100%; border-collapse: collapse; }
@@ -201,7 +201,6 @@
             padding: 12px 16px;
             text-decoration: none;
             color: #3D3D3D;
-            font-family: 'Poppins', Arial, sans-serif;
             font-size: 0.95rem;
         }
 
@@ -291,7 +290,7 @@
         <canvas id="emotionChart" class="emotion-chart"></canvas>
     </div>
     <div class="action-buttons">
-        <button class="action-btn" onclick="location.href='unibot.php'">Unibot</button>
+        <button class="action-btn" onclick="location.href='Chatbot/chatbot.php'">Unibot</button>
         <button class="action-btn" onclick="location.href='leisure.php'">Leisure</button>
     </div>
     <div class="calendar-section">

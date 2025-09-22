@@ -71,7 +71,7 @@ function showSnackbar(message, type='error') {
     snackbar.classList.add(type, 'show');
     snackbar.querySelector('span').innerHTML = `${icon}${message}`;
 
-    setTimeout(() => { snackbar.classList.remove('show'); }, 3000);
+    setTimeout(() => { snackbar.classList.remove('show'); }, 1000);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -99,6 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if(error) showSnackbar(error, 'error');
     if(success) {
         showSnackbar(success, 'success');
-        setTimeout(() => { window.location.href = 'dailyquote.php'; }, 300);
+        setTimeout(() => { window.location.href = 'dailyquote.php'; }, 100);
     }
 });

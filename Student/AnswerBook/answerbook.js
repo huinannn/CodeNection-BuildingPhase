@@ -1,13 +1,25 @@
 // overlay
-window.onload = () => {
-    const overlay = document.getElementById('reminder-overlay');
+const overlay = document.getElementById('reminder-overlay');
+const continueBtn = document.getElementById('continueBtn');
+
+const openOverlay = () => {
     overlay.style.display = 'flex';
-    document.body.style.overflow = 'hidden'; 
+    document.body.classList.add('no-scroll'); 
 };
 
-document.getElementById('continueBtn').addEventListener('click', () => {
-    document.getElementById('reminder-overlay').style.display = 'none';
-    document.body.style.overflow = 'auto'; 
+const closeOverlay = () => {
+    overlay.style.display = 'none';
+    document.body.classList.remove('no-scroll'); 
+};
+
+window.onload = openOverlay;
+
+continueBtn.addEventListener('click', closeOverlay);
+
+overlay.addEventListener('click', (e) => {
+    if (!e.target.closest('.reminder-sheet')) {
+        closeOverlay();
+    }
 });
 
 // answer
@@ -44,7 +56,7 @@ function startCountdown() {
 
 // https://api.adviceslip.com/advice
 function displayAnswer() {
-    fetch("http://answerbook.david888.com/?lang=en")
+    fetch("https://answerbook.david888.com/?lang=en")
         .then(res => res.json())
         .then(data => {
             centerText.innerText = data.answer || "No answer received";
