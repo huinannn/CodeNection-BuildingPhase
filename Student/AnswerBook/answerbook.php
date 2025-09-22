@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-    <div class="header1">
+    <div class="header">
         <a href="../dashboard.php">
             <img src="../../image/icons/arrow.png" alt="Back arrow" class="back-arrow">           
         </a>

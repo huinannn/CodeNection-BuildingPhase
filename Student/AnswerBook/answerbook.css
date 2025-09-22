@@ -20,7 +20,7 @@ body {
 }
 
 /* answerbook */
-.header1 {
+.header {
     display: flex;
     align-items: center;
     padding: 20px 28px;
@@ -31,13 +31,13 @@ body {
     z-index: 999;
 }
 
-.header1 a {
+.header a {
     display: flex;
     align-items: center;
     text-decoration: none;
 }
 
-.header1 h1 {
+.header h1 {
     font-size: 27px;
     margin: 0 0 0 20px; 
     font-weight: normal; 
