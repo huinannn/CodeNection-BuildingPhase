@@ -1,3 +1,53 @@
+<?php
+    session_start();
+    include '../conn.php';
+    if(!isset($_SESSION['student_id'])){
+        header("Location: Login/login.php");
+        exit();
+    }
+
+    $student_id = $_SESSION['student_id'];
+
+    // Query notifications from notification_admin
+    $sql = "
+        SELECT na.booking_id, na.message, na.message_date_time 
+        FROM notification_admin na
+        INNER JOIN booking b ON na.booking_id = b.booking_id
+        WHERE b.student_id = ?
+        ORDER BY na.message_date_time DESC
+    ";
+    $stmt = $dbConn->prepare($sql);
+    $stmt->bind_param("s", $student_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $notifications = [];
+    while ($row = $result->fetch_assoc()) {
+        $notifications[] = [
+            'id' => $row['booking_id'], // unique key
+            'title' => 'Admin',
+            'message' => mb_strimwidth($row['message'], 0, 60, "..."), // preview
+            'fullMessage' => $row['message'],
+            'time' => timeAgo($row['message_date_time'])
+        ];
+    }
+    $stmt->close();
+
+    // function to convert datetime → "x day ago"
+    function timeAgo($datetime) {
+        $time = strtotime($datetime);
+        $diff = time() - $time;
+
+        if ($diff < 60) return $diff . " sec";
+        $diff = floor($diff / 60);
+        if ($diff < 60) return $diff . " min";
+        $diff = floor($diff / 60);
+        if ($diff < 24) return $diff . " hour";
+        $diff = floor($diff / 24);
+        return $diff . " day";
+    }
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -127,22 +177,7 @@
 
     <script>
         // Simulate notifications data (could be loaded from backend)
-        const notifications = [
-            {
-                id: 1,
-                title: "Admin",
-                message: "Dear student, sorry to tell that the time of appointment is currently full, please reschedule a new......",
-                fullMessage: "Dear Student,\n\nWe regret to inform you that the appointment time you selected on 2 September 2025 is currently fully booked. Kindly reschedule for another available time slot at your convenience.\n\nThank you for your understanding.",
-                time: "1 day",
-            },
-            {
-                id: 2,
-                title: "System",
-                message: "Your appointment have successfully booked, please check your calendar!",
-                fullMessage: "Your appointment have successfully booked, please check your calendar!",
-                time: "4 day",
-            }
-        ];
+        const notifications = <?php echo json_encode($notifications); ?>;
 
         // Use localStorage to track read/unread
         function getReadStatus() {

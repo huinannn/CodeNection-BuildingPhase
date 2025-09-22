@@ -73,6 +73,35 @@
         $upcoming = $result3->fetch_assoc();
     }
     $stmt3->close();
+
+    // 5. Get notifications for student
+    $notification_sql = "
+        SELECT na.admin_id AS id, na.message, na.message_date_time, 'Admin' AS title
+        FROM notification_admin na
+        INNER JOIN booking b ON na.booking_id = b.booking_id
+        WHERE b.student_id = ?
+        UNION
+        SELECT ns.system_id AS id, ns.booking_id, ns.notification_date_time, 'System' AS title
+        FROM notification_system ns
+        INNER JOIN booking b ON ns.booking_id = b.booking_id
+        WHERE b.student_id = ?
+        ORDER BY message_date_time DESC
+    ";
+    $stmt4 = $dbConn->prepare($notification_sql);
+    $stmt4->bind_param("ss", $student_id, $student_id);
+    $stmt4->execute();
+    $result4 = $stmt4->get_result();
+
+    $notifications = [];
+    while ($row = $result4->fetch_assoc()) {
+        $notifications[] = [
+            'id' => $row['id'],
+            'title' => $row['title'],
+            'message' => mb_strimwidth($row['message'], 0, 60, "..."),
+            'time' => $row['message_date_time']
+        ];
+    }
+    $stmt4->close();
 ?>
 
 <!DOCTYPE html>
@@ -120,7 +149,7 @@
             justify-content: space-between;
             gap: 12px;
             max-width: 100%;
-            height: 70%;
+            height: 130px;
             box-sizing: border-box;
         }
         .emotion-journey-info {
@@ -132,15 +161,20 @@
         }
         .emotion-title { font-size: 1.1rem; font-weight: 500; margin-bottom: 8px; }
         .emotion-message { font-size: 0.98rem; color: #888; margin-bottom: 10px; }
+        .chart-container {
+            position: relative;
+            width: 100px; /* Set a fixed, equal width and height */
+            height: 100px;
+        }
         .emotion-chart {
             width: 100% !important;
             height: 100% !important;
-            max-height: 250px;
-            /* margin-bottom: 0;
+            max-height: 100px;
+            min-width: 100px;
+            margin-right: 15px;
             box-shadow: 0 2px 8px rgba(244, 140, 140, 0.18);
             background: #FFF6F0;
-            border-radius: 50%; */
-            /* display: block; */
+            border-radius: 50%;
         }
         .action-buttons { display: flex; gap: 18px; margin: 0 20px 18px 20px; }
         .action-btn { font-family: 'Itim', cursive; flex: 1; background: #E6D3C7; border-radius: 12px; padding: 14px 0; text-align: center; font-size: 1.1rem; font-weight: 500; color: #7A5C3A; border: none; cursor: pointer; }
@@ -339,7 +373,9 @@
                         ?>
                     </div>
                 </div>
-                <canvas id="emotionChart" class="emotion-chart"></canvas>
+                <div class="emotion-chart-container">
+                    <canvas id="emotionChart" class="emotion-chart"></canvas>
+                </div>
             </div>
         </div>
     </div>
@@ -365,11 +401,8 @@
     </div>
     <?php include 'navigation.php' ?>
     <script>
-        // Example notifications data (should match notification.php)
-        let notifications = [
-            { id: 1, title: "Admin", message: "Dear student, sorry to tell that the time of appointment is currently full, please reschedule a new......", time: "1 day" },
-            { id: 2, title: "System", message: "Your appointment have successfully booked, please check your calendar!", time: "4 day" }
-        ];
+        // Show each notifications available
+        let notifications = <?php echo json_encode($notifications); ?>;
 
         // Check localStorage for read status
         function hasUnreadNotifications() {
@@ -383,8 +416,9 @@
         }
 
         function openNotifications() {
-            // Mark all as seen for dashboard logic (optional)
-            localStorage.setItem('notifSeen', 'true');
+            let readStatus = {};
+            notifications.forEach(n => { readStatus[n.id] = true; });
+            localStorage.setItem('notifReadStatus', JSON.stringify(readStatus));
             window.location.href = 'notification.php';
         }
 
@@ -416,6 +450,7 @@
                 },
                 options: {
                     cutout: '70%',
+                    responsive: true,
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } }
                 }
