@@ -2,7 +2,7 @@
     session_start();
     include '../conn.php';
     if(!isset($_SESSION['student_id'])){
-        header("Location: login.php");
+        header("Location: ../Student/Login/login.php");
         exit();
     }
 
@@ -65,7 +65,7 @@
     <link rel="stylesheet" href="style.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body { font-family: 'Poppins', Arial, sans-serif; background: #fff; margin: 0; padding-bottom: 25%; }
+        body { font-family: 'Itim', cursive; background: #fff; margin: 0; padding-bottom: 25%; }
         .dashboard-header {
             color: #F48C8C;
             font-size: 2rem;
