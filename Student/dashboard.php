@@ -113,6 +113,7 @@
     <title>Unicare</title>
     <link rel="icon" href="image/favicon.png" type="image/x-icon" />
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body { font-family: 'Itim', cursive; background: #fff; margin: 0; padding-bottom: 25%; }
@@ -248,7 +249,6 @@
             position: absolute;
             top: 36px;
             right: 0;
-            background: white;
             box-shadow: 0px 8px 24px rgba(0,0,0,0.12);
             border-radius: 8px;
             min-width: 140px;
@@ -261,15 +261,24 @@
             text-decoration: none;
             color: #3D3D3D;
             font-size: 0.95rem;
+            font-weight: normal;
         }
 
         .profile-dropdown-content a:hover {
             background-color: #f1f1f1;
-            font-weight: bold;
         }
 
         .profile-dropdown:hover .profile-dropdown-content {
             display: block;
+        }
+
+        .profile-dropdown-content a.logout-link {
+            display: flex;
+            align-items: center;
+            gap: 15px; 
+            text-decoration: none;
+            color: #000; 
+            font-size: 0.95rem;
         }
 
         .slider {
@@ -300,7 +309,9 @@
             <div class="profile-dropdown">
                 <img src="../image/icons/profile.png" alt="Profile" />
                 <div class="profile-dropdown-content">
-                    <a href="../Student/Login/logout.php">Log Out</a>
+                     <a href="../Student/Login/logout.php" class="logout-link">
+                        <i class="fa-solid fa-right-from-bracket"></i> Log Out
+                    </a>
                 </div>
             </div>
         </div>
