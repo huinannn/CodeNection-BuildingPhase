@@ -40,7 +40,7 @@
     }
     $stmt->close();
 
-    // 2. Get booked dates for calendar
+    // 3. Get booked dates for calendar
     $booked_query = "SELECT DATE(booking_date) as date FROM booking WHERE student_id = ?";
     $stmt2 = $dbConn->prepare($booked_query);
     $stmt2->bind_param("s", $student_id);
@@ -52,6 +52,27 @@
         $booked_dates[] = $row['date'];
     }
     $stmt2->close();
+
+    // 4. Get upcoming counselling (nearest future booking)
+    $upcoming = null;
+    $upcoming_sql = "
+        SELECT b.booking_date, b.booking_start_time, b.booking_end_time,
+            c.counselor_name, s.school_name
+        FROM booking b
+        JOIN counselor c ON b.counselor_id = c.counselor_id
+        JOIN school s ON c.school_id = s.school_id
+        WHERE b.student_id = ? AND b.booking_date > CURDATE()
+        ORDER BY b.booking_date ASC, b.booking_start_time ASC
+        LIMIT 1
+    ";
+    $stmt3 = $dbConn->prepare($upcoming_sql);
+    $stmt3->bind_param("s", $student_id);
+    $stmt3->execute();
+    $result3 = $stmt3->get_result();
+    if ($result3->num_rows > 0) {
+        $upcoming = $result3->fetch_assoc();
+    }
+    $stmt3->close();
 ?>
 
 <!DOCTYPE html>
@@ -88,7 +109,7 @@
         .angry { background: #FFD59E; }
         .sad { background: #B7E5B7; }
         .feeling-label { font-size: 0.95rem; color: #444; }
-        .emotion-journey-row {
+        #emotion-journey-row {
             background: #FFF6F0;
             border-radius: 18px;
             padding: 12px;
@@ -98,6 +119,9 @@
             align-items: center;
             justify-content: space-between;
             gap: 12px;
+            max-width: 100%;
+            height: 70%;
+            box-sizing: border-box;
         }
         .emotion-journey-info {
             display: flex;
@@ -109,13 +133,14 @@
         .emotion-title { font-size: 1.1rem; font-weight: 500; margin-bottom: 8px; }
         .emotion-message { font-size: 0.98rem; color: #888; margin-bottom: 10px; }
         .emotion-chart {
-            width: 80px;
-            height: 80px;
-            margin-bottom: 0;
+            width: 100% !important;
+            height: 100% !important;
+            max-height: 250px;
+            /* margin-bottom: 0;
             box-shadow: 0 2px 8px rgba(244, 140, 140, 0.18);
             background: #FFF6F0;
-            border-radius: 50%;
-            display: block;
+            border-radius: 50%; */
+            /* display: block; */
         }
         .action-buttons { display: flex; gap: 18px; margin: 0 20px 18px 20px; }
         .action-btn { font-family: 'Itim', cursive; flex: 1; background: #E6D3C7; border-radius: 12px; padding: 14px 0; text-align: center; font-size: 1.1rem; font-weight: 500; color: #7A5C3A; border: none; cursor: pointer; }
@@ -141,13 +166,13 @@
         }
         .calendar-month { background: #FFA85C; color: #fff; border-radius: 8px; padding: 2px 10px; font-size: 0.95rem; margin-bottom: 6px; display: inline-block; text-align: center; }
         @media (max-width: 700px) {
-            .emotion-journey-row { flex-direction: row; gap: 8px; padding: 8px; margin: 0 8px 8px 8px; }
-            .emotion-chart { width: 60px; height: 60px; }
+            .emotion-journey-row { flex-direction: row !important; gap: 8px; padding: 8px; margin: 0 8px 8px 8px; }
+            .emotion-chart { width: 30px; height: 30px; }
             .emotion-journey-info { align-items: flex-start; }
         }
         @media (max-width: 500px) {
             .emotion-journey-row { margin: 6px; }
-            .emotion-chart { width: 46px; height: 46px; }
+            .emotion-chart { width: 20px; height: 20px; }
         }
         @media (max-width: 500px) {
             .dashboard-header, .calendar-section, .feelings-section, .emotion-journey-row, .action-buttons { margin: 10px; }
@@ -212,6 +237,22 @@
         .profile-dropdown:hover .profile-dropdown-content {
             display: block;
         }
+
+        .slider {
+            overflow: hidden;
+            margin: 0 20px 12px 20px;
+            border-radius: 18px;
+        }
+        .slider-wrapper {
+            display: flex;
+            transition: transform 0.5s ease;
+            will-change: transform;
+        }
+        .slider-item {
+            min-width: 90%;
+            box-sizing: border-box;
+            padding-right: 10%;
+        }
     </style>
 </head>
 <body>
@@ -274,20 +315,33 @@
             <div id="encouragement-message" style="display:none; font-size:1rem; color:#888; margin-top:10px;"></div>
         <?php endif; ?>
     </div>
-    <div class="emotion-journey-row">
-        <div class="emotion-journey-info">
-            <div class="emotion-title">Emotions journey for the last 30 days:</div>
-            <div class="emotion-message" id="emotion-message">
-                <?php
-                    if($todayFeeling){
-                        echo $encouragements[$todayFeeling];
-                    } else {
-                        echo "Keep up the positivity!";
-                    }
-                ?>
+    <?php if ($upcoming): ?>
+    <div class="slider">
+        <div class="slider-wrapper">
+            <div class="slider-item" id="upcoming-counselling" style="background:#FFF6F0; border-radius:18px; padding:16px; margin:0 20px 12px 20px; display:block;">
+                <div style="font-size:1.3rem; font-weight:bold; margin-bottom:6px;">Upcoming Counselling</div>
+                <div style="font-size:1rem; margin-bottom:4px;"><?php echo htmlspecialchars($upcoming['counselor_name']); ?>, Msc in Clinical Psychology</div>
+                <div style="font-size:0.95rem; margin-bottom:4px;"><?php echo htmlspecialchars($upcoming['school_name']); ?></div>
+                <div style="font-size:0.95rem; margin-bottom:4px;"><?php echo date('j/n/Y', strtotime($upcoming['booking_date'])); ?></div>
+                <div style="font-size:0.95rem;"><?php echo date('g:i A', strtotime($upcoming['booking_start_time'])); ?> - <?php echo date('g:i A', strtotime($upcoming['booking_end_time'])); ?></div>
+            </div>
+            <?php endif; ?>
+            <div class="slider-item" id="emotion-journey-row">
+                <div class="emotion-journey-info">
+                    <div class="emotion-title">Emotions journey for the last 30 days:</div>
+                    <div class="emotion-message" id="emotion-message">
+                        <?php
+                            if($todayFeeling){
+                                echo $encouragements[$todayFeeling];
+                            } else {
+                                echo "Keep up the positivity!";
+                            }
+                        ?>
+                    </div>
+                </div>
+                <canvas id="emotionChart" class="emotion-chart"></canvas>
             </div>
         </div>
-        <canvas id="emotionChart" class="emotion-chart"></canvas>
     </div>
     <div class="action-buttons">
         <button class="action-btn" onclick="location.href='Chatbot/chatbot.php'">Unibot</button>
@@ -362,6 +416,7 @@
                 },
                 options: {
                     cutout: '70%',
+                    maintainAspectRatio: false,
                     plugins: { legend: { display: false } }
                 }
             });
@@ -427,6 +482,46 @@
         // Initial render
         updateEmotionChart();
         generateCalendar();
+
+        // Switch between counselling and emotion journey every 10 seconds
+        document.addEventListener("DOMContentLoaded", () => {
+            const wrapper = document.querySelector(".slider-wrapper");
+            const items = document.querySelectorAll(".slider-item");
+            let currentIndex = 0;
+            let startX = 0;
+            let endX = 0;
+
+            function showSlide(index) {
+                if (index < 0) index = items.length - 1;
+                if (index >= items.length) index = 0;
+                currentIndex = index;
+                wrapper.style.transform = `translateX(-${index * 100}%)`;
+            }
+
+            // Auto switch every 10s
+            setInterval(() => {
+                showSlide(currentIndex + 1);
+            }, 10000);
+
+            // Touch swipe
+            wrapper.addEventListener("touchstart", e => {
+                startX = e.touches[0].clientX;
+            });
+
+            wrapper.addEventListener("touchend", e => {
+                endX = e.changedTouches[0].clientX;
+                if (startX - endX > 50) {
+                    // swipe left
+                    showSlide(currentIndex + 1);
+                } else if (endX - startX > 50) {
+                    // swipe right
+                    showSlide(currentIndex - 1);
+                }
+            });
+
+            // Show first slide
+            showSlide(0);
+    });
     </script>
 </body>
 </html>
