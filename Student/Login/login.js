@@ -71,7 +71,7 @@ function showSnackbar(message, type='error') {
     snackbar.classList.add(type, 'show');
     snackbar.querySelector('span').innerHTML = `${icon}${message}`;
 
-    setTimeout(() => { snackbar.classList.remove('show'); }, 1000);
+    setTimeout(() => { snackbar.classList.remove('show'); }, 2000);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
