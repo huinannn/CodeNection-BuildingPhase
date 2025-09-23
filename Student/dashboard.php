@@ -150,7 +150,7 @@
             justify-content: space-between;
             gap: 12px;
             max-width: 100%;
-            height: 130px;
+            height: 170px;
             box-sizing: border-box;
         }
         .emotion-journey-info {
