@@ -1,0 +1,139 @@
+@import url('https://fonts.googleapis.com/css2?family=Itim&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+:root {
+    --primary: #e8b45e;
+    --white: #ffffff;
+    --black: #000000;
+    --max-width: 1500px;
+    --itim: 'Itim', cursive;
+    --roboto: 'Roboto', sans-serif;
+}
+
+* {
+    font-family: var(--roboto);
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    outline: 0;
+    border: none;
+    text-decoration: none;
+}
+
+html {
+    background-color: #d9d9d9;
+    height: 100%;
+}
+
+body {
+    background-color: #ffffff;
+    margin: 0 auto;
+    min-height: 100vh;          
+    max-width: var(--max-width);
+    display: flex;
+    flex-direction: column;
+}
+
+.spacer {
+    flex: 1;
+}
+
+.side-nav {
+    max-width: 300px;
+    width: 100%;
+    height: 100vh;
+    border-right: #E8B45E solid 3px;
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    top: 0;
+    z-index: 9999;
+}
+
+.side-nav .logo {
+    margin: 0 auto;
+    text-align: center;
+}
+
+.side-nav .logo img {
+    max-width: 150px;
+    width: 100%;
+    height: auto;
+}
+
+.side-nav ul {
+    list-style: none;
+    padding: 0 20px;
+    margin: 0;
+}
+
+.side-nav ul li {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.side-nav .nav li {
+    margin: 5px 0;
+    padding: 20px;
+    border-radius: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.side-nav ul li img {
+    width: 30px;
+    margin-right: 20px;
+}
+
+.side-nav ul li p {
+    font-family: var(--itim);
+    font-size: 20px;
+    font-weight: 400;
+    white-space: nowrap;
+    margin: 0;
+}
+
+.side-nav .nav li:hover,
+.side-nav .nav li.active {
+    background-color: #F2ECE5;
+}
+
+.side-nav .other .school {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 250px;
+}
+
+.side-nav .other .school p {
+    font-size: 12px;
+    font-weight: 500;
+
+}
+
+.side-nav .other .school img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+}
+
+.horizontal {
+    max-width: 300px;
+    width: 95%;
+    height: 3px;
+    border-radius: 3px;
+    background-color: #d9d9d9;
+    margin: 10px auto;
+}
+
+.side-nav .other .logout {
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+
+@media(max-width: 1000px) {
+    body {
+        display: none;
+    }
+}
