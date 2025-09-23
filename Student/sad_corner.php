@@ -15,7 +15,7 @@ if(isset($_SESSION['student_id'])) {
   $sql = 'SELECT * FROM confession 
           WHERE mode = "sad" AND confession_status = "approved"
           ORDER BY confession_date_time DESC';
-  $result = $conn->query($sql);
+  $result = $dbConn->query($sql);
 }
 
 ?>

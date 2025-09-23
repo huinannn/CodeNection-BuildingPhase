@@ -23,7 +23,7 @@ if (isset($_SESSION['student_id'])) {
               AND c.confession_status = "approved" 
               AND c.student_id = ?
             ORDER BY c.confession_date_time DESC;';
-    $stmt = $conn->prepare($sql);  
+    $stmt = $dbConn->prepare($sql);  
     $stmt->bind_param('s', $id);   
     $stmt->execute();             
     $result = $stmt->get_result();
@@ -45,7 +45,7 @@ if (isset($_SESSION['student_id'])) {
         $student_sql = 'SELECT student_name
                 FROM student
                 WHERE student_id = ?';
-        $student_stmt = $conn->prepare($student_sql);
+        $student_stmt = $dbConn->prepare($student_sql);
         $student_stmt->bind_param('s', $id);
         $student_stmt->execute();
         $student_result = $student_stmt->get_result();

@@ -20,7 +20,7 @@ if ($type === "comment") {
     $comment_message = trim($_POST['comment_message'] ?? '');
 
     if ($comment_message !== '') {
-        $stmt = $conn->prepare("INSERT INTO comment (confession_id, comment_message, comment_date_time, comment_status) 
+        $stmt = $dbConn->prepare("INSERT INTO comment (confession_id, comment_message, comment_date_time, comment_status) 
                                 VALUES (?, ?, NOW(), 'pending')");
         $stmt->bind_param("ss", $confession_id, $comment_message);
 
@@ -42,7 +42,7 @@ if ($type === "reply") {
     $reply_message = trim($_POST['reply_message'] ?? '');
 
     if ($reply_message !== '') {
-        $stmt = $conn->prepare("INSERT INTO reply (comment_id, reply_message, reply_date_time, reply_status) 
+        $stmt = $dbConn->prepare("INSERT INTO reply (comment_id, reply_message, reply_date_time, reply_status) 
                                 VALUES (?, ?, NOW(), 'pending')");
         $stmt->bind_param("ss", $comment_id, $reply_message);
 
@@ -113,7 +113,7 @@ if (isset($_POST['title'], $_POST['post_input'], $_POST['mode'])) {
     $sqlInsert = "INSERT INTO confession 
         (confession_title, confession_message, confession_post, confession_date_time, mode, confession_status, student_id)
         VALUES (?, ?, ?, NOW(), ?, 'pending', ?)";
-    $stmtInsert = $conn->prepare($sqlInsert);
+    $stmtInsert = $dbConn->prepare($sqlInsert);
     $stmtInsert->bind_param("sssss", $title, $message, $fileName, $mode, $student_id);
 
     if ($stmtInsert->execute()) {

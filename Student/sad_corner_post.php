@@ -15,7 +15,7 @@ if(isset($_SESSION['student_id']) && $_GET['id']) {
 
     $sql = 'SELECT * FROM confession 
             WHERE confession_id = ?';
-    $stmt = $conn->prepare($sql);  
+    $stmt = $dbConn->prepare($sql);  
     $stmt->bind_param('s', $confession);   
     $stmt->execute();             
     $result = $stmt->get_result();
@@ -283,7 +283,7 @@ if(isset($_SESSION['student_id']) && $_GET['id']) {
                                     WHERE confession_id = ? 
                                     AND comment_status = "approved"
                                     ORDER BY comment_id ASC';
-                    $stmtComments = $conn->prepare($sqlComments);
+                    $stmtComments = $dbConn->prepare($sqlComments);
                     $stmtComments->bind_param('s', $confession);
                     $stmtComments->execute();
                     $resultComments = $stmtComments->get_result();
@@ -311,7 +311,7 @@ if(isset($_SESSION['student_id']) && $_GET['id']) {
                                         WHERE comment_id = ? 
                                         AND reply_status = "approved"
                                         ORDER BY reply_id DESC';
-                            $stmtReplies = $conn->prepare($sqlReplies);
+                            $stmtReplies = $dbConn->prepare($sqlReplies);
                             $stmtReplies->bind_param('s', $comment_id);
                             $stmtReplies->execute();
                             $resultReplies = $stmtReplies->get_result();
