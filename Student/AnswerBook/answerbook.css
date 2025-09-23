@@ -23,7 +23,7 @@ body {
 .header {
     display: flex;
     align-items: center;
-    padding: 20px 28px;
+    padding: 25px 28px;
     font-family: var(--font-itim);
     position: fixed;
     width: 100%;
@@ -45,10 +45,10 @@ body {
     text-align: left;
 }
 
-.back-arrow {
-    width: 26px;
-    height: 26px;
-    cursor: pointer;
+.book-icon {
+    font-size: 20px; 
+    margin-right: 2px; 
+    color: var(--color-black); 
 }
 
 .answerbook-container {
@@ -72,7 +72,7 @@ body {
     outline: 5px solid #C96319;
     outline-offset: -2.5px;
     padding: 40px 20px;
-    margin-top: 40px;
+    margin-top: 50px;
     margin-bottom: 10px;
     display: flex;             
     justify-content: center;   

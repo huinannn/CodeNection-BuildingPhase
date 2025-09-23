@@ -10,10 +10,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-    <div class="header">
-        <a href="../dashboard.php">
-            <img src="../../image/icons/arrow.png" alt="Back arrow" class="back-arrow">           
-        </a>
+   <div class="header">
+        <i class="fa-solid fa-book book-icon"></i>
         <h1>Answer Book</h1>
     </div>
 
