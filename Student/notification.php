@@ -10,7 +10,7 @@
 
     // Query notifications from notification_admin
     $sql = "
-        SELECT na.booking_id, na.message, na.message_date_time 
+        SELECT na. message_id, na.booking_id, na.message, na.message_date_time 
         FROM notification_admin na
         INNER JOIN booking b ON na.booking_id = b.booking_id
         WHERE b.student_id = ?
@@ -225,17 +225,20 @@
         }
 
         function openModal(id) {
-            const n = notifications.find(x => x.id === id);
-            if (!n) return;
-            document.getElementById('modalTitle').textContent = n.title;
-            document.getElementById('modalMessage').textContent = n.fullMessage;
-            document.getElementById('modalTime').textContent = n.time + " ago";
+            const notif = notifications.find(n => n.id === id);
+            if (!notif) return;
+
+            document.getElementById('modalTitle').textContent = notif.title;
+            document.getElementById('modalMessage').textContent = notif.fullMessage;
+            document.getElementById('modalTime').textContent = notif.time;
             document.getElementById('notifModalBg').style.display = 'flex';
 
-            // Mark as read
-            const readStatus = getReadStatus();
-            readStatus[n.id] = true;
+            // ✅ Mark as read in localStorage
+            let readStatus = getReadStatus();
+            readStatus[id] = true;
             setReadStatus(readStatus);
+
+            // ✅ Remove green dot immediately
             renderNotifications();
         }
 

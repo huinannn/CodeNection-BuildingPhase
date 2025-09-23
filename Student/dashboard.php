@@ -417,6 +417,7 @@
 
         // Check localStorage for read status
         function hasUnreadNotifications() {
+            if (notifications.length === 0) return false;
             let readStatus = localStorage.getItem('notifReadStatus');
             readStatus = readStatus ? JSON.parse(readStatus) : {};
             return notifications.some(n => !readStatus[n.id]);
