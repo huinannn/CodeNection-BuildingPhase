@@ -1,3 +1,25 @@
+<?php
+session_start();
+include 'connection.php';
+
+
+if (!isset($_SESSION['student_id'])) {
+    // Not logged in, redirect to login page
+    header("Location: Login/login.php");
+    exit();
+}
+
+if(isset($_SESSION['student_id'])) {
+  $id = $_SESSION['student_id'];
+
+  $sql = 'SELECT * FROM confession 
+          WHERE mode = "happy" AND confession_status = "approved"
+          ORDER BY confession_date_time DESC';
+  $result = $conn->query($sql);
+}
+
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,67 +39,25 @@
         </div>
         <div class="spacer"></div>
         <div class="header_right">
-          <img src="../image/icons/user.png" alt="">
+          <img src="../image/icons/user.png" alt="" onclick="window.location.href='happy_profile.php'">
           <div class="dark_light">
-            <div class="dark_light">
-              <input type="checkbox" onchange="goSadCorner(this)">
-            </div>
+            <input type="checkbox" onchange="goSadCorner(this)">
           </div>
         </div>
       </div>
       <div class="content">
-        <div class="each_content" onclick="window.location.href='#'">
-          <img src="../image/confessions/happy.jpg" alt="">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
+        <?php
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+        ?>
+        <div class="each_content" onclick="window.location.href='happy_zone_post.php?id=<?php echo $row['confession_id'] ?>'">
+          <img src="../image/confessions/happy/<?php echo $row['confession_post'] ?>" alt="">
+          <p><?php echo $row['confession_title'] ?></p>
         </div>
-        <div class="each_content" onclick="window.location.href='#'">
-          <img src="../image/confessions/happy.jpg" alt="">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-        </div>
-        <div class="each_content" onclick="window.location.href='#'">
-          <img src="../image/confessions/happy.jpg" alt="">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-        </div>
-        <div class="each_content" onclick="window.location.href='#'">
-          <img src="../image/confessions/happy.jpg" alt="">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-        </div>
-        <div class="each_content" onclick="window.location.href='#'">
-          <img src="../image/confessions/happy.jpg" alt="">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-        </div>
-        <div class="each_content" onclick="window.location.href='#'">
-          <img src="../image/confessions/happy.jpg" alt="">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-        </div>
-        <div class="each_content" onclick="window.location.href='#'">
-          <img src="../image/confessions/happy.jpg" alt="">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-        </div>
-        <div class="each_content" onclick="window.location.href='#'">
-          <img src="../image/confessions/happy.jpg" alt="">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-        </div>
-        <div class="each_content" onclick="window.location.href='#'">
-          <img src="../image/confessions/happy.jpg" alt="">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-        </div>
-        <div class="each_content" onclick="window.location.href='#'">
-          <img src="../image/confessions/happy.jpg" alt="">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-        </div>
-        <div class="each_content" onclick="window.location.href='#'">
-          <img src="../image/confessions/happy.jpg" alt="">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-        </div>
-        <div class="each_content" onclick="window.location.href='#'">
-          <img src="../image/confessions/happy.jpg" alt="">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-        </div>
-        <div class="each_content" onclick="window.location.href='#'">
-          <img src="../image/confessions/happy.jpg" alt="">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-        </div>
+        <?php
+                }
+            }
+        ?>
       </div>
       <div class="end">
         <div class="line"></div>
@@ -89,10 +69,10 @@
     <!-- Warning for Sad Corner -->
      <div class="overlay" id="overlay">
       <div class="popup">
-        <p>This space is for sharing struggles. It may feel heavy!</p>
-        <p>Are you feeling ready to continue?</p>
+        <p style="font-size: 15px;">This space is for sharing struggles. It may feel heavy!</p>
+        <p style="font-size: 15px;">Are you feeling ready to continue?</p>
         <button class="confirm" id="confirmBtn"><div class="spacer"></div>Yes, I'm ready!</button> 
-        <button id="cancelBtn"><div class="spacer"></div>No, I'll stay positive</button>
+        <button id="cancelBtn" style="color: black; padding-bottom: 10px;"><div class="spacer"></div>No, I'll stay positive</button>
       </div>
      </div>
     <script>

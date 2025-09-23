@@ -7,12 +7,22 @@
     --black: #000000;
     --max-width: 480px;
     --itim: 'Itim', cursive;
+    --roboto: 'Roboto', sans-serif;
 }
 
 html, body {
     max-width: var(--max-width);
     margin: 0 auto;
     padding: 0;
+    font-family: var(--roboto);
+}
+
+body {
+    -ms-overflow-style: none;  /* IE/Edge */
+    scrollbar-width: none;     /* Firefox */
+}
+body::-webkit-scrollbar {
+    display: none;             /* Chrome, Safari, Opera */
 }
 
 .spacer {
@@ -303,3 +313,157 @@ html, body {
     from {opacity: 0; transform: scale(0.95);}
     to {opacity: 1; transform: scale(1);}
 }
+
+/* Each Posts */
+
+.confessions .back {
+    padding-top: 20px;
+    padding-left: 10px;
+    width: 100%;
+    max-width: var(--max-width);
+    position: fixed;
+    top: 0;
+    background-color: var(--white);
+    z-index: 1000;
+}
+
+.confessions .back img {
+    width: 20px;
+    height: 20px;
+}
+
+.confessions .media {
+    margin: 60px auto 0 auto;
+    width: 100%;
+    max-width: 365px;
+    aspect-ratio: 365 / 419; 
+}
+
+.confessions .media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 20px;
+}
+
+.confessions .post {
+    max-width: 365px;
+    margin: 0 auto;
+}
+
+.confessions .post h1 {
+    font-family: var(--itim);
+    font-weight: 400;
+    font-size: 15px;
+}
+
+.confessions .post p {
+    font-weight: 300;
+    font-size: 11px;
+    text-align: justify;
+}
+
+.confessions .date {
+    max-width: 365px;
+    width: 100%;
+    margin: 50px auto 0 auto;
+}
+
+.confessions .date p {
+    font-size: 9px;
+    color: #747474;
+    margin: 0;
+    padding-bottom: 3px;
+}
+
+.confessions .horizontal {
+    max-width: 365px;
+    width: 100%;
+    height: 3px;
+    border-radius: 3px;
+    background-color: #d9d9d9;
+}
+
+.confessions .all_comments {
+    max-width: 365px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.confessions .all_comments .comment_title {
+    display: flex;
+    flex-direction: row;
+    column-gap: 6px;  
+    justify-content: flex-start;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.confessions .all_comments .comment_title img {
+    width: 24px;
+    height: 24px;
+}
+
+.confessions .all_comments .comment_title h1 {
+    font-family: var(--itim);
+    font-weight: 400;
+    font-size: 15px;
+    color: var(--primary);
+}
+
+.confessions .all_comments .comment {
+    max-width: 364px;
+    width: 100%;
+}
+
+.confessions .all_comments .comment .each_comment {
+    background-color: #f0f0f0;
+    width: 100%;
+    min-height: 74px;
+    height: 100%;
+    border-radius: 10px;
+    margin: 10px 0;
+}
+
+.confessions .all_comments .comment .each_comment p {
+    margin: 0;
+    padding: 10px;
+    font-size: 12px;
+}
+
+.confessions .all_comments .comment .each_comment .comment_footer {
+    display: flex;
+    flex-direction: row;
+}
+
+.confessions .all_comments .comment .each_comment .comment_footer p, .confessions .all_comments .comment_title .add p {
+    font-size: 9px;
+    color: #808080;
+}
+
+.confessions .all_comments .comment .each_comment .reply {
+    padding-bottom: 10px;
+}
+
+.confessions .all_comments .comment .each_comment .reply .each_reply {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 10px;
+}
+
+.confessions .all_comments .comment .each_comment .reply .each_reply .rply_msg {
+    flex: 1 1 70%;
+    font-size: 10px;
+    padding: 0;
+}
+
+.confessions .all_comments .comment .each_comment .reply .each_reply .date {
+    flex: 1 1 30%;
+    font-size: 9px;
+    text-align: right;
+    color: #808080;
+    padding: 0;
+}
+

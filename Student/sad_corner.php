@@ -1,3 +1,25 @@
+<?php
+session_start();
+include 'connection.php';
+
+
+if (!isset($_SESSION['student_id'])) {
+    // Not logged in, redirect to login page
+    header("Location: Login/login.php");
+    exit();
+}
+
+if(isset($_SESSION['student_id'])) {
+  $id = $_SESSION['student_id'];
+
+  $sql = 'SELECT * FROM confession 
+          WHERE mode = "sad" AND confession_status = "approved"
+          ORDER BY confession_date_time DESC';
+  $result = $conn->query($sql);
+}
+
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -25,65 +47,25 @@
         </div>
         <div class="spacer"></div>
         <div class="header_right">
-          <img src="../image/icons/user.png" alt="">
+          <img src="../image/icons/user.png" alt="" onclick="window.location.href='sad_profile.php'">
           <div class="dark_light">
             <input type="checkbox" onchange="window.location.href='happy_zone.php'" checked>
           </div>
         </div>
       </div>
       <div class="content">
-        <div class="each_content" onclick="window.location.href='#'">
-          <img src="../image/confessions/happy.jpg" alt="">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
+        <?php
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+        ?>
+        <div class="each_content" onclick="window.location.href='sad_corner_post.php?id=<?php echo $row['confession_id'] ?>'">
+          <img src="../image/confessions/sad/<?php echo $row['confession_post'] ?>" alt="">
+          <p><?php echo $row['confession_title'] ?></p>
         </div>
-        <div class="each_content" onclick="window.location.href='#'">
-          <img src="../image/confessions/happy.jpg" alt="">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-        </div>
-        <div class="each_content" onclick="window.location.href='#'">
-          <img src="../image/confessions/happy.jpg" alt="">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-        </div>
-        <div class="each_content" onclick="window.location.href='#'">
-          <img src="../image/confessions/happy.jpg" alt="">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-        </div>
-        <div class="each_content" onclick="window.location.href='#'">
-          <img src="../image/confessions/happy.jpg" alt="">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-        </div>
-        <div class="each_content" onclick="window.location.href='#'">
-          <img src="../image/confessions/happy.jpg" alt="">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-        </div>
-        <div class="each_content" onclick="window.location.href='#'">
-          <img src="../image/confessions/happy.jpg" alt="">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-        </div>
-        <div class="each_content" onclick="window.location.href='#'">
-          <img src="../image/confessions/happy.jpg" alt="">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-        </div>
-        <div class="each_content" onclick="window.location.href='#'">
-          <img src="../image/confessions/happy.jpg" alt="">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-        </div>
-        <div class="each_content" onclick="window.location.href='#'">
-          <img src="../image/confessions/happy.jpg" alt="">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-        </div>
-        <div class="each_content" onclick="window.location.href='#'">
-          <img src="../image/confessions/happy.jpg" alt="">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-        </div>
-        <div class="each_content" onclick="window.location.href='#'">
-          <img src="../image/confessions/happy.jpg" alt="">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-        </div>
-        <div class="each_content" onclick="window.location.href='#'">
-          <img src="../image/confessions/happy.jpg" alt="">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-        </div>
+        <?php
+                }
+            }
+        ?>
       </div>
       <div class="end">
         <div class="line"></div>
