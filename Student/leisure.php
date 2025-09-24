@@ -13,10 +13,10 @@
     <div class="leisure">
         <div class = "header" style="background-color: white;">
             <div class="header1">
-                <a href="dashboard.php">
+                <!-- <a href="dashboard.php">
                     <img src="../image/icons/arrow.png" alt="Back arrow" class = "back-arrow">           
-                </a>
-                <h1>Leisure</h1>
+                </a> -->
+                <h1 style="padding-left:10px">Leisure</h1>
                 <img src="../image/leisure/Leisure.png" alt="Leisure_Icon" class = " leisure-icon">
 
             </div>
@@ -32,18 +32,69 @@
             </div>
         </div>
         <div class="content">
-            <a href="calm-meditation.php" class="leisure-card">
-                <img src="../image/leisure/Meditation.png" alt="Calm Meditation">
+            <a href="calm-meditation.php" class="leisure-card" style="width:175px">
+                <img src="../image/leisure/Meditation.jpg" alt="Calm Meditation">
                 <p>Calm Meditation</p>
             </a>
 
-            <a href="Splash.html" class="leisure-card">
-                <img src="../image/leisure/Splash.png" alt="Colour Splash">
+            <a href="Splash.html" class="leisure-card" style="width:175px">
+                <img src="../image/leisure/Splash.jpg" alt="Colour Splash">
                 <p>Colour Splash</p>
             </a>
 
-            <a href="Splash.html" class="leisure-card">
-                <img src="../image/leisure/Splash.png" alt="Motivation Music">
+            <a href="Lucky_Scratch.html" class="leisure-card" style="width:175px">
+                <img src="../image/leisure/Lucky.jpg" alt="lucky-scratch">
+                <p>Lucky Scratch</p>
+            </a>
+            <a href="Motivation_Music.html" class="leisure-card" style="width:175px">
+                <img src="../image/leisure/Motivation.jpg" alt="Motivation-music">
+                <p>Motivation Music</p>
+            </a>
+            
+
+
+
+
+            <a href="calm-meditation.php" class="leisure-card" style="width:175px">
+                <img src="../image/leisure/Meditation.jpg" alt="Calm Meditation">
+                <p>Calm Meditation</p>
+            </a>
+
+            <a href="Splash.html" class="leisure-card" style="width:175px">
+                <img src="../image/leisure/Splash.jpg" alt="Colour Splash">
+                <p>Colour Splash</p>
+            </a>
+
+            <a href="Lucky_Scratch.html" class="leisure-card" style="width:175px">
+                <img src="../image/leisure/Lucky.jpg" alt="lucky-scratch">
+                <p>Lucky Scratch</p>
+            </a>
+            <a href="Motivation_Music.html" class="leisure-card" style="width:175px">
+                <img src="../image/leisure/Motivation.jpg" alt="Motivation-music">
+                <p>Motivation Music</p>
+            </a>
+
+
+
+
+
+
+            <a href="calm-meditation.php" class="leisure-card" style="width:175px">
+                <img src="../image/leisure/Meditation.jpg" alt="Calm Meditation">
+                <p>Calm Meditation</p>
+            </a>
+
+            <a href="Splash.html" class="leisure-card" style="width:175px">
+                <img src="../image/leisure/Splash.jpg" alt="Colour Splash">
+                <p>Colour Splash</p>
+            </a>
+
+            <a href="Lucky_Scratch.html" class="leisure-card" style="width:175px">
+                <img src="../image/leisure/Lucky.jpg" alt="lucky-scratch">
+                <p>Lucky Scratch</p>
+            </a>
+            <a href="Motivation_Music.html" class="leisure-card" style="width:175px">
+                <img src="../image/leisure/Motivation.jpg" alt="Motivation-music">
                 <p>Motivation Music</p>
             </a>
 

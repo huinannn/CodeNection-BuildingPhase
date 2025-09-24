@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
   <title>Watercolor Splash Paint</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Itim&display=swap');
+
     :root {
         --primary: #e8b45e;
         --white: #ffffff;
@@ -14,34 +16,92 @@
     }
     *{box-sizing:border-box}
     html,body{height:100%}
-    body {margin:0;line-height:normal;font-family:system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial;background:var(--white);display:flex;align-items:center;justify-content:center;padding:12px;}
-    .app { width:100%; max-width: var(--max-width); height:100vh; display:flex; flex-direction:column; gap:8px; }
-    header{ display:flex; gap:8px; align-items:center; justify-content:space-between; }
-    .controls{ display:flex; gap:8px; align-items:center; padding:8px; background:rgba(255,255,255,0.85); border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,0.06); backdrop-filter: blur(6px); }
-    .palette{display:flex;gap:6px;align-items:center}
-    .swatch{ width:32px;height:32px;border-radius:8px;border:1px solid rgba(0,0,0,0.08);cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,0.06); }
-    .slider{width:110px}
+    body {
+        margin:0;
+        line-height:normal;
+        font-family: var(--itim);
+        background:var(--white);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        padding:12px;
+    }
+    .page {
+        width:100%;
+        max-width: var(--max-width);
+        height:100vh;
+        display:flex;
+        flex-direction:column;
+    }
+    header {
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        justify-content:center;
+        padding:8px 0;
+    }
+    header h1 {
+        font-size: 28px;
+        margin: 0 0 8px 0;
+        text-align:center;
+        color: var(--black);
+    }
+    .controls{ 
+        display:flex; 
+        gap:8px; 
+        align-items:center; 
+        padding:8px; 
+        background:rgba(255,255,255,0.85); 
+        border-radius:12px; 
+        box-shadow:0 6px 18px rgba(0,0,0,0.06); 
+        backdrop-filter: blur(6px); 
+    }
+    .current-color {
+        width:20px;
+        height:20px;
+        border-radius:50%;
+        border:2px solid rgba(0,0,0,0.15);
+        box-shadow:0 2px 6px rgba(0,0,0,0.15);
+        cursor:pointer;
+    }
+    .slider{width:100px}
     button{background:var(--primary);border:none;padding:8px 10px;border-radius:8px;color:var(--white);font-weight:600;cursor:pointer}
     button.secondary{background:#efefef;color:#111}
     .toolbar{display:flex;gap:8px;align-items:center}
     .canvas-wrap{flex:1;position:relative;border-radius:12px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.08)}
-    canvas{display:block;width:100%;height:100%;touch-action:none;}
+    canvas{display:block;width:100%;height:100%;touch-action:none;position:absolute;top:0;left:0;}
+    #bgCanvas { z-index:0; }
+    #drawCanvas { z-index:1; }
+    .placeholder {
+        position:absolute;
+        top:50%;
+        left:50%;
+        transform:translate(-50%, -50%);
+        font-size:20px;
+        color:#888;
+        pointer-events:none;
+        user-select:none;
+        font-style:italic;
+    }
     .hint{font-size:12px;color:#666;margin-left:6px}
-    .bottom-bar{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:6px}
+    .bottom-bar {
+        display:flex;
+        gap:8px;
+        align-items:center;
+        justify-content:space-between;
+        padding:6px
+    }
     select {padding:6px;border-radius:6px;border:1px solid #ccc;}
+    #colorPicker { display:none; }
   </style>
 </head>
 <body>
-  <div class="app">
+  <div class="page">
     <header>
-      <div class="controls">
-        <div style="display:flex;flex-direction:column;gap:4px">
-          <div style="font-weight:700">Watercolor Paint</div>
-          <div class="hint">Tap to splash or draw</div>
-        </div>
-        <div style="flex:1"></div>
+      <h1 style="padding-top:10px">Colour Splash</h1>
+      <div class="controls" >
         <div class="toolbar">
-          <div class="palette" id="palette"></div>
+          <div id="currentColor" class="current-color"></div>
           <input id="colorPicker" type="color" />
           <input id="sizeRange" type="range" min="6" max="120" value="28" class="slider" />
           <div id="sizeLabel" class="hint">28</div>
@@ -65,85 +125,107 @@
     </header>
 
     <div class="canvas-wrap">
-      <canvas id="canvas"></canvas>
+      <canvas id="bgCanvas"></canvas>
+      <canvas id="drawCanvas"></canvas>
+      <div id="placeholder" class="placeholder">Tap to Colour</div>
     </div>
 
     <div class="bottom-bar">
       <div style="display:flex;gap:8px">
+        <a href="leisure.php" class="BackBtn">
+            <button id="BackBtn" class="BackBtn">Back</button>
+        </a>
         <button id="undoBtn" class="secondary">Undo</button>
         <button id="redoBtn" class="secondary">Redo</button>
         <button id="clearBtn" class="secondary">Clear</button>
         <button id="saveBtn">Save</button>
       </div>
-      <div class="hint">Try switching brushes for animated effects!</div>
     </div>
   </div>
 
   <script>
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
+    const bgCanvas = document.getElementById('bgCanvas');
+    const drawCanvas = document.getElementById('drawCanvas');
+    const bgCtx = bgCanvas.getContext('2d');
+    const ctx = drawCanvas.getContext('2d');
     const colorPicker = document.getElementById('colorPicker');
-    const palette = document.getElementById('palette');
     const sizeRange = document.getElementById('sizeRange');
     const sizeLabel = document.getElementById('sizeLabel');
     const brushType = document.getElementById('brushType');
     const bgPicker = document.getElementById('bgPicker');
+    const currentColorEl = document.getElementById('currentColor');
+    const placeholder = document.getElementById('placeholder');
 
     let brushSize = parseInt(sizeRange.value);
-    let brushColor = colorPicker.value;
+    let brushColor = "#000000";
     let currentBrush = brushType.value;
 
     sizeLabel.textContent = brushSize;
+    currentColorEl.style.background = brushColor;
 
-    const swatches = ['#ff3b30','#ff9500','#ffcc00','#34c759','#5856d6','#0a84ff','#8e8e93','#000000'];
-    swatches.forEach(c=>{
-      const s=document.createElement('div');
-      s.className='swatch';
-      s.style.background=c;
-      s.addEventListener('click',()=>{ brushColor=c; colorPicker.value=c; });
-      palette.appendChild(s);
-    });
-
+    // --- History system for DRAW layer ---
     let history = [];
     let historyStep = -1;
 
-    function saveState(){
-      history = history.slice(0, historyStep+1);
-      history.push(canvas.toDataURL());
-      historyStep++;
+    function saveState() {
+      history = history.slice(0, historyStep + 1);
+      history.push(ctx.getImageData(0, 0, drawCanvas.width, drawCanvas.height));
+      historyStep = history.length - 1;
     }
 
-    function restoreState(step){
-      if(step<0 || step>=history.length) return;
-      const img=new Image();
-      img.src=history[step];
-      img.onload=()=>{ ctx.clearRect(0,0,canvas.width,canvas.height); ctx.drawImage(img,0,0,canvas.width,canvas.height); }
+    function restoreState(step) {
+      if (step < 0 || step >= history.length) return;
+      ctx.clearRect(0,0,drawCanvas.width,drawCanvas.height);
+      ctx.putImageData(history[step], 0, 0);
     }
 
     document.getElementById('undoBtn').addEventListener('click',()=>{ if(historyStep>0){ historyStep--; restoreState(historyStep); }});
     document.getElementById('redoBtn').addEventListener('click',()=>{ if(historyStep<history.length-1){ historyStep++; restoreState(historyStep); }});
-    document.getElementById('clearBtn').addEventListener('click',()=>{ ctx.clearRect(0,0,canvas.width,canvas.height); saveState(); });
-    document.getElementById('saveBtn').addEventListener('click',()=>{ const link=document.createElement('a'); link.href=canvas.toDataURL(); link.download='painting.png'; link.click(); });
+    document.getElementById('clearBtn').addEventListener('click',()=>{ ctx.clearRect(0,0,drawCanvas.width,drawCanvas.height); saveState(); placeholder.style.display="block"; });
+    document.getElementById('saveBtn').addEventListener('click',()=>{
+      const merged = document.createElement('canvas');
+      merged.width = bgCanvas.width;
+      merged.height = bgCanvas.height;
+      const mctx = merged.getContext('2d');
+      mctx.drawImage(bgCanvas,0,0);
+      mctx.drawImage(drawCanvas,0,0);
+      const link=document.createElement('a');
+      link.href=merged.toDataURL();
+      link.download='painting.png';
+      link.click();
+    });
 
     function fitCanvas(){
       const ratio = window.devicePixelRatio || 1;
-      canvas.width = canvas.clientWidth * ratio;
-      canvas.height = canvas.clientHeight * ratio;
-      ctx.setTransform(ratio,0,0,ratio,0,0);
+      [bgCanvas, drawCanvas].forEach(c => {
+        c.width = c.clientWidth * ratio;
+        c.height = c.clientHeight * ratio;
+        const cctx = c.getContext('2d');
+        cctx.setTransform(ratio,0,0,ratio,0,0);
+      });
       setBackground(bgPicker.value);
+      ctx.clearRect(0,0,drawCanvas.width,drawCanvas.height);
       saveState();
     }
 
     function setBackground(type){
-      ctx.fillStyle=(type==='white')?'#fff':(type==='dark')?'#111':'#fff';
-      ctx.fillRect(0,0,canvas.width,canvas.height);
+      bgCtx.clearRect(0,0,bgCanvas.width,bgCanvas.height);
+      if(type==='white'){ bgCtx.fillStyle='#fff'; bgCtx.fillRect(0,0,bgCanvas.width,bgCanvas.height); }
+      if(type==='dark'){ bgCtx.fillStyle='#111'; bgCtx.fillRect(0,0,bgCanvas.width,bgCanvas.height); }
       if(type==='grid'){
-        for(let x=0;x<canvas.width;x+=20){for(let y=0;y<canvas.height;y+=20){ctx.strokeStyle='#eee';ctx.strokeRect(x,y,20,20);}}
+        bgCtx.fillStyle='#fff'; bgCtx.fillRect(0,0,bgCanvas.width,bgCanvas.height);
+        for(let x=0;x<bgCanvas.width;x+=20){
+          for(let y=0;y<bgCanvas.height;y+=20){
+            bgCtx.strokeStyle='#eee';
+            bgCtx.strokeRect(x,y,20,20);
+          }
+        }
       }
       if(type==='paper'){
-        const img=new Image(); img.src='https://www.transparenttextures.com/patterns/paper-fibers.png';
-        img.onload=()=>{ctx.drawImage(img,0,0,canvas.width,canvas.height); saveState();};
-      } else { saveState(); }
+        const img=new Image();
+        img.src='https://www.transparenttextures.com/patterns/paper-fibers.png';
+        img.onload=()=>{ bgCtx.drawImage(img,0,0,bgCanvas.width,bgCanvas.height); };
+      }
     }
 
     function hexToRgba(hex,a=1){
@@ -175,22 +257,64 @@
           g.addColorStop(1,hexToRgba(brushColor,0));
           ctx.fillStyle=g; ctx.beginPath(); ctx.arc(x,y,size*1.2,0,Math.PI*2); ctx.fill(); break;
         case 'pen': ctx.fillStyle=brushColor; ctx.beginPath(); ctx.arc(x,y,size/2,0,Math.PI*2); ctx.fill(); break;
-        case 'marker': ctx.fillStyle=hexToRgba(brushColor,0.5); ctx.beginPath(); ctx.arc(x,y,size,0,Math.PI*2); ctx.fill(); break;
+        case 'marker': 
+            ctx.strokeStyle = brushColor;
+            ctx.lineWidth = size;
+            ctx.lineCap = "round";
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            break;
         case 'spray': for(let i=0;i<size;i++){ const angle=Math.random()*2*Math.PI; const dist=Math.random()*size; ctx.fillStyle=hexToRgba(brushColor,0.3); ctx.fillRect(x+Math.cos(angle)*dist,y+Math.sin(angle)*dist,1,1);} break;
-        case 'drip': ctx.fillStyle=brushColor; ctx.fillRect(x,y,size/3,size); break;
+        case 'drip': 
+            ctx.fillStyle=brushColor; 
+            ctx.fillRect(x,y,size/3,size*2);
+            for(let i=0;i<3;i++){
+              const dripX = x + (Math.random()-0.5)*size;
+              const dripLen = size + Math.random()*size*2;
+              ctx.beginPath();
+              ctx.strokeStyle=hexToRgba(brushColor,0.6);
+              ctx.lineWidth=size/6;
+              ctx.moveTo(dripX,y);
+              ctx.lineTo(dripX,y+dripLen);
+              ctx.stroke();
+            }
+            break;
         case 'expand': for(let i=0;i<8;i++){ const angle=Math.random()*Math.PI*2; const dist=Math.random()*size*1.5; ctx.fillStyle=hexToRgba(brushColor,0.4); ctx.beginPath(); ctx.arc(x+Math.cos(angle)*dist,y+Math.sin(angle)*dist,size*0.2,0,Math.PI*2); ctx.fill();} break;
       }
     }
 
     let pointerDown=false;
-    canvas.addEventListener('pointerdown',e=>{pointerDown=true; drawBrush(e.offsetX,e.offsetY); saveState();});
-    canvas.addEventListener('pointermove',e=>{if(pointerDown) drawBrush(e.offsetX,e.offsetY);});
-    canvas.addEventListener('pointerup',()=>{pointerDown=false;});
+    let lastX, lastY;
+
+    drawCanvas.addEventListener('pointerdown', e => {
+      placeholder.style.display = "none"; // hide placeholder when first tap
+      pointerDown = true;
+      lastX = e.offsetX;
+      lastY = e.offsetY;
+      drawBrush(e.offsetX, e.offsetY);
+    });
+
+    drawCanvas.addEventListener('pointermove', e => {
+      if (pointerDown) {
+        drawBrush(e.offsetX, e.offsetY);
+        lastX = e.offsetX;
+        lastY = e.offsetY;
+      }
+    });
+
+    drawCanvas.addEventListener('pointerup', () => {
+      pointerDown = false;
+      saveState();
+    });
 
     sizeRange.addEventListener('input',()=>{brushSize=parseInt(sizeRange.value); sizeLabel.textContent=brushSize;});
-    colorPicker.addEventListener('input',()=>{brushColor=colorPicker.value;});
     brushType.addEventListener('change',()=>{currentBrush=brushType.value;});
     bgPicker.addEventListener('change',()=>{setBackground(bgPicker.value);});
+
+    currentColorEl.addEventListener('click',()=>{ colorPicker.click(); });
+    colorPicker.addEventListener('input',()=>{ brushColor=colorPicker.value; currentColorEl.style.background=brushColor; });
 
     window.addEventListener('resize',fitCanvas);
     window.onload=fitCanvas;

@@ -29,12 +29,14 @@ body {
     width: 430px;
     position: fixed;
     /* padding-right: -10px; */
+    /* padding-left: 10px; */
     z-index:999
 }
 
 .leisure .header .header1{
     padding-top: 25px;
-    padding-left: 30px;
+    /* padding-left: 30px; */
+    padding-left: 10px;
     position: fixed;
     top: 0;
     width: 100%;
@@ -47,7 +49,7 @@ body {
 }
 
 .leisure .header .header1 h1 {
-    padding-left: 15px;
+    padding-left: 10px;
     font-family: var(--itim);
     font-size: 27px;
     font-weight: 400;
@@ -73,6 +75,7 @@ body {
 /* Header 2 butto
 ns container */
 .header2 {
+    /* padding-right: 10px; */
     position: fixed;
     padding-top: 65px;
     width: 100%;
@@ -80,12 +83,14 @@ ns container */
     /* padding: 5px 0; */
     -webkit-overflow-scrolling: touch; /* smooth scroll on iOS */
     z-index: 999;
+    /* padding-right: 10px; */
 }
 
 .header-scroller {
     display: flex;
     gap: 10px;
     padding: 0px 14px;
+    /* padding-right: 10px; */
 }
 
 .header-scroller button {
@@ -116,6 +121,7 @@ ns container */
     justify-content: center; /* center the cards horizontally */
     padding-top: 100px;
     font-family: var(--itim);
+    
 }
 
 /* Generic card style for all types */
@@ -146,6 +152,7 @@ ns container */
     font-size: 18px;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
     z-index: 10;
+    padding-left: 5px;
 }
 
 

@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Lucky Scratch</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Itim&display=swap');
+
+    :root {
+      --primary: #E4C158;
+      --white: #ffffff;
+      --black: #000000;
+      --itim: 'Itim', cursive;
+      --max-width: 480px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: var(--itim);
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden; /* 🚫 no scrolling */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: white; /* center wrapper background */
+    }
+
+    /* Main wrapper limited to 480px */
+    .page-wrapper {
+      width: 100%;
+      max-width: var(--max-width);
+      height: 100vh;
+      position: relative;
+      background: url('../image/leisure/Lucky_Leaf.jpg') no-repeat center top;
+      background-size: cover;
+      overflow: hidden;
+    }
+
+    /* Semi-transparent white overlay */
+    .page-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.5);
+      z-index: 0;
+    }
+
+    .header {
+
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: var(--max-width);
+      display: flex;
+      align-items: center;
+      padding: 30px 25px;
+      z-index: 2;
+    }
+
+    .header1 {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .back-arrow {
+      width: 24px;
+      height: auto;
+    }
+
+    .header h1 {
+        padding-left: 5px;
+      font-size: 1.4em;
+      font-weight: bold;
+      padding-bottom: 8px;
+    }
+
+    .container {
+        padding-top: 20px;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
+
+    #scratch-card {
+      position: relative;
+      width: 380px;
+      height: 380px;
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      border-radius: 12px;
+      overflow: hidden;
+      z-index: 2;
+    }
+
+    #quote {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90%;
+      text-align: center;
+      font-size: 18px;
+      color: var(--black);
+      z-index: 1;
+      line-height: 1.4em;
+    }
+
+    #scratchCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+      z-index: 2;
+    }
+
+    #new-card {
+      margin-top: 20px;
+      padding: 12px 24px;
+      font-size: 16px;
+      background: var(--primary);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      transition: transform 0.2s;
+      z-index: 2;
+    }
+
+    #new-card:hover {
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrapper">
+    <div class="page-overlay"></div>
+
+    <div class="header">
+      <div class="header1">
+        <a href="leisure.php">
+          <img src="../image/icons/arrow.png" alt="Back arrow" class="back-arrow">
+        </a>
+        <h1>Lucky Scratch</h1>
+      </div>
+    </div>
+
+    <div class="container">
+      <div id="scratch-card">
+        <div id="quote"></div>
+        <canvas id="scratchCanvas" width="300" height="300"></canvas>
+      </div>
+      <button id="new-card" style="font-colour:#6D542B;">New Card</button>
+    </div>
+  </div>
+
+  <script>
+    const quotes = [
+        "Difficult roads lead to beautiful destinations!",
+        "There is hope even when your brain tells you there is not. – John Green",
+        "Success is not final, failure is not fatal: It is the courage to continue that counts. – Winston Churchill",
+        "Believe you can and you're halfway there. – Theodore Roosevelt",
+        "Keep going. Everything you need will come to you at the perfect time.",
+        "The best way to predict the future is to create it. – Peter Drucker",
+        "Act as if what you do makes a difference. It does. – William James",
+        "It always seems impossible until it's done. – Nelson Mandela",
+        "Don’t stop when you’re tired. Stop when you’re done.",
+        "Wake up with determination. Go to bed with satisfaction.",
+        "Do something today that your future self will thank you for.",
+        "Little things make big days.",
+        "It’s going to be hard, but hard does not mean impossible.",
+        "Don’t wait for opportunity. Create it.",
+        "Sometimes we’re tested not to show our weaknesses, but to discover our strengths.",
+        "The harder you work for something, the greater you’ll feel when you achieve it.",
+        "Dream bigger. Do bigger.",
+        "Don’t watch the clock; do what it does. Keep going. – Sam Levenson",
+        "Doubt kills more dreams than failure ever will. – Suzy Kassem",
+        "If you want something you’ve never had, you must be willing to do something you’ve never done.",
+        "The way to get started is to quit talking and begin doing. – Walt Disney",
+        "Do what you can with all you have, wherever you are. – Theodore Roosevelt",
+        "You are never too old to set another goal or to dream a new dream. – C.S. Lewis",
+        "Reading is to the mind, as exercise is to the body. – Brian Tracy",
+        "The future belongs to those who believe in the beauty of their dreams. – Eleanor Roosevelt",
+        "Opportunities don’t happen. You create them. – Chris Grosser",
+        "Don’t be afraid to give up the good to go for the great. – John D. Rockefeller",
+        "I find that the harder I work, the more luck I seem to have. – Thomas Jefferson",
+        "The secret of getting ahead is getting started. – Mark Twain",
+        "It does not matter how slowly you go as long as you do not stop. – Confucius",
+        "Hardships often prepare ordinary people for an extraordinary destiny. – C.S. Lewis",
+        "Try not to become a man of success. Rather become a man of value. – Albert Einstein",
+        "Everything you can imagine is real. – Pablo Picasso",
+        "Do what you love and success will follow. – Oprah Winfrey",
+        "Don’t count the days, make the days count. – Muhammad Ali",
+        "Your time is limited, so don’t waste it living someone else’s life. – Steve Jobs",
+        "I never dreamed about success. I worked for it. – Estee Lauder",
+        "Don’t let yesterday take up too much of today. – Will Rogers",
+        "If you can dream it, you can achieve it. – Zig Ziglar",
+        "Fall seven times and stand up eight. – Japanese Proverb",
+        "The only limit to our realization of tomorrow is our doubts of today. – Franklin D. Roosevelt",
+        "Do one thing every day that scares you. – Eleanor Roosevelt",
+        "It’s not whether you get knocked down, it’s whether you get up. – Vince Lombardi",
+        "Go the extra mile. It’s never crowded there.",
+        "Failure is simply the opportunity to begin again, this time more intelligently. – Henry Ford",
+        "Don’t be pushed around by the fears in your mind. Be led by the dreams in your heart. – Roy T. Bennett",
+        "Opportunities are usually disguised as hard work, so most people don’t recognize them. – Ann Landers",
+        "Don’t limit your challenges. Challenge your limits.",
+        "Focus on your goal. Don’t look in any direction but ahead.",
+        "Dare to dream, dare to try, dare to fail, dare to succeed.",
+        "Work hard in silence, let success make the noise.",
+        "Turn your wounds into wisdom. – Oprah Winfrey",
+        "The man who moves a mountain begins by carrying away small stones. – Confucius",
+        "Motivation is what gets you started. Habit is what keeps you going. – Jim Ryun",
+        "Don’t let the fear of losing be greater than the excitement of winning. – Robert Kiyosaki",
+        "Failure will never overtake me if my determination to succeed is strong enough. – Og Mandino",
+        "When you have a dream, you’ve got to grab it and never let go. – Carol Burnett",
+        "Difficulties in life don’t come to destroy you, but to help you realize your hidden potential.",
+        "Everything you’ve ever wanted is on the other side of fear. – George Addair",
+        "The key to success is to focus on goals, not obstacles.",
+        "Hard work beats talent when talent doesn’t work hard. – Tim Notke",
+        "Perseverance is not a long race; it is many short races one after the other. – Walter Elliot",
+        "Don’t wish it were easier. Wish you were better. – Jim Rohn",
+        "Your only limit is your mind.",
+        "If you get tired, learn to rest, not quit. – Banksy",
+        "Everything negative – pressure, challenges – is all an opportunity for me to rise. – Kobe Bryant",
+        "What we achieve inwardly will change outer reality. – Plutarch",
+        "Do not wait to strike till the iron is hot, but make it hot by striking. – William Butler Yeats",
+        "In the middle of every difficulty lies opportunity. – Albert Einstein",
+        "Don’t quit. Suffer now and live the rest of your life as a champion. – Muhammad Ali",
+        "The way I see it, if you want the rainbow, you gotta put up with the rain. – Dolly Parton",
+        "Believe in yourself, take on your challenges, dig deep within yourself to conquer fears. – Chantal Sutherland",
+        "Limit your ‘always’ and your ‘nevers.’ – Amy Poehler",
+        "Light tomorrow with today. – Elizabeth Barrett Browning",
+        "Do not let making a living prevent you from making a life. – John Wooden",
+        "Act as though it is impossible to fail. – Dorothea Brande",
+        "You miss 100% of the shots you don’t take. – Wayne Gretzky",
+        "Don’t be afraid to fail. Be afraid not to try. – Michael Jordan",
+        "If you fell down yesterday, stand up today. – H.G. Wells",
+        "I am not a product of my circumstances. I am a product of my decisions. – Stephen R. Covey",
+        "A winner is a dreamer who never gives up. – Nelson Mandela",
+        "Energy and persistence conquer all things. – Benjamin Franklin",
+        "Start where you are. Use what you have. Do what you can. – Arthur Ashe",
+        "Great minds discuss ideas; average minds discuss events; small minds discuss people. – Eleanor Roosevelt",
+        "Live as if you were to die tomorrow. Learn as if you were to live forever. – Mahatma Gandhi",
+        "Change your thoughts and you change your world. – Norman Vincent Peale",
+        "With the new day comes new strength and new thoughts. – Eleanor Roosevelt",
+        "Start each day with a positive thought and a grateful heart. – Roy T. Bennett",
+        "Don’t count the days, make the days count. – Muhammad Ali",
+        "When everything seems to be going against you, remember that the airplane takes off against the wind, not with it. – Henry Ford",
+        "Success usually comes to those who are too busy to be looking for it. – Henry David Thoreau",
+        "You define your own life. Don’t let other people write your script. – Oprah Winfrey",
+        "It’s never too late to be what you might have been. – George Eliot",
+        "Happiness is not something ready-made. It comes from your own actions. – Dalai Lama",
+        "Everything you do now is for your future. Think about that.",
+        "Push yourself, because no one else is going to do it for you.",
+        "If you want to fly, give up everything that weighs you down. – Buddha",
+        "A little progress each day adds up to big results.",
+        "Don’t wait. The time will never be just right. – Napoleon Hill",
+        "Great things never come from comfort zones.",
+        "Hustle beats talent when talent doesn’t hustle.",
+        "If you can imagine it, you can achieve it; if you can dream it, you can become it. – William Arthur Ward",
+        "Don’t let small minds convince you that your dreams are too big.",
+        "Difficulties strengthen the mind, as labor does the body. – Seneca",
+        "Be stronger than your excuses.",
+        "Once you choose hope, anything’s possible. – Christopher Reeve",
+        "All our dreams can come true if we have the courage to pursue them. – Walt Disney",
+        "Success doesn’t come to you, you go to it.",
+        "When you feel like quitting, think about why you started.",
+        "Don’t stop until you’re proud.",
+        "Your limitation—it’s only your imagination.",
+        "Push harder than yesterday if you want a different tomorrow.",
+        "Dream it. Believe it. Build it.",
+        "Doubt whom you will, but never yourself. – Christian Nestell Bovee",
+        "Rise up and attack the day with enthusiasm.",
+        "You don’t have to be great to start, but you have to start to be great. – Zig Ziglar",
+        "Success is the sum of small efforts, repeated day in and day out. – Robert Collier",
+        "Our greatest glory is not in never falling, but in rising every time we fall. – Confucius",
+        "The struggle you’re in today is developing the strength you need for tomorrow.",
+        "When you have a why, you can bear almost any how. – Friedrich Nietzsche",
+        "Keep your eyes on the stars, and your feet on the ground. – Theodore Roosevelt",
+        "Don’t limit yourself. Many people limit themselves to what they think they can do. – Mary Kay Ash",
+        "Hard work opens doors and shows the world that you are serious about being one of those rare and special human beings who use the fullness of their talents. – Robin Sharma",
+        "It does not matter how slowly you go as long as you do not stop. – Confucius",
+        "Life has no limitations, except the ones you make. – Les Brown",
+        "Action is the foundational key to all success. – Pablo Picasso",
+        "A goal is a dream with a deadline. – Napoleon Hill",
+        "Keep moving forward. – Walt Disney",
+        "Your present circumstances don’t determine where you can go; they merely determine where you start. – Nido Qubein",
+        "Big journeys begin with small steps.",
+        "Believe in the power of yet.",
+        "You are capable of amazing things.",
+        "One day or day one. You decide.",
+        "Success is what happens after you have survived all your mistakes.",
+        "Your speed doesn’t matter, forward is forward.",
+        "Prove yourself to yourself, not others.",
+        "Work until your idols become your rivals.",
+        "Don’t look back, you’re not going that way.",
+        "Winners are not afraid of losing. But losers are. Failure is part of the process of success. – Robert Kiyosaki",
+        "Be the energy you want to attract.",
+        "Never stop learning, because life never stops teaching.",
+        "Focus on being productive instead of busy. – Tim Ferriss",
+        "It’s not about perfect. It’s about effort.",
+        "The key to success is to start before you are ready. – Marie Forleo",
+        "Do it scared.",
+        "Discipline is the bridge between goals and accomplishment. – Jim Rohn",
+        "Turn your can'ts into cans and your dreams into plans.",
+        "Don’t let the fear of striking out keep you from playing the game. – Babe Ruth",
+        "Every expert was once a beginner.",
+        "Good things come to people who wait, but better things come to those who go out and get them.",
+        "It always seems impossible until it’s done. – Nelson Mandela",
+        "I never lose. I either win or learn. – Nelson Mandela",
+        "Don’t give up. The beginning is always the hardest.",
+        "Life is not about finding yourself. Life is about creating yourself. – George Bernard Shaw",
+        "Challenges are what make life interesting. Overcoming them is what makes life meaningful. – Joshua J. Marine",
+        "Dream as if you’ll live forever. Live as if you’ll die today. – James Dean",
+        "Failure is not the opposite of success, it’s part of success. – Arianna Huffington",
+        "If you don’t build your dream, someone else will hire you to help build theirs. – Tony Gaskins",
+        "You get in life what you have the courage to ask for. – Oprah Winfrey",
+        "Success isn’t about how much money you make. It’s about the difference you make in people’s lives. – Michelle Obama",
+        "When you know what you want, and want it bad enough, you’ll find a way to get it. – Jim Rohn",
+        "You are stronger than you think.",
+        "Start small, think big. Don’t worry about too many things at once. Take a handful of simple things, and then progress to more complex ones. – Steve Jobs",
+        "Failure is success in progress. – Albert Einstein",
+        "The secret of getting ahead is getting started. – Mark Twain",
+        "Happiness often sneaks in through a door you didn’t know you left open. – John Barrymore",
+        "Do what you can, with what you have, where you are. – Theodore Roosevelt",
+        "No pressure, no diamonds. – Thomas Carlyle",
+        "We generate fears while we sit. We overcome them by action. – Dr. Henry Link",
+        "Opportunities multiply as they are seized. – Sun Tzu"
+
+    ];
+
+    const quoteEl = document.getElementById("quote");
+    const canvas = document.getElementById("scratchCanvas");
+    const ctx = canvas.getContext("2d");
+    const newCardBtn = document.getElementById("new-card");
+
+    function pickQuote() {
+      const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+      quoteEl.textContent = randomQuote;
+    }
+
+    function initScratch() {
+      ctx.fillStyle = "#bbb";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.strokeStyle = "#999";
+      for (let i = 0; i < canvas.width; i += 10) {
+        ctx.beginPath();
+        ctx.moveTo(i, 0);
+        ctx.lineTo(i + canvas.height, canvas.height);
+        ctx.stroke();
+      }
+
+      ctx.globalCompositeOperation = "destination-out";
+
+      let isDrawing = false;
+      function scratch(e) {
+        if (!isDrawing) return;
+        const rect = canvas.getBoundingClientRect();
+        const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+        const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+        ctx.beginPath();
+        ctx.arc(x, y, 20, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      canvas.addEventListener("mousedown", () => isDrawing = true);
+      canvas.addEventListener("mouseup", () => isDrawing = false);
+      canvas.addEventListener("mousemove", scratch);
+      canvas.addEventListener("touchstart", () => isDrawing = true);
+      canvas.addEventListener("touchend", () => isDrawing = false);
+      canvas.addEventListener("touchmove", scratch);
+    }
+
+    newCardBtn.addEventListener("click", () => {
+      pickQuote();
+      ctx.globalCompositeOperation = "source-over";
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      initScratch();
+    });
+
+    pickQuote();
+    initScratch();
+  </script>
+</body>
+</html>
