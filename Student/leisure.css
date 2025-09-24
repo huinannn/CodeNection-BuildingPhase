@@ -136,9 +136,9 @@ ns container */
     font-family: Itim;
 }
 
-.content .leisure-card:nth-last-child(-n+2) {
+/* .content .leisure-card:nth-last-child(-n+2) {
     margin-bottom: 1000px;
-}
+} */
 
 .leisure-card img {
     width: 100%;

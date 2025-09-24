@@ -51,18 +51,19 @@
                 <p>Motivation Music</p>
             </a>
             
-
-
-
-
-            <a href="calm-meditation.php" class="leisure-card" style="width:175px">
-                <img src="../image/leisure/Meditation.jpg" alt="Calm Meditation">
-                <p>Calm Meditation</p>
+            <a href="RandomThrow.html" class="leisure-card" style="width:175px">
+                <img src="../image/leisure/Throw.jpg" alt="Random_Throw">
+                <p>Random Throw</p>
             </a>
 
-            <a href="Splash.html" class="leisure-card" style="width:175px">
-                <img src="../image/leisure/Splash.jpg" alt="Colour Splash">
-                <p>Colour Splash</p>
+
+
+
+
+
+            <a href="Squishy.html" class="leisure-card" style="width:175px">
+                <img src="../image/leisure/Squishy.jpg" alt="Squishy">
+                <p>Squishy</p>
             </a>
 
             <a href="Lucky_Scratch.html" class="leisure-card" style="width:175px">
