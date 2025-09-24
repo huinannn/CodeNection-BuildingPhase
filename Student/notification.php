@@ -56,7 +56,7 @@
     <title>Notifications</title>
     <link rel="stylesheet" href="style.css" />
     <style>
-        body { font-family: 'Poppins', Arial, sans-serif; background: #FAF6F2; margin: 0; }
+        body { font-family: 'Itim'; background: #FAF6F2; margin: 0; }
         .notif-header {
             display: flex;
             align-items: center;
