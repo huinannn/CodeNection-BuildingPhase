@@ -23,20 +23,33 @@
         $school_logo = $row['school_logo'];
     }
 
-    $id_sql = "SELECT student_id FROM student WHERE school_id = ? ORDER BY student_id DESC LIMIT 1";
+    $prefix = 'ST'; 
+
+    if (stripos($school_name, 'Asia Pacific University') !== false) {
+        $prefix = 'TP';
+    } elseif (preg_match('/\((.*?)\)/', $school_name, $matches)) {
+        $prefix = strtoupper($matches[1]);
+    }
+
+    $id_sql = "SELECT student_id 
+            FROM student 
+            WHERE student_id LIKE ? 
+            ORDER BY student_id DESC 
+            LIMIT 1";
     $id_stmt = $dbConn->prepare($id_sql);
-    $id_stmt->bind_param("i", $school_id);
+    $likePattern = $prefix . '%';
+    $id_stmt->bind_param("s", $likePattern);
     $id_stmt->execute();
     $id_result = $id_stmt->get_result();
     $id_row = $id_result->fetch_assoc();
 
     if ($id_row && isset($id_row['student_id'])) {
         $last_id = $id_row['student_id'];
-        $num = (int)substr($last_id, 2); 
+        $num = (int)substr($last_id, strlen($prefix)); 
         $num++;
-        $new_student_id = 'UM' . str_pad($num, 4, '0', STR_PAD_LEFT);
+        $new_student_id = $prefix . str_pad($num, 4, '0', STR_PAD_LEFT);
     } else {
-        $new_student_id = 'UM1001';
+        $new_student_id = $prefix . '0001';
     }
 
     $success = false;
