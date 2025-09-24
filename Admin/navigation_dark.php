@@ -41,7 +41,7 @@ if ($row = $admin_result->fetch_assoc()) {
         <img src="../image/favicon.png" alt="">
     </div>
     <ul class="nav">
-        <li data-page="student.php"><img src="../image/icons/student.png" alt=""><p>Student Accounts</p></li>
+        <li data-page="StudentAccount/studentaccount.php"><img src="../image/icons/student.png" alt=""><p>Student Accounts</p></li>
         <li data-page="bookings.php"><img src="../image/icons/booking.png" alt=""><p>Bookings</p></li>
         <li data-page="reviews.php"><img src="../image/icons/reviews.png" alt=""><p>Reviews</p></li>
         <li data-page="check-in.php"><img src="../image/icons/check-in.png" alt=""><p>Personal Check-In</p></li>
@@ -52,7 +52,7 @@ if ($row = $admin_result->fetch_assoc()) {
     </ul>
     <div class="horizontal"></div>
     <ul class="other">
-        <li class="logout" onclick="window.location.href = 'logout.php'"><p>LOG OUT</p> &nbsp; &nbsp; &nbsp;<img src="../image/icons/logout.png"></li>
+        <li class="logout" onclick="window.location.href = 'Login/logout.php'"><p>LOG OUT</p> &nbsp; &nbsp; &nbsp;<img src="../image/icons/logout.png"></li>
     </ul>
 </div>
 <div class="main-content" style="display: none;"> This site is not available on small screens 📱 (Only available on 1000px screens & above) </div>

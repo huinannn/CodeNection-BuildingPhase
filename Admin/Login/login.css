@@ -1,0 +1,229 @@
+@import url('https://fonts.googleapis.com/css2?family=Itim&display=swap');
+
+:root {
+    --primary: #e8b45e;
+    --white: #ffffff;
+    --black: #000000;
+    --max-width: 1500px;
+    --itim: 'Itim', cursive;
+}
+
+* {
+    font-family: var(--itim);
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    outline: 0;
+    border: none;
+    text-decoration: none;
+}
+
+html {
+    background-color: #d9d9d9;
+    height: 100%;
+}
+
+body {
+    background-color:var(--white);
+    margin: 0 auto;
+    min-height: 100vh;          
+    max-width: var(--max-width);
+    display: flex;
+    flex-direction: column;
+}
+
+/* login */
+.header-bar {
+    width: 100%;
+    height: 75px;
+    background: #F2ECE5;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10;
+}
+
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 80px;
+}
+
+.login-card {
+    width: 600px;
+    padding: 25px 50px;
+    box-shadow: 0px 4px 4px rgba(0,0,0,0.2);
+    border: 1px rgba(143,143,143,0.2) solid;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+.login-title {
+    font-size: 30px;
+    text-align: center;
+    margin-top: -50px;
+}
+
+.login-image {
+    width: 280px;
+    margin-top: -20px;
+}
+
+.login-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.input-group {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.input-group label {
+    font-size: 14px;
+    color: #212934;
+}
+
+.input-field {
+    width: 100%;
+    height: 50px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    gap: 8px;
+}
+
+.input-field:focus-within {
+    background-color: #f0f0f0;
+}
+
+
+.input-field input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-family: var(--itim);
+    font-size: 14px;
+    color: #212934;
+    background: transparent;
+}
+
+.input-field input::placeholder {
+    color: #8F8F8F;
+    font-size: 14px;
+}
+
+.input-field i {
+    font-size: 16px;
+    color: #8F8F8F;
+}
+
+.btn-row {
+    display: flex;
+    justify-content: center;  
+    gap: 16px; 
+    width: 60%;              
+    margin: 30px auto 20px;   
+}
+
+.btn {
+    flex: 1;
+    height: 50px;         
+    display: flex;
+    justify-content: center;  
+    align-items: center;    
+    border-radius: 360px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.5s ease;
+}
+
+.btn-1 {
+    background: #f2ece5; 
+    color: #ae8446;    
+}
+
+.btn-2 {
+    background: #e2c19b; 
+    color: var(--white);
+}
+
+.btn-1:hover, .btn-2:hover{
+    color: #cd661c;
+    background: #f9e1c5;
+}
+
+/* try again */
+.icon {
+    display: flex;
+    justify-content: center;  
+    align-items: center;   
+    font-size: 80px;
+    color: #E2C19B;
+    margin-top: 100px;
+    margin-bottom: 60px;
+}
+
+.login-content {
+    text-align: center; 
+    font-size: 20px; 
+    margin-top: 20px;
+}
+
+.button {
+    display: flex;
+    justify-content: center;  
+    gap: 16px; 
+    width: 20%;              
+    margin: 30px auto 20px;   
+    margin-top: 50px;
+    margin-bottom: 80px;
+}
+
+/*required */
+#snackbar {
+    display: none;            
+    position: absolute;       
+    top: 155px;                 
+    left: 50%;                  
+    transform: translateX(-50%);
+    width: 80%;                
+    max-width: 300px;
+    color: #dd3730;
+    background-color: #ffede9;      
+    text-align: center;
+    padding: 12px 0;
+    font-size: 16px;
+    font-family: var(--font-itim, sans-serif);
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+    z-index: 999;            
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    font-family: var(--itim);
+}
+
+#snackbar.show {
+    display: block;
+    opacity: 1;
+}
+
+@keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadeout {
+    from {bottom: 30px; opacity: 1;}
+    to {bottom: 0; opacity: 0;}
+}
