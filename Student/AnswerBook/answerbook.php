@@ -1,3 +1,13 @@
+<?php
+    session_start();
+    include '../../conn.php';
+
+    if (!isset($_SESSION['student_id'])) {
+        header("Location: ../Login/login.php");
+        exit();
+    }
+?>
+
 <!DOCTYPE html>
 <html>
 <head>

@@ -1,4 +1,12 @@
 <?php
+    session_start();
+    include '../../conn.php';
+
+    if (!isset($_SESSION['student_id'])) {
+        header("Location: ../Login/login.php");
+        exit();
+    }
+
     $quote = "🌱 Every day is a new chance to grow stronger, calmer, and happier 🌱";
 
     try {

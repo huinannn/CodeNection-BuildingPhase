@@ -2,7 +2,7 @@
     session_start();
     include '../conn.php';
 
-    if(isset($_POST['login'])) {
+    if (isset($_POST['login'])) {
         $admin_id = mysqli_real_escape_string($dbConn, trim($_POST['admin_id']));
         $password = mysqli_real_escape_string($dbConn, trim($_POST['password']));
 
@@ -43,7 +43,7 @@
                     <label for="admin-id">Admin ID</label>
                     <div class="input-field">
                         <i class="fa-solid fa-user"></i>
-                        <input type="text" id="admin-id" name="admin_id" placeholder="Type here...">
+                        <input type="text" id="admin-id" name="admin_id" placeholder="Enter your admin id">
                     </div>
                 </div>
 
@@ -51,7 +51,7 @@
                     <label for="password">Password</label>
                     <div class="input-field">
                         <i class="fa-solid fa-lock"></i>
-                        <input type="password" id="password" name="password" placeholder="Type here...">
+                        <input type="password" id="password" name="password" placeholder="Enter your password">
                     </div>
                 </div>
 
