@@ -11,16 +11,16 @@
 
     // Get booked dates for calendar
     $booked_query = "SELECT DATE(booking_date) as date FROM booking WHERE student_id = ?";
-    $stmt2 = $dbConn->prepare($booked_query);
-    $stmt2->bind_param("s", $student_id);
-    $stmt2->execute();
-    $result2 = $stmt2->get_result();
+    $stmt = $dbConn->prepare($booked_query);
+    $stmt->bind_param("s", $student_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
     $booked_dates = [];
-    while($row = $result2->fetch_assoc()){
+    while($row = $result->fetch_assoc()){
         $booked_dates[] = $row['date'];
     }
-    $stmt2->close();
+    $stmt->close();
 ?>
 
 <!DOCTYPE html>
@@ -186,8 +186,6 @@
             document.getElementById('calendar-body').innerHTML = html;
         }
 
-        // Initial render
-        updateEmotionChart();
         generateCalendar();
     </script>
 </body>
