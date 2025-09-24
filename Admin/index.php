@@ -9,10 +9,8 @@
         $query = "SELECT * FROM admin WHERE admin_id='$admin_id' AND admin_password='$password' LIMIT 1";
         $result = mysqli_query($dbConn, $query);
 
-        if($result && mysqli_num_rows($result) > 0) {
-            $school_id = (int)substr($admin_id, -3); 
+        if ($result && mysqli_num_rows($result) === 1) {
             $_SESSION['admin_id'] = $admin_id;
-            $_SESSION['school_id'] = $school_id;
 
             header("Location: StudentAccount/studentaccount.php");
             exit();
