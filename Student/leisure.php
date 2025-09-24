@@ -97,10 +97,11 @@
                 <img src="../image/leisure/Motivation.jpg" alt="Motivation-music">
                 <p>Motivation Music</p>
             </a>
+            
 
             <!-- Add more cards here -->
         </div>
-
+        <div class="space" style="padding-bottom:100px;"><p></p></div>
     </div>
 
     <?php include 'navigation.php' ?>

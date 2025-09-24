@@ -121,6 +121,7 @@ ns container */
     justify-content: center; /* center the cards horizontally */
     padding-top: 100px;
     font-family: var(--itim);
+    /* padding-bottom: 1000px; */
     
 }
 
@@ -133,6 +134,10 @@ ns container */
     cursor: pointer;
     text-align: left;
     font-family: Itim;
+}
+
+.content .leisure-card:nth-last-child(-n+2) {
+    margin-bottom: 1000px;
 }
 
 .leisure-card img {
