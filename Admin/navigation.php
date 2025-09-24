@@ -5,7 +5,7 @@
     make sure your page has 300px margin left for the sidebar!-->
 
 <?php
-$admin_id = $_SESSION['id']; //Pls change to actual admin id
+$admin_id = $_SESSION['admin_id'];
 $admin_sql = "SELECT s.*
             FROM admin a
             JOIN school s ON a.school_id = s.school_id
