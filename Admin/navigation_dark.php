@@ -5,22 +5,27 @@
     make sure your page has 300px margin left for the sidebar!-->
 
 <?php
-$admin_id = $_SESSION['id']; //Pls change to actual admin id
-$admin_sql = "SELECT s.*
-            FROM admin a
-            JOIN school s ON a.school_id = s.school_id
-            WHERE a.admin_id = ?";
-$admin_stmt = $dbConn->prepare($admin_sql);
-$admin_stmt->bind_param("s", $admin_id);
-$admin_stmt->execute();
-$admin_result = $admin_stmt->get_result();
+    session_start();
+    include '../conn.php';
 
+    $admin_id = $_SESSION['admin_id'];
+    $school_id = $_SESSION['school_id'];
 
-if ($row = $admin_result->fetch_assoc()) {
-   $school_name = $row['school_name'];
-   $school_logo = $row['school_logo'];
-}
+    $school_sql = "SELECT * FROM school WHERE school_id = ?";
+    $school_stmt = $dbConn->prepare($school_sql);
+    $school_stmt->bind_param("i", $school_id);
+    $school_stmt->execute();
+    $school_result = $school_stmt->get_result();
+
+    $school_name = "";
+    $school_logo = "";
+    if ($row = $school_result->fetch_assoc()) {
+    $school_name = $row['school_name'];
+    $school_logo = $row['school_logo'];
+    }
 ?>
+
+<link rel="stylesheet" href="style.css" />
 
 <style>
     body {
@@ -36,9 +41,10 @@ if ($row = $admin_result->fetch_assoc()) {
         color: black;
     }
 </style>
+
 <div class="side-nav">
     <div class="logo">
-        <img src="../image/favicon.png" alt="">
+        <img src="../image/favicon.png" alt="Unicare">
     </div>
     <ul class="nav">
         <li data-page="StudentAccount/studentaccount.php"><img src="../image/icons/student.png" alt=""><p>Student Accounts</p></li>
@@ -48,14 +54,23 @@ if ($row = $admin_result->fetch_assoc()) {
     </ul>
     <div class="spacer"></div>
     <ul class="other">
-        <li class="school"><img src="../image/school_logo/<?php echo $school_logo ?>" alt=""><p><?php echo $school_name ?></p></li>
+        <li class="school">
+            <img src="../image/school_logo/<?php echo htmlspecialchars($school_logo); ?>" alt="School Logo">
+            <p><?php echo htmlspecialchars($school_name); ?></p>
+        </li>
     </ul>
     <div class="horizontal"></div>
     <ul class="other">
-        <li class="logout" onclick="window.location.href = 'Login/logout.php'"><p>LOG OUT</p> &nbsp; &nbsp; &nbsp;<img src="../image/icons/logout.png"></li>
+        <li class="logout" onclick="window.location.href = 'Login/logout.php'">
+            <p>LOG OUT</p> &nbsp; &nbsp; &nbsp;<img src="../image/icons/logout.png">
+        </li>
     </ul>
 </div>
-<div class="main-content" style="display: none;"> This site is not available on small screens 📱 (Only available on 1000px screens & above) </div>
+
+<div class="main-content" style="display: none;">
+    This site is not available on small screens 📱 (Only available on 1000px screens & above)
+</div>
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         // Alert for small screens
@@ -70,36 +85,23 @@ if ($row = $admin_result->fetch_assoc()) {
         // Select all nav tabs
         const tabs = document.querySelectorAll(".side-nav .nav li");
 
-        function setActiveTab(tab) {
-            tabs.forEach(item => {
-                item.classList.remove("active");
-                const img = item.querySelector("img");
-                if (img) {
-                    // Reset all to white icons
-                    img.src = img.src.replace(".png", "_white.png");
-                }
-            });
-
-            tab.classList.add("active");
-            const img = tab.querySelector("img");
-            if (img) {
-                // Set active one to normal icon
-                img.src = img.src.replace("_white.png", ".png");
-            }
-        }
-
         // Determine current page filename
         const currentPage = window.location.pathname.split("/").pop().split("?")[0]; 
+
+        function setActiveTab(tab) {
+            tabs.forEach(t => t.classList.remove("active"));
+            tab.classList.add("active");
+        }
 
         let matched = false;
         tabs.forEach(tab => {
             const target = tab.getAttribute("data-page"); 
-            if (target && target === currentPage) {
+            if (target === currentPage) {
                 setActiveTab(tab);
                 matched = true;
             }
 
-            // Add click event
+            // Handle click navigation
             tab.addEventListener("click", () => {
                 setActiveTab(tab);
                 if (target) {
@@ -114,4 +116,3 @@ if ($row = $admin_result->fetch_assoc()) {
         }
     });
 </script>
-

@@ -1,10 +1,7 @@
 <?php
-session_start();
-include '../conn.php';
+    include '../conn.php';
 
-$_SESSION['id'] = 'Adm0009';
-
-include 'navigation_dark.php';
+    include 'navigation.php';
 ?>
 
 <link rel="stylesheet" href="style.css" />
