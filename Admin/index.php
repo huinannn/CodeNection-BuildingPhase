@@ -14,7 +14,7 @@
             $_SESSION['admin_id'] = $admin_id;
             $_SESSION['school_id'] = $school_id;
 
-            header("Location: reviews.php");
+            header("Location: StudentAccount/studentaccount.php");
             exit();
         } else {
             header("Location: Login/tryagain.php");
