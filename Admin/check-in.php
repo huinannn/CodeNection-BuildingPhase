@@ -33,8 +33,8 @@
     $evening_done = false;
     foreach ($today_checkins as $row) {
         $hour = (int)date("H", strtotime($row['admin_feeling_datetime']));
-        if ($hour >= 8 && $hour <= 10) $morning_done = true;
-        if ($hour >= 21 && $hour <= 22) $evening_done = true;
+        if ($hour >= 8 && $hour <= 12) $morning_done = true;
+        if ($hour >= 21 && $hour <= 23) $evening_done = true;
     }
 
     // Fetch last 30 mood entries
@@ -67,8 +67,8 @@
 
     // Determine prompt state
     $already_done_today = (count($today_checkins) >= 2);
-    $show_morning_prompt = ($currentHour >= 8 && $currentHour < 10 && !$morning_done && !$already_done_today);
-    $show_evening_prompt = ($currentHour >= 21 && $currentHour < 22 && !$evening_done && !$already_done_today);
+    $show_morning_prompt = ($currentHour >= 8 && $currentHour < 12 && !$morning_done && !$already_done_today);
+    $show_evening_prompt = ($currentHour >= 21 && $currentHour < 23 && !$evening_done && !$already_done_today);
 ?>
 
 <!DOCTYPE html>
@@ -92,37 +92,55 @@
             gap: 20px;
             margin-left: 300px;
         }
+        .left-card {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
         .card {
             background: #f8f6f3;
             padding: 20px;
             border-radius: 12px;
+            height: 300px;
         }
         h1, h2, p { margin: 0 0 10px 0; font-family: 'Itim';}
         .mood-entry {
-    background: white;
-    border-radius: 10px;
-    padding: 10px;
-    margin: 8px 0;
-    }
-    .mood-counts { display: flex; gap: 10px; margin-bottom: 10px; }
-    .mood-counts div { background: white; padding: 10px 15px; border-radius: 10px; }
+            background: white;
+            border-radius: 10px;
+            padding: 10px;
+            margin: 8px 0;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .mood-entry:hover {
+            background: #f0f0f0;
+        }
+        .mood-counts { display: flex; gap: 10px; margin-bottom: 10px; }
+        .mood-counts div { background: white; padding: 10px 15px; border-radius: 10px; }
 
-    /* Mood Journey scroll */
-    .card.journey {
-        max-height: calc(100vh - 200px);
-        overflow-y: auto;
-    }
+        /* Mood Journey scroll */
+        .card_journey {
+            max-height: calc(100vh - 145px);
+            overflow-y: auto;
+            background: #f8f6f3;
+            padding: 20px;
+            border-radius: 12px;
+        }
 
-    /* Modal buttons */
-    .circle-btn {
-        width: 80px; height: 80px;
-        border-radius: 50%;
-        margin: 8px;
-        border: none;
-        cursor: pointer;
-        color: white;
-        font-size: 14px;
-    }
+        /* Modal buttons */
+        .circle-btn {
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            margin: 8px;
+            border: none;
+            cursor: pointer;
+            color: white;
+            font-size: 14px;
+        }
+
+        #checkinModal, #noteModal {
+            z-index: 9999; /*force modal on top */
+        }
     </style>
 </head>
 <body>
@@ -132,59 +150,69 @@
         <h1>Personal Check-In</h1>
     </div>
     <div class="main-content">
-        <!-- Check-in prompt -->
-        <div class="card">
-            <?php if ($already_done_today || $evening_done): ?>
-                <h2>You've completed your mood check-in for the day.</h2>
-                <p>See you tomorrow!</p>
+        <div class="left-card">
+            <!-- Check-in prompt -->
+            <div class="card">
+                <?php if ($already_done_today || $evening_done): ?>
+                    <h2>You've completed your mood check-in for the day.</h2>
+                    <p>See you tomorrow!</p>
 
-            <?php elseif ($show_morning_prompt || $show_evening_prompt): ?>
-                <h2>Today might be rough, but you passed it!</h2>
-                <p>How you'd feel?</p>
-                <span class="btn-track-mood" style="cursor:pointer;">
-                    <img src="../image/icons/track_mood.png" alt="Track Mood" />
-                </span>
+                <?php elseif ($show_morning_prompt || $show_evening_prompt): ?>
+                    <h2>Today might be rough, but you passed it!</h2>
+                    <p>How you'd feel?</p>
+                    <span class="btn-track-mood" style="cursor:pointer;">
+                        <img src="../image/icons/track_mood.png" alt="Track Mood" />
+                    </span>
 
-            <?php elseif ($morning_done && $currentHour < 21): ?>
-                <h2>Thank you for checking in your mood for the morning.</h2>
-                <p>See you later!</p>
-            <?php endif; ?>
+                <?php elseif ($morning_done && $currentHour < 23): ?>
+                    <h2>Thank you for checking in your mood for the morning.</h2>
+                    <p>See you later!</p>
+                <?php endif; ?>
+            </div>
+
+            <!-- Today's Check-In -->
+            <div class="card">
+                <h2>Today's Check-In</h2>
+                <div class="mood-counts">
+                    <div><?= count(array_filter($today_checkins, fn($m)=>$m['positivity_feeling']=='Positive')) ?> Positive Feelings</div>
+                    <div><?= count(array_filter($today_checkins, fn($m)=>$m['positivity_feeling']=='Negative')) ?> Negative Feelings</div>
+                </div>
+                <?php foreach ($today_checkins as $mood): ?>
+                    <div class="mood-entry mood-clickable"
+                        data-datetime="<?= htmlspecialchars($mood['admin_feeling_datetime']) ?>"
+                        data-positivity="<?= htmlspecialchars($mood['positivity_feeling']) ?>"
+                        data-feeling="<?= htmlspecialchars($mood['admin_feeling']) ?>"
+                        data-journal="<?= htmlspecialchars($mood['mini_journal']) ?>">
+                        <small><?= date("D, M j · g:i A", strtotime($mood['admin_feeling_datetime'])) ?></small>
+                        <strong>Feeling <?= htmlspecialchars($mood['admin_feeling']) ?></strong>
+                    </div>
+                <?php endforeach; ?>
+            </div>
         </div>
 
         <!-- Mood Journey -->
-        <div class="card journey">
+        <div class="card_journey">
             <h2>Mood Journey</h2>
             <div class="mood-counts">
                 <div><?= $positive_count ?> Positive Feelings</div>
                 <div><?= $negative_count ?> Negative Feelings</div>
             </div>
             <?php foreach ($mood_journey as $mood): ?>
-                <div class="mood-entry">
-                    <small><?= date("D, M j · g:i A", strtotime($mood['admin_feeling_datetime'])) ?></small>
-                    <strong>Feeling <?= htmlspecialchars($mood['admin_feeling']) ?></strong>
-                </div>
-            <?php endforeach; ?>
-        </div>
-
-        <!-- Today's Check-In -->
-        <div class="card">
-            <h2>Today's Check-In</h2>
-            <div class="mood-counts">
-                <div><?= count(array_filter($today_checkins, fn($m)=>$m['positivity_feeling']=='Positive')) ?> Positive Feelings</div>
-                <div><?= count(array_filter($today_checkins, fn($m)=>$m['positivity_feeling']=='Negative')) ?> Negative Feelings</div>
+            <div class="mood-entry mood-clickable"
+                data-datetime="<?= htmlspecialchars($mood['admin_feeling_datetime']) ?>"
+                data-positivity="<?= htmlspecialchars($mood['positivity_feeling']) ?>"
+                data-feeling="<?= htmlspecialchars($mood['admin_feeling']) ?>"
+                data-journal="<?= htmlspecialchars($mood['mini_journal']) ?>">
+                <small><?= date("D, M j · g:i A", strtotime($mood['admin_feeling_datetime'])) ?></small>
+                <strong>Feeling <?= htmlspecialchars($mood['admin_feeling']) ?></strong>
             </div>
-            <?php foreach ($today_checkins as $mood): ?>
-                <div class="mood-entry">
-                    <small><?= date("D, M j · g:i A", strtotime($mood['admin_feeling_datetime'])) ?></small>
-                    <strong>Feeling <?= htmlspecialchars($mood['admin_feeling']) ?></strong>
-                </div>
             <?php endforeach; ?>
         </div>
     </div>
 
     <!-- Mood Check-in Modal -->
     <div id="checkinModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5);">
-        <div style="background:#f8f6f3; width:900px; height:900px; margin:auto; position:absolute; top:0; bottom:0; left:0; right:0; border-radius:12px; padding:20px; overflow:auto;">
+        <div style="background:#f8f6f3; width:700px; height:700px; margin:auto; position:absolute; top:0; bottom:0; left:0; right:0; border-radius:12px; padding:20px; overflow:auto;">
             <button onclick="closeModal()" style="position:absolute; top:10px; right:10px; border:none; background:none; font-size:18px; cursor:pointer;">✖</button>
 
             <!-- Step 1 -->
@@ -213,6 +241,18 @@
                 </form>
                 <button onclick="backToStep2()" style="margin-top:20px;">⬅ Back</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Mood Details Modal -->
+    <div id="noteModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5);">
+        <div style="background:#f8f6f3; width:700px; height:700px; margin:auto; position:absolute; top:0; bottom:0; left:0; right:0; border-radius:12px; padding:20px; overflow:auto;">
+            <button onclick="closeNoteModal()" style="position:absolute; top:10px; right:10px; border:none; background:none; font-size:18px; cursor:pointer;">✖</button>
+            <h2 id="noteFeeling"></h2>
+            <p><strong>Positivity:</strong> <span id="notePositivity"></span></p>
+            <p><strong>Date & Time:</strong> <span id="noteDatetime"></span></p>
+            <p><strong>Mini Journal:</strong></p>
+            <p id="noteJournal" style="white-space:pre-wrap;"></p>
         </div>
     </div>
 
@@ -263,10 +303,41 @@
         document.getElementById('step2').style.display = 'block';
     }
 
-    document.querySelector('.btn-track-mood').addEventListener('click', openModal);
+    // document.querySelector('.btn-track-mood').addEventListener('click', openModal);
+
+    // Mood details modal
+    function openNoteModal(data) {
+        document.getElementById('noteFeeling').innerText = "Feeling " + data.feeling;
+        document.getElementById('notePositivity').innerText = data.positivity;
+        document.getElementById('noteDatetime').innerText = new Date(data.datetime).toLocaleString();
+        document.getElementById('noteJournal').innerText = data.journal || "(No journal entry)";
+        document.getElementById('noteModal').style.display = 'block';
+    }
+    function closeNoteModal() {
+        document.getElementById('noteModal').style.display = 'none';
+    }
+
+    // Attach click events after DOM is loaded
+    document.addEventListener("DOMContentLoaded", () => {
+        const trackBtn = document.querySelector('.btn-track-mood');
+        if (trackBtn) {
+            trackBtn.addEventListener('click', openModal);
+        }
+
+        document.querySelectorAll('.mood-clickable').forEach(el => {
+            el.addEventListener('click', () => {
+                openNoteModal({
+                    datetime: el.dataset.datetime,
+                    positivity: el.dataset.positivity,
+                    feeling: el.dataset.feeling,
+                    journal: el.dataset.journal
+                });
+            });
+        });
+    });
 
     // Prevent logout if missed
-    <?php if (($currentHour >= 8 && $currentHour < 10 && !$morning_done) ||
+    <?php if (($currentHour >= 8 && $currentHour < 12 && !$morning_done) ||
             ($currentHour >= 21 && $currentHour < 22 && !$evening_done)): ?>
         document.addEventListener("DOMContentLoaded", () => {
             let logoutBtn = document.querySelector("a[href*='logout'], button.logout");
