@@ -27,9 +27,13 @@ if ($row = $admin_result->fetch_assoc()) {
         background-color: #212934 !important;
     }
 
-    p {
+    .side-nav p {
         color: white;
         margin: 0;
+    }
+
+    .side-nav {
+        background-color: #212934 !important;
     }
 
     .side-nav .nav li.active p {
@@ -43,7 +47,7 @@ if ($row = $admin_result->fetch_assoc()) {
     <ul class="nav">
         <li data-page="StudentAccount/studentaccount.php"><img src="../image/icons/student.png" alt=""><p>Student Accounts</p></li>
         <li data-page="bookings.php"><img src="../image/icons/booking.png" alt=""><p>Bookings</p></li>
-        <li data-page="reviews.php"><img src="../image/icons/reviews.png" alt=""><p>Reviews</p></li>
+        <li data-page="reviews_post_sad.php"><img src="../image/icons/reviews.png" alt=""><p>Reviews</p></li>
         <li data-page="check-in.php"><img src="../image/icons/check-in.png" alt=""><p>Personal Check-In</p></li>
     </ul>
     <div class="spacer"></div>
@@ -93,20 +97,25 @@ if ($row = $admin_result->fetch_assoc()) {
 
         let matched = false;
         tabs.forEach(tab => {
-            const target = tab.getAttribute("data-page"); 
-            if (target && target === currentPage) {
+            const targetFile = tab.getAttribute("data-page").split("/").pop(); // e.g. reviews_post_happy.php
+
+            // Check exact match OR same "base group" like 'reviews'
+            if (currentPage === targetFile || 
+                (targetFile.startsWith("reviews") && currentPage.startsWith("reviews"))) {
                 setActiveTab(tab);
                 matched = true;
             }
 
-            // Add click event
+            // Handle click navigation
             tab.addEventListener("click", () => {
                 setActiveTab(tab);
-                if (target) {
-                    window.location.href = target;
+                const page = tab.getAttribute("data-page");
+                if (page) {
+                    window.location.href = page;
                 }
             });
         });
+
 
         // Default to first tab if no match
         if (!matched && tabs.length > 0) {

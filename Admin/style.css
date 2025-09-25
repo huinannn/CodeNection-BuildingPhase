@@ -48,6 +48,7 @@ body {
     flex-direction: column;
     top: 0;
     z-index: 9999;
+    background-color: var(--white);
 }
 
 .side-nav .logo {
@@ -131,6 +132,248 @@ body {
     margin-bottom: 20px;
 }
 
+/* Reviews */
+
+.page {
+    margin-left: 300px;
+}
+
+.page .head {
+    background-color: var(--white);
+    padding: 10px 20px;
+}
+
+.page .head h1 {
+    font-family: var(--itim);
+    font-weight: 500;
+}
+
+.page .head .title h1 {
+    font-size: 35px;
+}
+
+.page .head .subtitle {
+    display: flex;
+    margin-top: 15px;
+
+}
+
+.page .head .subtitle .vertical {
+    width: 3px;
+    height: 30px;
+    background-color: #d9d9d9;
+    margin: 0 12px;
+    border-radius: 3px;
+}
+
+.page .head .subtitle h1 {
+    font-size: 20px;
+    color: #7f7f7f;
+    cursor: pointer;
+}
+
+.page .head .subtitle h1.active {
+    color: var(--black);
+}
+
+.page .head .subtitle .dark_light input[type="checkbox"] {
+    position: relative;
+    width: 52px;
+    height: 30px;
+    border-radius: 14px;
+    outline: none;
+    border: none;
+    -webkit-appearance: none;
+    background-color: #efefef;
+    transition: .1s;
+    cursor: pointer;
+}
+
+.page .head .subtitle .dark_light input[type="checkbox"]::before {
+    content: "";
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    border-radius: 14px;
+    top: 2px;
+    left: 2px;
+    background-color: var(--white);
+    transition: .3s;
+    box-shadow: 0 3px 8px rgba(0,0,8,0.15);
+}
+
+.page .head .subtitle .dark_light input[type="checkbox"]:checked {
+    background-color: #b07c5c;
+}
+
+.page .head .subtitle .dark_light input[type="checkbox"]:checked::before {
+    left: 23px;
+}
+
+.page .sort {
+    display: flex;
+    flex-direction: row;
+    padding: 0 20px;
+    background-color: var(--white);
+}
+
+.page .sort .each_sort {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 40px;
+    padding: 10px;
+    text-align: center;
+    background-color: #E2C19B;
+    margin: 0 2px 0 0;
+    border-radius: 10px 10px 0 0;
+    cursor: pointer;
+}
+
+.page .sort .each_sort p {
+    margin: 0;
+    font-family: var(--itim);
+    font-weight: 500;
+    color: var(--white);
+}
+
+.page .sort .each_sort.active {
+    background-color: #E79F35;
+}
+
+.page .table {
+    margin: 0 20px;
+    width: 95%;
+    height: calc(100vh - 200px);
+    background-color: #F2ECE5;
+    border-radius: 0 20px 20px 20px;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.page .table .table_header, .page .table .table_data .each_data .content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.page .table .table_header h2 {
+    font-family: var(--itim);
+    font-size: 20px;
+    font-weight: 500;
+    padding: 10px 10px 5px 10px;
+}
+
+.page .table .table_header h2:nth-child(1), .page .table .table_data .each_data .content .each_content:nth-child(1) {
+    width: 50%;
+}
+
+.page .table .table_header h2:nth-child(2), .page .table .table_data .each_data .content .each_content:nth-child(2) {
+    width: 30%;
+}
+
+.page .table .table_header h2:nth-child(3), .page .table .table_data .each_data .content .each_content:nth-child(3) {
+    width: 20%;
+}
+
+.page .table .table_data {
+    overflow-y: auto;
+    height: 90%;
+}
+
+/* For Webkit browsers (Chrome, Edge, Safari) */
+.page .table .table_data::-webkit-scrollbar {
+    width: 8px; /* adjust thickness */
+}
+
+.page .table .table_data::-webkit-scrollbar-track {
+    background: transparent; /* 👈 transparent background */
+    margin: 10px 0;
+}
+
+.page .table .table_data::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,0.3); /* the draggable bar */
+    border-radius: 10px;
+}
+
+.page .table .table_data {
+    scrollbar-width: thin; /* auto | thin | none */
+    scrollbar-color: rgba(0,0,0,0.3) transparent; 
+}
+
+.page .table .table_data {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    box-sizing: border-box;
+}
+
+.page .table .table_data .horizontal {
+    max-width: 1100px;
+    width: 100%;
+}
+
+.page .table .table_data .each_data {
+    width: 100%;
+}
+
+
+.page .table .table_data .each_data .content .each_content {
+    display: flex;
+    align-items: center;
+    column-gap: 24px;
+    padding: 3px 10px;
+}
+
+.page .table .table_data .each_data .content .each_content img {
+    width: 100px;
+    height: 110px;
+    object-fit: fill;
+    border-radius: 20px;
+}
+
+.page .table .table_data .each_data .content .each_content h1 {
+    font-family: var(--itim);
+    font-weight: 500;
+    font-size: 12px;
+    text-align: justify;
+}
+
+.page .table .table_data .each_data .content .each_content p {
+    margin: 0;
+    font-size: 10px;
+    text-align: justify;
+}
+
+.page .table .table_data .each_data .content .each_content h3 {
+    font-size: 12px;
+    font-weight: 400;
+    text-align: justify;
+    padding: 0 5px;
+}
+
+.page .table .table_data .each_data .content .each_content.button {
+    display: block;
+}
+
+.page .table .table_data .each_data .content .each_content.button .btn {
+    width: 100px;
+    height: 35px;
+    border-radius: 30px;
+    background-color: #08C97E;
+    color: var(--white);
+    cursor: pointer;
+}
+
+.page .table .table_data .each_data .content .each_content.button .btn.done {
+    background-color: #E79F35;
+    cursor: auto;
+}
+
+.page .table .table_data .each_data .content .each_content.button  #reject {
+    background-color: #FF6969;
+}
 
 @media(max-width: 1000px) {
     body {
