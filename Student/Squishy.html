@@ -1,121 +1,213 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Squishy Toy — Random Plush</title>
-  <style>
-    :root{--bg:#f7f3ff;--card:#fff;--accent:#ff8fab}
-    html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial}
-    body{display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,var(--bg),#fff);}
-    .stage{width:100%;max-width:720px;height:90vh;background:var(--card);border-radius:18px;box-shadow:0 12px 30px rgba(30,20,60,0.08);position:relative;overflow:hidden}
-    header{position:absolute;left:16px;top:12px;z-index:30;display:flex;gap:10px;align-items:center}
-    header h1{margin:0;font-size:16px;color:#3b2b4b}
-    .hint{position:absolute;right:16px;top:12px;color:#6b5a79;font-size:13px}
-    canvas{width:100%;height:100%;display:block}
-    .ui{position:absolute;left:16px;bottom:16px;z-index:30;display:flex;gap:8px}
-    button{background:var(--accent);border:none;color:white;padding:10px 14px;border-radius:12px;font-weight:600;box-shadow:0 6px 16px rgba(255,139,171,0.18);cursor:pointer}
-    .small{padding:8px 10px;border-radius:10px;font-weight:600}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deformable Squishy Game</title>
+<style>
+     @import url('https://fonts.googleapis.com/css2?family=Itim&display=swap');
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: #f0f0f0;
+    font-family: Arial, sans-serif;
+  }
+
+  #gameArea {
+    position: relative;
+    width: 400px;
+    height: 400px;
+    background: #fff;
+    border: 2px solid #ccc;
+    border-radius: 20px;
+    overflow: hidden;
+  }
+
+  .squishy {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: #ff7f7f;
+    cursor: grab;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    transition: border-radius 0.2s;
+  }
+
+  #controls {
+    margin-top: 20px;
+  }
+
+  input[type="color"] {
+    padding: 5px;
+  }
+
+  button {
+    padding: 5px 10px;
+    margin-left: 5px;
+  }
+</style>
 </head>
 <body>
-  <div class="stage" id="stage">
-    <header>
-      <h1>Squishy Toy — Drag & Throw</h1>
-    </header>
-    <div class="hint">Hold & drag to deform • Throw to toss</div>
-    <canvas id="c"></canvas>
-    <div class="ui">
-      <button id="reset">Reset</button>
-      <button id="toggleSound" class="small">Sound: On</button>
-    </div>
-  </div>
+
+<h2 style="font-family:itim;">Squish & Bounce</h2>
+<div id="gameArea"></div>
+
+<div id="controls" style="font-family:itim;">
+  <input type="color" id="colorPicker" value="#ff7f7f">
+  <button id="changeShape" style="font-family:itim;">Toggle Shape</button>
+  <button id="addSquishy" style="font-family:itim;">Add Squishy</button>
+  <button id="removeSquishy" style="font-family:itim;">-1</button>
+  <button id="clearSquishies" style="font-family:itim;">Clear All</button>
+</div>
 
 <script>
-const canvas = document.getElementById('c');
-const ctx = canvas.getContext('2d');
-let DPR = Math.min(window.devicePixelRatio || 1, 2);
-function resize(){canvas.width = canvas.clientWidth*DPR; canvas.height = canvas.clientHeight*DPR;}
-resize();
-window.addEventListener('resize', ()=>{resize();});
+const gameArea = document.getElementById('gameArea');
+const colorPicker = document.getElementById('colorPicker');
+const changeShapeBtn = document.getElementById('changeShape');
+const addSquishyBtn = document.getElementById('addSquishy');
+const removeSquishyBtn = document.getElementById('removeSquishy');
+const clearSquishiesBtn = document.getElementById('clearSquishies');
 
-// Toy options
-const shapes = ['circle','square','star','heart','blob'];
-const skins = ['Labubu','PaoPao','Plush'];
-function randomColor(){ return '#'+Math.floor(Math.random()*16777215).toString(16); }
-function randomChoice(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+let squishies = []; // Track all squishies
+let currentSquishy = null;
 
-// Toy state
-const toy = {
-  x: canvas.width/2, y: canvas.height*0.6, vx:0, vy:0, r: Math.min(canvas.width,canvas.height)/8, angle:0,
-  deformX:1, deformY:1, shape:'circle', skin:'Labubu', color1:'#ffd9e4', color2:'#ff9db2'
-};
+function createSquishy() {
+  const squishy = document.createElement('div');
+  squishy.classList.add('squishy');
+  squishy.style.left = Math.random() * (gameArea.clientWidth - 100) + 'px';
+  squishy.style.top = Math.random() * (gameArea.clientHeight - 100) + 'px';
 
-let touching=false, startPos=null, lastPos=null, soundOn=true;
+  let isDragging = false;
+  let startX, startY, startWidth, startHeight, startLeft, startTop;
+  let velocityX = 0, velocityY = 0;
 
-const AudioCtx = window.AudioContext || window.webkitAudioContext;
-const ACTX = AudioCtx ? new AudioCtx() : null;
-function playSquish(intensity=0.7){
-  if(!ACTX || !soundOn) return;
-  const now = ACTX.currentTime;
-  const o = ACTX.createOscillator();
-  const g = ACTX.createGain();
-  o.type='triangle'; o.frequency.setValueAtTime(200+Math.random()*120, now);
-  g.gain.value=0.0001;
-  g.gain.exponentialRampToValueAtTime(0.25*intensity, now+0.01);
-  g.gain.exponentialRampToValueAtTime(0.0001, now+0.45);
-  o.connect(g); g.connect(ACTX.destination);
-  o.start(now); o.stop(now+0.5);
-}
+  squishy.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    startWidth = squishy.offsetWidth;
+    startHeight = squishy.offsetHeight;
+    startLeft = squishy.offsetLeft;
+    startTop = squishy.offsetTop;
+    squishy.style.cursor = 'grabbing';
+    velocityX = 0;
+    velocityY = 0;
+  });
 
-function toLocal(e){const rect=canvas.getBoundingClientRect(); if(e.touches)e=e.touches[0]; return {x:(e.clientX-rect.left)*DPR, y:(e.clientY-rect.top)*DPR};}
+  document.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
 
-canvas.addEventListener('pointerdown', (ev)=>{canvas.setPointerCapture(ev.pointerId); touching=true; startPos=toLocal(ev); lastPos=startPos;});
-canvas.addEventListener('pointermove', (ev)=>{if(!touching) return; const p=toLocal(ev); lastPos=p; const dx=p.x-toy.x, dy=p.y-toy.y, dist=Math.hypot(dx,dy); if(dist<toy.r*1.2){ toy.deformX *= 1-dx/(toy.r*10); toy.deformY *= 1-dy/(toy.r*10); toy.deformX=Math.max(0.5,Math.min(1.5,toy.deformX)); toy.deformY=Math.max(0.5,Math.min(1.5,toy.deformY)); playSquish(0.8); }});
-canvas.addEventListener('pointerup', (ev)=>{canvas.releasePointerCapture(ev.pointerId); if(!touching) return; touching=false; const end=lastPos||toLocal(ev); if(startPos){ const dx=end.x-startPos.x, dy=end.y-startPos.y; toy.vx=dx/12; toy.vy=dy/12; }});
+    // Stretch/compress dynamically
+    squishy.style.width = Math.max(50, startWidth + dx) + 'px';
+    squishy.style.height = Math.max(50, startHeight + dy) + 'px';
 
-const GRAV=0.35*DPR, FRICTION=0.995;
-function update(){
-  toy.r=Math.min(canvas.width,canvas.height)/8;
-  toy.vy+=GRAV; toy.vx*=FRICTION; toy.vy*=0.999;
-  toy.x+=toy.vx; toy.y+=toy.vy; toy.angle+=toy.vx*0.01;
-  if(toy.y+toy.r*toy.deformY>canvas.height){toy.y=canvas.height-toy.r*toy.deformY; toy.vy*=-0.55; toy.vx*=0.9; playSquish(Math.min(1,Math.abs(toy.vy)/30));}
-  if(toy.x-toy.r*toy.deformX<0){toy.x=toy.r*toy.deformX; toy.vx*=-0.6;}
-  if(toy.x+toy.r*toy.deformX>canvas.width){toy.x=canvas.width-toy.r*toy.deformX; toy.vx*=-0.6;}
-}
+    // Move slightly with drag
+    squishy.style.left = startLeft + dx/2 + 'px';
+    squishy.style.top = startTop + dy/2 + 'px';
 
-function drawToy(){
-  const x=toy.x, y=toy.y, r=toy.r;
-  ctx.save(); ctx.translate(x,y); ctx.rotate(toy.angle); ctx.scale(toy.deformX,toy.deformY);
-  const g=ctx.createLinearGradient(-r,-r,r,r); g.addColorStop(0,toy.color1); g.addColorStop(1,toy.color2);
-  ctx.fillStyle=g;
-  switch(toy.shape){
-    case 'circle': ctx.beginPath(); ctx.arc(0,0,r,0,Math.PI*2); ctx.fill(); break;
-    case 'square': ctx.fillRect(-r,-r,2*r,2*r); break;
-    case 'star': drawStar(ctx,0,0,r,5); break;
-    case 'heart': drawHeart(ctx,0,0,r); break;
-    case 'blob': drawBlob(ctx,0,0,r); break;
+    velocityX = dx / 2;
+    velocityY = dy / 2;
+  });
+
+  document.addEventListener('mouseup', () => {
+    if (isDragging) {
+      isDragging = false;
+      squishy.style.cursor = 'grab';
+      startSquishyReturn(squishy, velocityX, velocityY);
+    }
+  });
+
+  function startSquishyReturn(squishy, vx, vy) {
+    let width = parseFloat(squishy.style.width);
+    let height = parseFloat(squishy.style.height);
+    let left = parseFloat(squishy.style.left);
+    let top = parseFloat(squishy.style.top);
+    const originalWidth = 100;
+    const originalHeight = 100;
+    const damping = 0.9;
+    const elasticity = 0.2;
+
+    function animate() {
+      width += (originalWidth - width) * elasticity;
+      height += (originalHeight - height) * elasticity;
+
+      squishy.style.width = width + 'px';
+      squishy.style.height = height + 'px';
+
+      left += vx;
+      top += vy;
+
+      if (left < 0) { left = 0; vx = -vx*damping; }
+      if (top < 0) { top = 0; vy = -vy*damping; }
+      if (left + width > gameArea.clientWidth) { left = gameArea.clientWidth - width; vx = -vx*damping; }
+      if (top + height > gameArea.clientHeight) { top = gameArea.clientHeight - height; vy = -vy*damping; }
+
+      squishy.style.left = left + 'px';
+      squishy.style.top = top + 'px';
+
+      vx *= damping;
+      vy *= damping;
+
+      if (Math.abs(originalWidth - width) > 0.5 || Math.abs(originalHeight - height) > 0.5 || Math.abs(vx) > 0.1 || Math.abs(vy) > 0.1) {
+        requestAnimationFrame(animate);
+      } else {
+        squishy.style.width = originalWidth + 'px';
+        squishy.style.height = originalHeight + 'px';
+      }
+    }
+
+    animate();
   }
-  ctx.restore();
+
+  gameArea.appendChild(squishy);
+  squishies.push(squishy);
+  currentSquishy = squishy;
+  return squishy;
 }
 
-function drawStar(ctx,x,y,r,points){ctx.beginPath(); for(let i=0;i<2*points;i++){const angle=i*Math.PI/points; const rad=i%2===0?r:r/2; ctx.lineTo(x+Math.cos(angle)*rad,y+Math.sin(angle)*rad);} ctx.closePath(); ctx.fill();}
-function drawHeart(ctx,x,y,r){ctx.beginPath();ctx.moveTo(x, y+r/4);ctx.bezierCurveTo(x+r/2,y-r/2, x+r,y+r/3, x, y+r);ctx.bezierCurveTo(x-r,y+r/3, x-r/2,y-r/2, x,y+r/4); ctx.fill();}
-function drawBlob(ctx,x,y,r){ctx.beginPath(); ctx.moveTo(x+r*0.5,y-r*0.5); ctx.quadraticCurveTo(x+r,y, x+r*0.3,y+r*0.6); ctx.quadraticCurveTo(x, y+r*0.3, x-r*0.5,y+r*0.5); ctx.quadraticCurveTo(x-r*0.6, y, x-r*0.3,y-r*0.6); ctx.quadraticCurveTo(x, y-r*0.3, x+r*0.5,y-r*0.5); ctx.fill();}
+// Initial squishy
+createSquishy();
 
-function render(){ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle='#fff'; ctx.fillRect(0,0,canvas.width,canvas.height);
-  const hg=ctx.createLinearGradient(0,0,0,canvas.height); hg.addColorStop(0,'rgba(255,245,250,0.6)'); hg.addColorStop(1,'rgba(250,255,255,0.4)'); ctx.fillStyle=hg; ctx.fillRect(0,0,canvas.width,canvas.height);
-  drawToy();}
-function tick(){update(); render(); requestAnimationFrame(tick);}
+// Change color
+colorPicker.addEventListener('input', () => {
+  if (currentSquishy) currentSquishy.style.background = colorPicker.value;
+});
 
-function randomToy(){ toy.shape=randomChoice(shapes); toy.skin=randomChoice(skins); toy.color1=randomColor(); toy.color2=randomColor(); toy.deformX=toy.deformY=1; toy.x=canvas.width/2; toy.y=canvas.height*0.55; toy.vx=toy.vy=toy.angle=0;}
-randomToy();
-requestAnimationFrame(tick);
+// Toggle shape
+changeShapeBtn.addEventListener('click', () => {
+  if (!currentSquishy) return;
+  currentSquishy.style.borderRadius = currentSquishy.style.borderRadius === '50%' ? '20%' : '50%';
+});
 
-document.getElementById('reset').addEventListener('click', ()=>{ randomToy(); });
-const sndBtn=document.getElementById('toggleSound');
-sndBtn.addEventListener('click',()=>{ soundOn=!soundOn; sndBtn.textContent='Sound: '+(soundOn?'On':'Off'); if(soundOn && ACTX && ACTX.state==='suspended') ACTX.resume();});
-canvas.addEventListener('touchstart', e=>{ e.preventDefault(); }, {passive:false});
+// Add squishy
+addSquishyBtn.addEventListener('click', () => {
+  createSquishy();
+});
+
+// Remove last squishy (-1)
+removeSquishyBtn.addEventListener('click', () => {
+  if (squishies.length === 0) return;
+  const last = squishies.pop();
+  gameArea.removeChild(last);
+  currentSquishy = squishies[squishies.length - 1] || null;
+});
+
+// Clear all squishies
+clearSquishiesBtn.addEventListener('click', () => {
+  squishies.forEach(s => gameArea.removeChild(s));
+  squishies = [];
+  currentSquishy = null;
+});
 </script>
+
 </body>
 </html>

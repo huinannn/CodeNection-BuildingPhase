@@ -96,6 +96,8 @@ $query->close();
     <title>Counselor Appointment Management</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="booking.css" />
+    <link rel="icon" href="../image/favicon.png" type="image/x-icon" />
+
     <style>
         table.calendar { border-collapse: collapse; width: 100%; max-width:700px; margin:20px 0; }
         table.calendar th, table.calendar td { border:1px solid #ccc; padding:8px; text-align:center; width:14%; }
