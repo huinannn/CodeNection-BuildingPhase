@@ -107,52 +107,144 @@ if(isset($_GET['counselor']) && isset($_GET['booking_date'])){
 <head>
     <meta charset="UTF-8">
     <title>Book a Session</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Itim&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+        :root {
+            --primary: #e8b45e;
+            --white: #ffffff;
+            --black: #000000;
+            --max-width: 480px;
+            --itim: 'Itim', cursive;
+            --roboto: 'Roboto', sans-serif;
+        }
+
+        * { box-sizing: border-box; margin:0; padding:0; }
+
+        body {
+            font-family: var(--roboto);
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: var(--max-width);
+            width: 100%;
+            background: var(--white);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .back-arrow {
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        h2 {
+            font-family: var(--itim);
+            font-size: 1.6em;
+            color: var(--primary);
+        }
+
+        form { display: flex; flex-direction: column; }
+
+        label {
+            margin: 10px 0 5px;
+            font-weight: 500;
+        }
+
+        select, input[type="date"], textarea {
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 1em;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        textarea { resize: none; }
+
+        button {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 12px;
+            font-size: 1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover { background-color: #d19d4e; }
+
+        p { margin-top: 10px; }
+        p[style*="color:green"], p[style*="color:red"] { font-weight: bold; }
+
+        @media screen and (max-width: 480px) {
+            .container { padding: 15px; }
+        }
+    </style>
 </head>
 <body>
-<h2>Book a Counselling Session</h2>
+<div class="container">
+    <div class="header">
+        <img src="../image/icons/back.png" class="back-arrow" style="width:15px;height:15px;"alt="Back" onclick="window.history.back()">
+        <h2>Book a Counselling Session</h2>
+    </div>
 
-<?php if(isset($success)) echo "<p style='color:green;'>$success</p>"; ?>
-<?php if(isset($error)) echo "<p style='color:red;'>$error</p>"; ?>
+    <?php if(isset($success)) echo "<p style='color:green;'>$success</p>"; ?>
+    <?php if(isset($error)) echo "<p style='color:red;'>$error</p>"; ?>
 
-<!-- Select Counselor and Date -->
-<form method="GET">
-    <label for="counselor">Select Counsellor:</label>
-    <select name="counselor" id="counselor" required onchange="this.form.submit()">
-        <option value="">Select</option>
-        <?php foreach($counselors as $c): ?>
-            <option value="<?= $c['counselor_id'] ?>" <?= (isset($_GET['counselor']) && $_GET['counselor']==$c['counselor_id']) ? 'selected' : '' ?>>
-                <?= $c['counselor_name'] ?>
-            </option>
-        <?php endforeach; ?>
-    </select>
+    <!-- Select Counselor and Date -->
+    <form method="GET">
+        <label for="counselor">Select Counsellor:</label>
+        <select name="counselor" id="counselor" required onchange="this.form.submit()">
+            <option value="">Select</option>
+            <?php foreach($counselors as $c): ?>
+                <option value="<?= $c['counselor_id'] ?>" <?= (isset($_GET['counselor']) && $_GET['counselor']==$c['counselor_id']) ? 'selected' : '' ?>>
+                    <?= $c['counselor_name'] ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
 
-    <label for="booking_date">Select Date:</label>
-    <input type="date" name="booking_date" id="booking_date" value="<?= isset($_GET['booking_date']) ? $_GET['booking_date'] : '' ?>" min="<?= date('Y-m-d') ?>" required onchange="this.form.submit()">
-</form>
+        <label for="booking_date">Select Date:</label>
+        <input type="date" name="booking_date" id="booking_date" value="<?= isset($_GET['booking_date']) ? $_GET['booking_date'] : '' ?>" min="<?= date('Y-m-d') ?>" required onchange="this.form.submit()">
+    </form>
 
-<!-- Available Slots and Book Now -->
-<?php if(!empty($available_slots) && isset($_GET['counselor']) && isset($_GET['booking_date'])): ?>
-<form method="POST">
-    <input type="hidden" name="counselor" value="<?= $_GET['counselor'] ?>">
-    <input type="hidden" name="booking_date" value="<?= $_GET['booking_date'] ?>">
+    <!-- Available Slots and Book Now -->
+    <?php if(!empty($available_slots) && isset($_GET['counselor']) && isset($_GET['booking_date'])): ?>
+    <form method="POST">
+        <input type="hidden" name="counselor" value="<?= $_GET['counselor'] ?>">
+        <input type="hidden" name="booking_date" value="<?= $_GET['booking_date'] ?>">
 
-    <label for="start_time">Select Time Slot:</label>
-    <select name="start_time" id="start_time" required>
-        <option value="">Select</option>
-        <?php foreach($available_slots as $start => $label): ?>
-            <option value="<?= $start ?>"><?= $label ?></option>
-        <?php endforeach; ?>
-    </select>
-    <br><br>
+        <label for="start_time">Select Time Slot:</label>
+        <select name="start_time" id="start_time" required>
+            <option value="">Select</option>
+            <?php foreach($available_slots as $start => $label): ?>
+                <option value="<?= $start ?>"><?= $label ?></option>
+            <?php endforeach; ?>
+        </select>
 
-    <label for="remark">Remark/Message:</label>
-    <textarea name="remark" id="remark" rows="4" cols="50" required></textarea>
-    <br><br>
+        <label for="remark">Remark/Message:</label>
+        <textarea name="remark" id="remark" rows="4" required></textarea>
 
-    <button type="submit">Book Now</button>
-</form>
-<?php elseif(isset($_GET['counselor']) && isset($_GET['booking_date'])): ?>
-<p>No available time slots for this counselor on selected date.</p>
-<?php endif; ?>
+        <button type="submit">Book Now</button>
+    </form>
+    <?php elseif(isset($_GET['counselor']) && isset($_GET['booking_date'])): ?>
+        <p>No available time slots for this counselor on selected date.</p>
+    <?php endif; ?>
+</div>
 </body>
 </html>
