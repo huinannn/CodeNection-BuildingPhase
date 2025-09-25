@@ -20,9 +20,9 @@ if ($type === "comment") {
     $comment_message = trim($_POST['comment_message'] ?? '');
 
     if ($comment_message !== '') {
-        $stmt = $dbConn->prepare("INSERT INTO comment (confession_id, comment_message, comment_date_time, comment_status) 
-                                VALUES (?, ?, NOW(), 'pending')");
-        $stmt->bind_param("ss", $confession_id, $comment_message);
+        $stmt = $dbConn->prepare("INSERT INTO comment (confession_id, comment_message, comment_date_time, student_id, comment_status) 
+                                VALUES (?, ?, NOW(), ?, 'pending')");
+        $stmt->bind_param("sss", $confession_id, $comment_message, $student_id);
 
         if ($stmt->execute()) {
             echo json_encode(["status" => "success", "message" => "Your comment has been submitted and is awaiting admin approval."]);
@@ -42,9 +42,9 @@ if ($type === "reply") {
     $reply_message = trim($_POST['reply_message'] ?? '');
 
     if ($reply_message !== '') {
-        $stmt = $dbConn->prepare("INSERT INTO reply (comment_id, reply_message, reply_date_time, reply_status) 
-                                VALUES (?, ?, NOW(), 'pending')");
-        $stmt->bind_param("ss", $comment_id, $reply_message);
+        $stmt = $dbConn->prepare("INSERT INTO reply (comment_id, reply_message, reply_date_time, student_id, reply_status) 
+                                VALUES (?, ?, NOW(), ?, 'pending')");
+        $stmt->bind_param("sss", $comment_id, $reply_message, $student_id);
 
         if ($stmt->execute()) {
             echo json_encode(["status" => "success", "message" => "Your reply has been submitted and is awaiting admin approval."]);
