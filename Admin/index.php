@@ -30,6 +30,10 @@
     <link rel="stylesheet" href="Login/login.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 <body>
+    <div class="main-content" style="display: none;"> 
+        This site is not available on small screens 📱 (Only available on 1000px screens & above) 
+    </div>
+
     <div class="header-bar"></div>
 
     <div class="login-container">
@@ -65,5 +69,6 @@
         </div>
     </div>
     <script src="Login/login.js"></script>
+    <script src="StudentAccount/studentaccount.js"></script>
 </body>
 </html>

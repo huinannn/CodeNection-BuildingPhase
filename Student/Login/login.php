@@ -7,29 +7,39 @@
     $prev_student_id = $_SESSION['prev_student_id'] ?? '';
     $prev_school_id = $_SESSION['prev_school_id'] ?? '';
     $prev_password = $_SESSION['prev_password'] ?? '';
-
     unset($_SESSION['error'], $_SESSION['success'], $_SESSION['prev_student_id'], $_SESSION['prev_school_id'], $_SESSION['prev_password']);
 
     $schools = mysqli_query($dbConn, "SELECT * FROM school");
 
-    if(isset($_POST['login'])) {
-        $student_id = mysqli_real_escape_string($dbConn, trim($_POST['student_id']));
-        $student_password = mysqli_real_escape_string($dbConn, trim($_POST['student_password']));
+    if (isset($_POST['login'])) {
+        $student_id = trim($_POST['student_id']);
+        $student_password = trim($_POST['student_password']);
         $school_id = (int)$_POST['school_id'];
 
-        $query = "SELECT * FROM student WHERE student_id='$student_id' AND student_password='$student_password' AND school_id=$school_id";
-        $result = mysqli_query($dbConn, $query);
+        $query = "SELECT * FROM student WHERE student_id=? AND student_password=? AND school_id=?";
+        $stmt = $dbConn->prepare($query);
+        $stmt->bind_param("ssi", $student_id, $student_password, $school_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-        if($result && mysqli_num_rows($result) > 0) {
-            $student = mysqli_fetch_assoc($result);
+        if ($result && $result->num_rows > 0) {
+            $student = $result->fetch_assoc();
+
             date_default_timezone_set('Asia/Kuala_Lumpur');
-            $date = date('Y-m-d'); $time = date('H:i:s');
+            $date = date('Y-m-d');
+            $time = date('H:i:s');
 
-            $update_sql = "UPDATE student SET last_login_time='$time', last_login_date='$date' WHERE student_id='".$student['student_id']."'";
-            mysqli_query($dbConn, $update_sql);
+            $update_sql = "UPDATE student 
+                        SET last_login_time=?, last_login_date=?, student_account_status='active' 
+                        WHERE student_id=?";
+            $update_stmt = $dbConn->prepare($update_sql);
+            $update_stmt->bind_param("sss", $time, $date, $student['student_id']);
+            $update_stmt->execute();
 
-            $insert_sql = "INSERT INTO login (login_date, login_time, student_id) VALUES ('$date', '$time', '$student_id')";
-            mysqli_query($dbConn, $insert_sql);
+            $insert_sql = "INSERT INTO login (login_date, login_time, student_id) VALUES (?, ?, ?)";
+            $insert_stmt = $dbConn->prepare($insert_sql);
+            $insert_stmt->bind_param("sss", $date, $time, $student['student_id']);
+            $insert_stmt->execute();
 
             $_SESSION['student_id'] = $student['student_id'];
             $_SESSION['student_name'] = $student['student_name'];
@@ -39,12 +49,11 @@
             header("Location: login.php");
             exit();
         } else {
-            $_SESSION['prev_student_id'] = $_POST['student_id'];
-            $_SESSION['prev_school_id'] = $_POST['school_id'];
-            $_SESSION['prev_password'] = $_POST['student_password'];
-            $_SESSION['error'] = "Your student ID or password is incorrect!";
-
-            header("Location: tryagain.php");
+            $_SESSION['error'] = "Invalid credentials or school.";
+            $_SESSION['prev_student_id'] = $student_id;
+            $_SESSION['prev_school_id'] = $school_id;
+            $_SESSION['prev_password'] = $student_password;
+            header("Location: login.php");
             exit();
         }
     }

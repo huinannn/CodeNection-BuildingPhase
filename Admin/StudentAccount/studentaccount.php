@@ -50,9 +50,14 @@
         $students[] = [
             'student_id' => $student_id,
             'student_name' => $row['student_name'],
-            'student_account_status' => $status, 
+            'student_account_status' => $status,
             'lastLogin' => $lastLogin
         ];
+
+        $update_sql = "UPDATE student SET student_account_status = ? WHERE student_id = ?";
+        $update_stmt = $dbConn->prepare($update_sql);
+        $update_stmt->bind_param("ss", $status, $student_id);
+        $update_stmt->execute();
     }
 ?>
 
