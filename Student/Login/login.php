@@ -53,7 +53,7 @@
             $_SESSION['prev_student_id'] = $student_id;
             $_SESSION['prev_school_id'] = $school_id;
             $_SESSION['prev_password'] = $student_password;
-            header("Location: login.php");
+            header("Location: tryagain.php");
             exit();
         }
     }
