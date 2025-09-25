@@ -255,7 +255,7 @@ if(isset($_SESSION['student_id']) && $_GET['id']) {
             </div>
         </div>
         <div class="date">
-            <?php $date = date("Y-n-j g:i A", strtotime($unformatted_date));?>
+            <?php $date = date("Y-n-j hi A", strtotime($unformatted_date));?>
             <p><?php echo $date ?></p>
             <div class="horizontal"></div>
         </div>
@@ -298,7 +298,7 @@ if(isset($_SESSION['student_id']) && $_GET['id']) {
                         <div class="spacer"></div>
                         <?php 
                             $unformatted_comment_date = $comment['comment_date_time'];
-                            $comment_date =  date("Y-n-j g:i A", strtotime($unformatted_comment_date));
+                            $comment_date =  date("Y-n-j hi A", strtotime($unformatted_comment_date));
                         ?>
                         <p><?php echo $comment_date ?></p>
                     </div>
@@ -324,7 +324,7 @@ if(isset($_SESSION['student_id']) && $_GET['id']) {
                             <p class="rply_msg"><?php echo $reply['reply_message'] ?></p>
                             <?php 
                                 $unformatted_reply_date = $reply['reply_date_time'];
-                                $reply_date =  date("Y-n-j g:i A", strtotime($unformatted_reply_date));
+                                $reply_date =  date("Y-n-j hi A", strtotime($unformatted_reply_date));
                             ?>
                             <p class="date"><?php echo $reply_date ?></p>
                         </div>
