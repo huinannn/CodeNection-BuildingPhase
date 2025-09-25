@@ -23,15 +23,16 @@
     }
 
     html, body {
-      width: 100%;
-      height: 100%;
-      overflow: hidden; /* 🚫 no scrolling */
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: white; /* center wrapper background */
-    }
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: none;
+}
 
+.page-wrapper {
+  overflow: hidden;
+}
     /* Main wrapper limited to 480px */
     .page-wrapper {
       width: 100%;
@@ -142,6 +143,7 @@
       box-shadow: 0 4px 8px rgba(0,0,0,0.3);
       transition: transform 0.2s;
       z-index: 2;
+      color: white;
     }
 
     #new-card:hover {
@@ -395,6 +397,9 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       initScratch();
     });
+    document.body.addEventListener('touchmove', function(e){
+    e.preventDefault();
+}, { passive: false });
 
     pickQuote();
     initScratch();

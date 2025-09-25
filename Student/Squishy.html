@@ -2,26 +2,33 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Deformable Squishy Game</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Itim&display=swap');
+
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* prevent scrolling */
+  height: 100%;
+}
 
 body {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  height: 100vh;
   background: #f0f0f0;
   font-family: Arial, sans-serif;
   padding-top: 20px;
+  touch-action: none; /* prevent touch scroll */
 }
 
 #gameArea {
   position: relative;
   width: 400px;
-  height: 400px;
+  height: 650px;
   background: #fff;
   border: 2px solid #ccc;
   border-radius: 20px;
@@ -35,6 +42,7 @@ body {
   padding: 5px 15px;
   font-family: itim, cursive;
   background-color: #e8b45e;
+  color: white;
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -53,6 +61,7 @@ body {
   justify-content: center;
   user-select: none;
   transition: border-radius 0.2s;
+  touch-action: none; /* prevent mobile scrolling */
 }
 
 #controls {
@@ -76,7 +85,6 @@ button {
 
 <h2 style="font-family:itim;">Squish & Bounce</h2>
 <div id="gameArea">
-  <!-- Back button on top of game box -->
   <button id="backBtn" onclick="window.location.href='leisure.php'">Back</button>
 </div>
 
@@ -99,92 +107,54 @@ const clearSquishiesBtn = document.getElementById('clearSquishies');
 let squishies = [];
 let currentSquishy = null;
 
+// --- Dragging state ---
+let isDragging = false;
+let dragSquishy = null;
+let startX, startY, startWidth, startHeight, startLeft, startTop;
+let velocityX = 0, velocityY = 0;
+
+// --- Prevent scrolling while dragging ---
+document.addEventListener('touchmove', e => { 
+  if(isDragging) e.preventDefault(); 
+}, { passive: false });
+
+// --- Global move/up events ---
+function handleMove(x, y){
+  if (!isDragging || !dragSquishy) return;
+  const dx = x - startX;
+  const dy = y - startY;
+
+  dragSquishy.style.width = Math.max(50, startWidth + dx) + 'px';
+  dragSquishy.style.height = Math.max(50, startHeight + dy) + 'px';
+  dragSquishy.style.left = startLeft + dx/2 + 'px';
+  dragSquishy.style.top = startTop + dy/2 + 'px';
+
+  velocityX = dx / 2;
+  velocityY = dy / 2;
+}
+
+function handleUp(){
+  if (!isDragging || !dragSquishy) return;
+  isDragging = false;
+  dragSquishy.style.cursor = 'grab';
+  startSquishyReturn(dragSquishy, velocityX, velocityY);
+  dragSquishy = null;
+}
+
+document.addEventListener('mousemove', e => handleMove(e.clientX, e.clientY));
+document.addEventListener('mouseup', handleUp);
+document.addEventListener('touchmove', e => handleMove(e.touches[0].clientX, e.touches[0].clientY));
+document.addEventListener('touchend', handleUp);
+
+// --- Squishy creation ---
 function createSquishy() {
   const squishy = document.createElement('div');
   squishy.classList.add('squishy');
   squishy.style.left = Math.random() * (gameArea.clientWidth - 100) + 'px';
   squishy.style.top = Math.random() * (gameArea.clientHeight - 100) + 'px';
 
-  let isDragging = false;
-  let startX, startY, startWidth, startHeight, startLeft, startTop;
-  let velocityX = 0, velocityY = 0;
-
-  squishy.addEventListener('mousedown', (e) => {
-    isDragging = true;
-    startX = e.clientX;
-    startY = e.clientY;
-    startWidth = squishy.offsetWidth;
-    startHeight = squishy.offsetHeight;
-    startLeft = squishy.offsetLeft;
-    startTop = squishy.offsetTop;
-    squishy.style.cursor = 'grabbing';
-    velocityX = 0;
-    velocityY = 0;
-  });
-
-  document.addEventListener('mousemove', (e) => {
-    if (!isDragging) return;
-    const dx = e.clientX - startX;
-    const dy = e.clientY - startY;
-
-    squishy.style.width = Math.max(50, startWidth + dx) + 'px';
-    squishy.style.height = Math.max(50, startHeight + dy) + 'px';
-    squishy.style.left = startLeft + dx/2 + 'px';
-    squishy.style.top = startTop + dy/2 + 'px';
-
-    velocityX = dx / 2;
-    velocityY = dy / 2;
-  });
-
-  document.addEventListener('mouseup', () => {
-    if (isDragging) {
-      isDragging = false;
-      squishy.style.cursor = 'grab';
-      startSquishyReturn(squishy, velocityX, velocityY);
-    }
-  });
-
-  function startSquishyReturn(squishy, vx, vy) {
-    let width = parseFloat(squishy.style.width);
-    let height = parseFloat(squishy.style.height);
-    let left = parseFloat(squishy.style.left);
-    let top = parseFloat(squishy.style.top);
-    const originalWidth = 100;
-    const originalHeight = 100;
-    const damping = 0.9;
-    const elasticity = 0.2;
-
-    function animate() {
-      width += (originalWidth - width) * elasticity;
-      height += (originalHeight - height) * elasticity;
-
-      squishy.style.width = width + 'px';
-      squishy.style.height = height + 'px';
-
-      left += vx;
-      top += vy;
-
-      if (left < 0) { left = 0; vx = -vx*damping; }
-      if (top < 0) { top = 0; vy = -vy*damping; }
-      if (left + width > gameArea.clientWidth) { left = gameArea.clientWidth - width; vx = -vx*damping; }
-      if (top + height > gameArea.clientHeight) { top = gameArea.clientHeight - height; vy = -vy*damping; }
-
-      squishy.style.left = left + 'px';
-      squishy.style.top = top + 'px';
-
-      vx *= damping;
-      vy *= damping;
-
-      if (Math.abs(originalWidth - width) > 0.5 || Math.abs(originalHeight - height) > 0.5 || Math.abs(vx) > 0.1 || Math.abs(vy) > 0.1) {
-        requestAnimationFrame(animate);
-      } else {
-        squishy.style.width = originalWidth + 'px';
-        squishy.style.height = originalHeight + 'px';
-      }
-    }
-
-    animate();
-  }
+  squishy.addEventListener('mousedown', e => startDrag(e.clientX, e.clientY, squishy));
+  squishy.addEventListener('touchstart', e => startDrag(e.touches[0].clientX, e.touches[0].clientY, squishy));
 
   gameArea.appendChild(squishy);
   squishies.push(squishy);
@@ -192,6 +162,66 @@ function createSquishy() {
   return squishy;
 }
 
+// --- Start dragging ---
+function startDrag(x, y, squishy){
+  isDragging = true;
+  dragSquishy = squishy;
+  startX = x;
+  startY = y;
+  startWidth = squishy.offsetWidth;
+  startHeight = squishy.offsetHeight;
+  startLeft = squishy.offsetLeft;
+  startTop = squishy.offsetTop;
+  squishy.style.cursor = 'grabbing';
+  velocityX = 0;
+  velocityY = 0;
+  currentSquishy = squishy;
+}
+
+// --- Bounce animation ---
+function startSquishyReturn(squishy, vx, vy) {
+  let width = parseFloat(squishy.style.width);
+  let height = parseFloat(squishy.style.height);
+  let left = parseFloat(squishy.style.left);
+  let top = parseFloat(squishy.style.top);
+  const originalWidth = 100;
+  const originalHeight = 100;
+  const damping = 0.9;
+  const elasticity = 0.2;
+
+  function animate() {
+    width += (originalWidth - width) * elasticity;
+    height += (originalHeight - height) * elasticity;
+
+    squishy.style.width = width + 'px';
+    squishy.style.height = height + 'px';
+
+    left += vx;
+    top += vy;
+
+    if (left < 0) { left = 0; vx = -vx*damping; }
+    if (top < 0) { top = 0; vy = -vy*damping; }
+    if (left + width > gameArea.clientWidth) { left = gameArea.clientWidth - width; vx = -vx*damping; }
+    if (top + height > gameArea.clientHeight) { top = gameArea.clientHeight - height; vy = -vy*damping; }
+
+    squishy.style.left = left + 'px';
+    squishy.style.top = top + 'px';
+
+    vx *= damping;
+    vy *= damping;
+
+    if (Math.abs(originalWidth - width) > 0.5 || Math.abs(originalHeight - height) > 0.5 || Math.abs(vx) > 0.1 || Math.abs(vy) > 0.1) {
+      requestAnimationFrame(animate);
+    } else {
+      squishy.style.width = originalWidth + 'px';
+      squishy.style.height = originalHeight + 'px';
+    }
+  }
+
+  animate();
+}
+
+// --- Controls ---
 createSquishy();
 
 colorPicker.addEventListener('input', () => {
@@ -203,17 +233,13 @@ changeShapeBtn.addEventListener('click', () => {
   currentSquishy.style.borderRadius = currentSquishy.style.borderRadius === '50%' ? '20%' : '50%';
 });
 
-addSquishyBtn.addEventListener('click', () => {
-  createSquishy();
-});
-
+addSquishyBtn.addEventListener('click', () => createSquishy());
 removeSquishyBtn.addEventListener('click', () => {
   if (squishies.length === 0) return;
   const last = squishies.pop();
   gameArea.removeChild(last);
   currentSquishy = squishies[squishies.length - 1] || null;
 });
-
 clearSquishiesBtn.addEventListener('click', () => {
   squishies.forEach(s => gameArea.removeChild(s));
   squishies = [];
