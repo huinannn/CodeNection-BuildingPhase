@@ -27,7 +27,48 @@
     $result_today = $stmt_today->get_result();
     $today_checkins = $result_today->fetch_all(MYSQLI_ASSOC);
 
-    
+    // Feeling icons (emojis)
+    $feelingIcons = [
+        'Relaxed' => '😌',
+        'Joyful' => '😃',
+        'Calm' => '🌿',
+        'Happy' => '😊',
+        'Thankful' => '🙏',
+        'Affectionate' => '❤️',
+        'Confident' => '💪',
+        'Sad' => '😢',
+        'Stressed' => '😫',
+        'Angry' => '😡',
+        'Tired' => '🥱',
+        'Lonely' => '😞',
+        'Anxious' => '😰',
+        'Frustrated' => '😤'
+    ];
+
+    // Each feeling has its own bubble background color
+    $feelingColors = [
+        'Relaxed' => '#76D7C4',     // teal
+        'Joyful' => '#F7DC6F',      // yellow
+        'Calm' => '#85C1E9',        // light blue
+        'Happy' => '#F5B041',       // orange
+        'Thankful' => '#BB8FCE',    // purple
+        'Affectionate' => '#E74C3C',// red
+        'Confident' => '#28B463',   // green
+        'Sad' => '#5DADE2',         // blue
+        'Stressed' => '#A93226',    // dark red
+        'Angry' => '#922B21',       // deeper red
+        'Tired' => '#7F8C8D',       // gray
+        'Lonely' => '#566573',      // dark gray
+        'Anxious' => '#D68910',     // amber
+        'Frustrated' => '#884EA0'   // violet
+    ];
+
+    // Positivity colors (text)
+    $positivityColors = [
+        'Positive' => '#2E86C1',
+        'Negative' => '#C0392B'
+    ];
+
     // Did admin check-in this morning (8–10)?
     $morning_done = false;
     $evening_done = false;
@@ -78,8 +119,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Personal Check-In</title>
     <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Itim'; background: white; margin: 0; }
+        body, h1, h2, h3, h4, h5, h6, p, small, strong, div, span,
+        button, input, textarea, select, label {
+            font-family: 'Itim', cursive, sans-serif !important;
+        }
+        body { font-family: 'Itim', cursive, sans-serif; background: white; margin: 0; }
         .top-bar {
             padding-top: 30px;
             margin-left: 350px;
@@ -104,19 +150,63 @@
             height: 300px;
         }
         h1, h2, p { margin: 0 0 10px 0; font-family: 'Itim';}
+        /* Mood entry bubble look */
         .mood-entry {
             background: white;
-            border-radius: 10px;
-            padding: 10px;
-            margin: 8px 0;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin: 10px 0;
             cursor: pointer;
-            transition: background 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s ease, background 0.2s ease;
         }
         .mood-entry:hover {
             background: #f0f0f0;
+            transform: translateY(-2px);
         }
-        .mood-counts { display: flex; gap: 10px; margin-bottom: 10px; }
+        .mood-entry strong {
+            font-weight: 600;
+            font-size: 18px;
+        }
+        .mood-entry small {
+            font-size: 15px;
+        }
+        .mood-bubble {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+        }
+        .mood-counts { justify-content: center; display: flex; gap: 10px; margin-bottom: 10px; }
         .mood-counts div { background: white; padding: 10px 15px; border-radius: 10px; }
+
+        /* Feeling ball drop animation */
+        @keyframes dropIn {
+            0% { transform: translateY(-100px) scale(0.5); opacity: 0; }
+            70% { transform: translateY(20px) scale(1.05); opacity: 1; }
+            100% { transform: translateY(0) scale(1); }
+        }
+
+        .feeling-ball {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 10px;
+            border: none;
+            cursor: pointer;
+            color: white;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            animation: dropIn 0.6s ease forwards;
+        }
 
         /* Mood Journey scroll */
         .card_journey {
@@ -140,6 +230,21 @@
 
         #checkinModal, #noteModal {
             z-index: 9999; /*force modal on top */
+        }
+
+        /* Modal text */
+        #chosenFeelingText {
+            font-size: 22px !important; /* larger feeling text */
+        }
+
+        #noteFeelingCircle {
+            width: 120px !important;   /* was 100px */
+            height: 120px !important;  /* was 100px */
+            font-size: 48px !important; /* bigger emoji */
+        }
+
+        #noteFeelingText {
+            font-size: 24px !important; /* larger for emphasis */
         }
     </style>
 </head>
@@ -171,11 +276,11 @@
             </div>
 
             <!-- Today's Check-In -->
-            <div class="card">
+            <div class="card" style="text-align: center;">
                 <h2>Today's Check-In</h2>
                 <div class="mood-counts">
-                    <div><?= count(array_filter($today_checkins, fn($m)=>$m['positivity_feeling']=='Positive')) ?> Positive Feelings</div>
-                    <div><?= count(array_filter($today_checkins, fn($m)=>$m['positivity_feeling']=='Negative')) ?> Negative Feelings</div>
+                    <div style="font-family: Itim;"><?= count(array_filter($today_checkins, fn($m)=>$m['positivity_feeling']=='Positive')) ?> Positive Feelings</div>
+                    <div style="font-family: Itim;"><?= count(array_filter($today_checkins, fn($m)=>$m['positivity_feeling']=='Negative')) ?> Negative Feelings</div>
                 </div>
                 <?php foreach ($today_checkins as $mood): ?>
                     <div class="mood-entry mood-clickable"
@@ -183,19 +288,26 @@
                         data-positivity="<?= htmlspecialchars($mood['positivity_feeling']) ?>"
                         data-feeling="<?= htmlspecialchars($mood['admin_feeling']) ?>"
                         data-journal="<?= htmlspecialchars($mood['mini_journal']) ?>">
-                        <small><?= date("D, M j · g:i A", strtotime($mood['admin_feeling_datetime'])) ?></small>
-                        <strong>Feeling <?= htmlspecialchars($mood['admin_feeling']) ?></strong>
+                        <div style="height: 60px;">
+                            <small><?= date("D, M j · g:i A", strtotime($mood['admin_feeling_datetime'])) ?></small><br>
+                            <strong style="color: <?= $positivityColors[$mood['positivity_feeling']] ?? 'black' ?>">
+                                Feeling <?= htmlspecialchars($mood['admin_feeling']) ?>
+                            </strong>
+                        </div>
+                        <div class="mood-bubble" style=" width: 50px; height: 50px; background: <?= $feelingColors[$mood['admin_feeling']] ?? '#eee' ?>;">
+                            <?= $feelingIcons[$mood['admin_feeling']] ?? '🙂' ?>
+                        </div>
                     </div>
                 <?php endforeach; ?>
             </div>
         </div>
 
         <!-- Mood Journey -->
-        <div class="card_journey">
+        <div class="card_journey" style="text-align: center;">
             <h2>Mood Journey</h2>
             <div class="mood-counts">
-                <div><?= $positive_count ?> Positive Feelings</div>
-                <div><?= $negative_count ?> Negative Feelings</div>
+                <div style="font-family: Itim;"><?= $positive_count ?> Positive Feelings</div>
+                <div style="font-family: Itim;"><?= $negative_count ?> Negative Feelings</div>
             </div>
             <?php foreach ($mood_journey as $mood): ?>
             <div class="mood-entry mood-clickable"
@@ -203,8 +315,15 @@
                 data-positivity="<?= htmlspecialchars($mood['positivity_feeling']) ?>"
                 data-feeling="<?= htmlspecialchars($mood['admin_feeling']) ?>"
                 data-journal="<?= htmlspecialchars($mood['mini_journal']) ?>">
-                <small><?= date("D, M j · g:i A", strtotime($mood['admin_feeling_datetime'])) ?></small>
-                <strong>Feeling <?= htmlspecialchars($mood['admin_feeling']) ?></strong>
+                <div style="height: 60px;">
+                    <small><?= date("D, M j · g:i A", strtotime($mood['admin_feeling_datetime'])) ?></small><br>
+                    <strong style="color: <?= $positivityColors[$mood['positivity_feeling']] ?? 'black' ?>">
+                        Feeling <?= htmlspecialchars($mood['admin_feeling']) ?>
+                    </strong>
+                </div>
+                <div class="mood-bubble" style="width: 50px; height: 50px; background: <?= $feelingColors[$mood['admin_feeling']] ?? '#eee' ?>;">
+                    <?= $feelingIcons[$mood['admin_feeling']] ?? '🙂' ?>
+                </div>
             </div>
             <?php endforeach; ?>
         </div>
@@ -218,8 +337,8 @@
             <!-- Step 1 -->
             <div id="step1">
                 <h3>Tap the colour that represents your feeling right now</h3>
-                <button onclick="selectPositivity('Positive')" class="circle-btn" style="background:#5DADE2;">Positive</button>
-                <button onclick="selectPositivity('Negative')" class="circle-btn" style="background:#E74C3C;">Negative</button>
+                <button onclick="selectPositivity('Positive')" class="circle-btn" style="background:#5DADE2; width:200px; height:200px;">Positive</button>
+                <button onclick="selectPositivity('Negative')" class="circle-btn" style="background:#E74C3C;width:200px; height:200px;">Negative</button>
             </div>
 
             <!-- Step 2 -->
@@ -230,29 +349,56 @@
             </div>
 
             <!-- Step 3 -->
-            <div id="step3" style="display:none;">
-                <h3>Mini Journal</h3>
-                <form method="POST" action="save_checkin.php">
+            <div id="step3" style="display:none; text-align:center;">
+                <h3 style="margin-bottom:20px;">Mini Journal</h3>
+                <form method="POST" action="save_checkin.php" style="max-width:400px; margin:auto;">
                     <input type="hidden" name="positivity_feeling" id="positivityInput">
                     <input type="hidden" name="admin_feeling" id="feelingInput">
-                    <p>I'm feeling <span id="chosenFeeling" style="font-weight:bold;"></span></p>
-                    <textarea name="mini_journal" rows="4" style="width:100%; border-radius:8px;"></textarea><br><br>
-                    <button type="submit" style="background:#d4a373; border:none; padding:10px 20px; border-radius:8px; color:white; cursor:pointer;">Save</button>
+
+                    <!-- Emoji Circle -->
+                    <div id="chosenFeelingCircle"
+                        style="width:80px; height:80px; border-radius:50%; margin:auto; display:flex; align-items:center; justify-content:center; font-size:32px; color:white;">
+                    </div>
+
+                    <!-- Feeling Text -->
+                    <p style="margin-top:10px;">I'm feeling</p>
+                    <p id="chosenFeelingText" style="font-weight:bold; font-size:18px;"></p>
+
+                    <!-- Journal Input -->
+                    <textarea name="mini_journal" placeholder="Type a message"
+                            style="width:100%; border-radius:8px; padding:8px; border:1px solid #ccc; margin-top:15px;"></textarea>
+
+                    <!-- Save Button -->
+                    <button type="submit"
+                            style="background:#d4a373; border:none; padding:10px 20px; border-radius:8px; color:white; cursor:pointer; margin-top:20px;">
+                        Save
+                    </button>
                 </form>
-                <button onclick="backToStep2()" style="margin-top:20px;">⬅ Back</button>
+                <button onclick="backToStep2()" style="margin-top:20px; background:none; border:none; cursor:pointer;">⬅ Back</button>
             </div>
         </div>
     </div>
 
     <!-- Mood Details Modal -->
     <div id="noteModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5);">
-        <div style="background:#f8f6f3; width:700px; height:700px; margin:auto; position:absolute; top:0; bottom:0; left:0; right:0; border-radius:12px; padding:20px; overflow:auto;">
+        <div style="background:#f8f6f3; width:700px; height:700px; margin:auto; position:absolute; top:0; bottom:0; left:0; right:0; border-radius:12px; padding:20px; overflow:auto; text-align:center;">
             <button onclick="closeNoteModal()" style="position:absolute; top:10px; right:10px; border:none; background:none; font-size:18px; cursor:pointer;">✖</button>
-            <h2 id="noteFeeling"></h2>
+
+            <!-- Emoji Circle -->
+            <div id="noteFeelingCircle"
+                style="width:100px; height:100px; border-radius:50%; margin:20px auto; display:flex; align-items:center; justify-content:center; font-size:40px; color:white;">
+            </div>
+
+            <!-- Feeling Text -->
+            <h2 id="noteFeelingText" style="margin:10px 0;"></h2>
+
+            <!-- Other Info -->
             <p><strong>Positivity:</strong> <span id="notePositivity"></span></p>
             <p><strong>Date & Time:</strong> <span id="noteDatetime"></span></p>
-            <p><strong>Mini Journal:</strong></p>
-            <p id="noteJournal" style="white-space:pre-wrap;"></p>
+
+            <!-- Journal -->
+            <h3 style="margin-top:20px;">Mini Journal</h3>
+            <p id="noteJournal" style="white-space:pre-wrap; background:white; padding:10px; border-radius:8px;"></p>
         </div>
     </div>
 
@@ -279,8 +425,10 @@
         feelings.forEach(f => {
             let btn = document.createElement('button');
             btn.textContent = f;
-            btn.className = "circle-btn";
-            btn.style.background = "#ccc";
+            btn.className = "feeling-ball";
+            btn.style.background = (type === 'Positive') ? "#5DADE2" : "#E74C3C";
+            // btn.className = "circle-btn";
+            // btn.style.background = "#ccc";
             btn.onclick = (e) => { e.preventDefault(); selectFeeling(f); };
             pool.appendChild(btn);
         });
@@ -290,6 +438,15 @@
     function selectFeeling(feeling) {
         document.getElementById('feelingInput').value = feeling;
         document.getElementById('chosenFeeling').innerText = feeling;
+
+        // Emoji + color lookup from PHP arrays (inject them into JS)
+        const feelingIcons = <?= json_encode($feelingIcons) ?>;
+        const feelingColors = <?= json_encode($feelingColors) ?>;
+
+        let circle = document.getElementById('chosenFeelingCircle');
+        circle.innerText = feelingIcons[feeling] || '🙂';
+        circle.style.background = feelingColors[feeling] || '#ccc';
+
         document.getElementById('step2').style.display = 'none';
         document.getElementById('step3').style.display = 'block';
     }
@@ -303,19 +460,36 @@
         document.getElementById('step2').style.display = 'block';
     }
 
-    // document.querySelector('.btn-track-mood').addEventListener('click', openModal);
-
     // Mood details modal
     function openNoteModal(data) {
-        document.getElementById('noteFeeling').innerText = "Feeling " + data.feeling;
+        const feelingIcons = <?= json_encode($feelingIcons) ?>;
+        const feelingColors = <?= json_encode($feelingColors) ?>;
+        const positivityColors = <?= json_encode($positivityColors) ?>;
+
+        // Emoji Circle
+        let circle = document.getElementById('noteFeelingCircle');
+        circle.innerText = feelingIcons[data.feeling] || '🙂';
+        circle.style.background = feelingColors[data.feeling] || '#ccc';
+
+        // Feeling Text
+        let feelingText = document.getElementById('noteFeelingText');
+        feelingText.innerText = data.feeling;
+        feelingText.style.color = feelingColors[data.feeling] || '#333';
+
+        // Positivity + datetime + journal
         document.getElementById('notePositivity').innerText = data.positivity;
+        document.getElementById('notePositivity').style.color = positivityColors[data.positivity] || '#333';
         document.getElementById('noteDatetime').innerText = new Date(data.datetime).toLocaleString();
         document.getElementById('noteJournal').innerText = data.journal || "(No journal entry)";
+
         document.getElementById('noteModal').style.display = 'block';
     }
+
     function closeNoteModal() {
         document.getElementById('noteModal').style.display = 'none';
     }
+
+    // document.querySelector('.btn-track-mood').addEventListener('click', openModal);
 
     // Attach click events after DOM is loaded
     document.addEventListener("DOMContentLoaded", () => {
