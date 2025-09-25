@@ -10,25 +10,45 @@
 
     // Query notifications from notification_admin
     $sql = "
-        SELECT na. message_id, na.booking_id, na.message, na.message_date_time 
+        SELECT na.message_id AS id, 
+            CONCAT('Dear Student,', CHAR(10), na.message) AS message, 
+            na.message_date_time, 
+            na.read_status AS read_status, 
+            'Admin' AS title
         FROM notification_admin na
         INNER JOIN booking b ON na.booking_id = b.booking_id
         WHERE b.student_id = ?
-        ORDER BY na.message_date_time DESC
+        
+        UNION
+        
+        SELECT ns.notification_id AS id, 
+            CASE 
+                WHEN ns.notification_id IS NOT NULL 
+                THEN 'Your appointment has successfully booked, please check your calendar!' 
+            END AS message, 
+            ns.notification_date_time AS message_date_time, 
+            ns.read_status AS read_status, 
+            'System' AS title
+        FROM notification_system ns
+        INNER JOIN booking b ON ns.booking_id = b.booking_id
+        WHERE b.student_id = ?
+        
+        ORDER BY message_date_time DESC
     ";
     $stmt = $dbConn->prepare($sql);
-    $stmt->bind_param("s", $student_id);
+    $stmt->bind_param("ss", $student_id, $student_id);
     $stmt->execute();
     $result = $stmt->get_result();
 
     $notifications = [];
     while ($row = $result->fetch_assoc()) {
         $notifications[] = [
-            'id' => $row['booking_id'], // unique key
-            'title' => 'Admin',
-            'message' => mb_strimwidth($row['message'], 0, 60, "..."), // preview
+            'id' => $row['id'],
+            'title' => $row['title'],
+            'message' => mb_strimwidth($row['message'], 0, 60, "..."),
             'fullMessage' => $row['message'],
-            'time' => timeAgo($row['message_date_time'])
+            'time' => timeAgo($row['message_date_time']),
+            'read_status' => $row['read_status']
         ];
     }
     $stmt->close();
@@ -191,17 +211,16 @@
         function renderNotifications() {
             const list = document.getElementById('notifList');
             list.innerHTML = '';
-            const readStatus = getReadStatus();
             notifications.forEach(n => {
                 const li = document.createElement('li');
                 li.className = 'notif-item';
-                li.onclick = () => openModal(n.id);
+                li.onclick = () => openModal(n.id, n.title);
 
                 // Title row
                 const titleRow = document.createElement('div');
                 titleRow.className = 'notif-title-row';
                 titleRow.textContent = n.title;
-                if (!readStatus[n.id]) {
+                if (n.read_status === 'unread') {
                     const greenDot = document.createElement('span');
                     greenDot.className = 'notification-green-dot';
                     titleRow.appendChild(greenDot);
@@ -224,22 +243,27 @@
             });
         }
 
-        function openModal(id) {
+        function openModal(id, type) {
+            // Update DB
+            fetch('update_read_status.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `id=${id}&type=${type}`
+            }).then(() => {
+                // Update locally
+                const notif = notifications.find(n => n.id === id);
+                if (notif) notif.read_status = 'Read';
+                renderNotifications();
+            });
+
+            // Show modal
             const notif = notifications.find(n => n.id === id);
-            if (!notif) return;
-
-            document.getElementById('modalTitle').textContent = notif.title;
-            document.getElementById('modalMessage').textContent = notif.fullMessage;
-            document.getElementById('modalTime').textContent = notif.time;
-            document.getElementById('notifModalBg').style.display = 'flex';
-
-            // ✅ Mark as read in localStorage
-            let readStatus = getReadStatus();
-            readStatus[id] = true;
-            setReadStatus(readStatus);
-
-            // ✅ Remove green dot immediately
-            renderNotifications();
+            if (notif) {
+                document.getElementById('modalTitle').textContent = notif.title;
+                document.getElementById('modalMessage').textContent = notif.fullMessage;
+                document.getElementById('modalTime').textContent = notif.time;
+                document.getElementById('notifModalBg').style.display = 'flex';
+            }
         }
 
         function closeModal() {

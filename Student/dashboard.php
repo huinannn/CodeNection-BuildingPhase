@@ -76,15 +76,29 @@
 
     // 5. Get notifications for student
     $notification_sql = "
-        SELECT na.admin_id AS id, na.message, na.message_date_time, 'Admin' AS title
+        SELECT na.message_id AS id, 
+            CONCAT('Dear Student,', CHAR(10), na.message) AS message, 
+            na.message_date_time, 
+            na.read_status AS read_status, 
+            'Admin' AS title
         FROM notification_admin na
         INNER JOIN booking b ON na.booking_id = b.booking_id
         WHERE b.student_id = ?
+        
         UNION
-        SELECT ns.system_id AS id, ns.booking_id, ns.notification_date_time, 'System' AS title
+        
+        SELECT ns.notification_id AS id, 
+            CASE 
+                WHEN ns.notification_id IS NOT NULL 
+                THEN 'Your appointment has successfully booked, please check your calendar!' 
+            END AS message,
+            ns.notification_date_time AS message_date_time, 
+            ns.read_status AS read_status, 
+            'System' AS title
         FROM notification_system ns
         INNER JOIN booking b ON ns.booking_id = b.booking_id
         WHERE b.student_id = ?
+        
         ORDER BY message_date_time DESC
     ";
     $stmt4 = $dbConn->prepare($notification_sql);
@@ -98,7 +112,8 @@
             'id' => $row['id'],
             'title' => $row['title'],
             'message' => mb_strimwidth($row['message'], 0, 60, "..."),
-            'time' => $row['message_date_time']
+            'time' => $row['message_date_time'],
+            'read_status' => $row['read_status']
         ];
     }
     $stmt4->close();
@@ -415,12 +430,8 @@
         // Show each notifications available
         let notifications = <?php echo json_encode($notifications); ?>;
 
-        // Check localStorage for read status
         function hasUnreadNotifications() {
-            if (notifications.length === 0) return false;
-            let readStatus = localStorage.getItem('notifReadStatus');
-            readStatus = readStatus ? JSON.parse(readStatus) : {};
-            return notifications.some(n => !readStatus[n.id]);
+            return notifications.some(n => n.read_status === 'unread');
         }
 
         function updateNotificationBell() {
@@ -428,13 +439,9 @@
         }
 
         function openNotifications() {
-            let readStatus = {};
-            notifications.forEach(n => { readStatus[n.id] = true; });
-            localStorage.setItem('notifReadStatus', JSON.stringify(readStatus));
             window.location.href = 'notification.php';
         }
 
-        // Call this on page load
         updateNotificationBell();
 
         // 1. Chart data from PHP
