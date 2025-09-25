@@ -75,18 +75,22 @@
     foreach ($today_checkins as $row) {
         $hour = (int)date("H", strtotime($row['admin_feeling_datetime']));
         if ($hour >= 8 && $hour <= 12) $morning_done = true;
-        if ($hour >= 21 && $hour <= 23) $evening_done = true;
+        if ($hour >= 20 && $hour <= 23) $evening_done = true;
     }
 
-    // Fetch last 30 mood entries
+    // Fetch all moods for the current month
+    $currentYear = date('Y');
+    $currentMonth = date('m');
+
     $sql_journey = "
         SELECT * FROM feeling_admin 
         WHERE admin_id = ? 
-        ORDER BY admin_feeling_datetime DESC 
-        LIMIT 30
+        AND YEAR(admin_feeling_datetime) = ? 
+        AND MONTH(admin_feeling_datetime) = ?
+        ORDER BY admin_feeling_datetime DESC
     ";
     $stmt_journey = $dbConn->prepare($sql_journey);
-    $stmt_journey->bind_param("s", $admin_id);
+    $stmt_journey->bind_param("sss", $admin_id, $currentYear, $currentMonth);
     $stmt_journey->execute();
     $result_journey = $stmt_journey->get_result();
     $mood_journey = $result_journey->fetch_all(MYSQLI_ASSOC);
@@ -109,7 +113,7 @@
     // Determine prompt state
     $already_done_today = (count($today_checkins) >= 2);
     $show_morning_prompt = ($currentHour >= 8 && $currentHour < 12 && !$morning_done && !$already_done_today);
-    $show_evening_prompt = ($currentHour >= 21 && $currentHour < 23 && !$evening_done && !$already_done_today);
+    $show_evening_prompt = ($currentHour >= 20 && $currentHour < 23 && !$evening_done && !$already_done_today);
 ?>
 
 <!DOCTYPE html>
@@ -119,6 +123,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Personal Check-In</title>
     <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="../image/favicon.png" type="image/x-icon" />
     <link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet">
     <style>
         body, h1, h2, h3, h4, h5, h6, p, small, strong, div, span,
@@ -126,10 +131,7 @@
             font-family: 'Itim', cursive, sans-serif !important;
         }
         body { font-family: 'Itim', cursive, sans-serif; background: white; margin: 0; }
-        .top-bar {
-            padding-top: 30px;
-            margin-left: 350px;
-        }
+        .top-bar { padding-top: 30px; margin-left: 350px; }
         .main-content {
             flex: 1;
             padding: 20px;
@@ -162,17 +164,9 @@
             align-items: center;
             transition: transform 0.2s ease, background 0.2s ease;
         }
-        .mood-entry:hover {
-            background: #f0f0f0;
-            transform: translateY(-2px);
-        }
-        .mood-entry strong {
-            font-weight: 600;
-            font-size: 18px;
-        }
-        .mood-entry small {
-            font-size: 15px;
-        }
+        .mood-entry:hover { background: #f0f0f0; transform: translateY(-2px); }
+        .mood-entry strong { font-weight: 600; font-size: 18px; }
+        .mood-entry small { font-size: 15px; }
         .mood-bubble {
             width: 70px;
             height: 70px;
@@ -228,14 +222,10 @@
             font-size: 14px;
         }
 
-        #checkinModal, #noteModal {
-            z-index: 9999; /*force modal on top */
-        }
+        #checkinModal, #noteModal { z-index: 9999; }
 
         /* Modal text */
-        #chosenFeelingText {
-            font-size: 22px !important; /* larger feeling text */
-        }
+        #chosenFeelingText { font-size: 22px !important; }
 
         #noteFeelingCircle {
             width: 120px !important;   /* was 100px */
@@ -243,8 +233,34 @@
             font-size: 48px !important; /* bigger emoji */
         }
 
-        #noteFeelingText {
-            font-size: 24px !important; /* larger for emphasis */
+        #noteFeelingText { font-size: 24px !important; }
+
+        #step1 .circle-btn {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            font-size: 20px;
+            color: white;
+        }
+
+        #step2 #feelingsPool {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        #step2 .feeling-ball {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -331,12 +347,12 @@
 
     <!-- Mood Check-in Modal -->
     <div id="checkinModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5);">
-        <div style="background:#f8f6f3; width:700px; height:700px; margin:auto; position:absolute; top:0; bottom:0; left:0; right:0; border-radius:12px; padding:20px; overflow:auto;">
+        <div style="background:#f8f6f3; width:700px; height:500px; margin:auto; position:absolute; top:0; bottom:0; left:0; right:0; border-radius:12px; padding:20px; overflow:auto;">
             <button onclick="closeModal()" style="position:absolute; top:10px; right:10px; border:none; background:none; font-size:18px; cursor:pointer;">✖</button>
 
             <!-- Step 1 -->
-            <div id="step1">
-                <h3>Tap the colour that represents your feeling right now</h3>
+            <div id="step1" style="align-content: center; text-align: center;">
+                <h3 style="font-size: 24px;">Tap the colour that represents your feeling right now</h3><br><br><br>
                 <button onclick="selectPositivity('Positive')" class="circle-btn" style="background:#5DADE2; width:200px; height:200px;">Positive</button>
                 <button onclick="selectPositivity('Negative')" class="circle-btn" style="background:#E74C3C;width:200px; height:200px;">Negative</button>
             </div>
@@ -422,13 +438,13 @@
             ? ['Relaxed','Joyful','Calm','Happy','Thankful','Affectionate','Confident']
             : ['Sad','Stressed','Angry','Tired','Lonely','Anxious','Frustrated'];
 
+        const feelingColors = <?= json_encode($feelingColors) ?>;
+
         feelings.forEach(f => {
             let btn = document.createElement('button');
             btn.textContent = f;
             btn.className = "feeling-ball";
             btn.style.background = (type === 'Positive') ? "#5DADE2" : "#E74C3C";
-            // btn.className = "circle-btn";
-            // btn.style.background = "#ccc";
             btn.onclick = (e) => { e.preventDefault(); selectFeeling(f); };
             pool.appendChild(btn);
         });
@@ -437,7 +453,7 @@
     // Step 2 → Step 3
     function selectFeeling(feeling) {
         document.getElementById('feelingInput').value = feeling;
-        document.getElementById('chosenFeeling').innerText = feeling;
+        document.getElementById('chosenFeelingText').innerText = feeling;
 
         // Emoji + color lookup from PHP arrays (inject them into JS)
         const feelingIcons = <?= json_encode($feelingIcons) ?>;
@@ -512,7 +528,7 @@
 
     // Prevent logout if missed
     <?php if (($currentHour >= 8 && $currentHour < 12 && !$morning_done) ||
-            ($currentHour >= 21 && $currentHour < 22 && !$evening_done)): ?>
+            ($currentHour >= 20 && $currentHour < 23 && !$evening_done)): ?>
         document.addEventListener("DOMContentLoaded", () => {
             let logoutBtn = document.querySelector("a[href*='logout'], button.logout");
             if (logoutBtn) {
