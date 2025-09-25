@@ -116,38 +116,38 @@ $query->close();
     <?php include 'navigation.php'; ?>
     <div class="right-content" style="padding-left:350px;">
         <div class="admin-booking">
-            <h1>Counselor Appointment Management</h1>
+            <h1 style="font-family:var(--itim);">Counselor Appointment Management</h1>
         </div>
         <div class="right">
             <div class="Appointment-Request">
-                <h1>Appointment Request</h1>
+                <h1 style="font-family:var(--itim);">Appointment Request</h1>
                 <hr>
                 
 
-                <div class="booking-content">
+                <div class="booking-content" style="font-family:var(--itim);">
                     <?php while($row = $appointments->fetch_assoc()): ?>
-                        <div class="content" id="booking-<?php echo $row['booking_id']; ?>">
-                            <div class="content-left">
-                                <div class="first-line">
-                                    <div class="std-id">ID: <?php echo $row['student_id']; ?></div>
-                                    <p>|</p>    
-                                    <div class="std-name"><?php echo $row['student_name']; ?></div>
+                        <div class="content" id="booking-<?php echo $row['booking_id']; ?>" style="font-family:var(--itim);">
+                            <div class="content-left" style="font-family:var(--itim);">
+                                <div class="first-line" style="font-family:var(--itim);">
+                                    <div class="std-id" style="font-family:var(--itim);">ID: <?php echo $row['student_id']; ?></div>
+                                    <p style="font-family:var(--itim);" >|</p>    
+                                    <div class="std-name" style="font-family:var(--itim);"><?php echo $row['student_name']; ?></div>
                                 </div>
                                 
-                                <div class="counsellor">Counselor: <?php echo $row['counselor_name']; ?></div>
-                                <div class="booking-date">
+                                <div class="counsellor" style="font-family:var(--itim);">Counselor: <?php echo $row['counselor_name']; ?></div>
+                                <div class="booking-date" style="font-family:var(--itim);">
                                     <?php echo $row['booking_date']; ?>,
                                     <?php echo date("H:i:s", strtotime($row['booking_start_time'])); ?>
                                     - <?php echo date("H:i:s", strtotime($row['booking_end_time'])); ?>
                                 </div>
                             </div>
-                            <div class="btn">
+                            <div class="btn" style="font-family:var(--itim);">
                                 <form method="POST" style="display:inline;">
                                     <input type="hidden" name="booking_id" value="<?php echo $row['booking_id']; ?>">
-                                    <button type="submit" name="action" value="approve" class="Approve" style="background-color:#08C97E; border-radius:8px; width:70px;height:25px;">Approve</button>
+                                    <button type="submit" name="action" value="approve" class="Approve" style="background-color:#08C97E; border-radius:8px; width:70px;height:25px;font-family:var(--itim);">Approve</button>
                                 </form>
-                                <button class="Reject" style="background-color:#FF6969; border-radius:8px; width:70px;height:25px;" 
-                                        onclick="showRejectBox('<?php echo $row['booking_id']; ?>','<?php echo $row['student_name']; ?>','<?php echo $row['student_id']; ?>')">Reject</button>
+                                <button class="Reject" style="background-color:#FF6969; border-radius:8px; width:70px;height:25px;font-family:itim;" 
+                                        onclick="showRejectBox('<?php echo $row['booking_id']; ?>','<?php echo $row['student_name']; ?>','<?php echo $row['student_id']; ?>')" style="font-family:var(--itim);">Reject</button>
                             </div>
                         </div>
                         <hr>
@@ -155,31 +155,31 @@ $query->close();
                 </div>
             </div>
 
-            <div class="calender">
-                <div class="cal">
-                    <div class="calendar-controls">
-                        <label for="month">Month:</label>
-                        <select id="month" onchange="renderCalendar()">
+            <div class="calender" style="font-family:var(--itim);height:650px;">
+                <div class="cal" style="font-family:var(--itim);">
+                    <div class="calendar-controls" style="font-family:var(--itim);">
+                        <label for="month" style="font-family:var(--itim);"> Month:</label>
+                        <select id="month" onchange="renderCalendar()" style="font-family:var(--itim);">
                             <?php for($m=1;$m<=12;$m++): ?>
-                                <option value="<?php echo $m; ?>" <?php if($m==date("n")) echo "selected"; ?>>
+                                <option value="<?php echo $m; ?>" <?php if($m==date("n")) echo "selected"; ?> style="font-family:var(--itim);">
                                     <?php echo date("F", mktime(0,0,0,$m,1)); ?>
                                 </option>
                             <?php endfor; ?>
                         </select>
 
-                        <label for="year">Year:</label>
-                        <select id="year" onchange="renderCalendar()">
+                        <label for="year" style="font-family:var(--itim);">Year:</label>
+                        <select id="year" onchange="renderCalendar()" style="font-family:var(--itim);">
                             <?php for($y=date("Y")-2; $y<=date("Y")+2; $y++): ?>
-                                <option value="<?php echo $y; ?>" <?php if($y==date("Y")) echo "selected"; ?>>
+                                <option value="<?php echo $y; ?>" <?php if($y==date("Y")) echo "selected"; ?> style="font-family:var(--itim);">
                                     <?php echo $y; ?>
                                 </option>
                             <?php endfor; ?>
                         </select>
                     </div>
-                    <div id="calendar-container" style="padding-left:25px;padding-bottom:1px;padding-right:25px;"></div>
+                    <div id="calendar-container" style="padding-left:25px;padding-bottom:1px;padding-right:25px;font-family:itim;"></div>
                 </div>
-                <div id="appointment-results" class="results" style="border-radius:30px;">
-                    <p style="padding-top:10px;">Select a date from the calendar to see appointments.</p>
+                <div id="appointment-results" class="results" style="border-radius:30px;font-family:var(--itim);">
+                    <p style="padding-top:10px;font-family:var(--itim);">Select a date from the calendar to see appointments.</p>
                 </div>
             </div>
         </div>
@@ -199,16 +199,16 @@ $query->close();
         rejectBox.id = "reject-box-"+bookingId;
 
         rejectBox.innerHTML = `
-            <div class="student">
-                <p><b>Student Name:</b> ${studentName}</p>
-                <p><b>Student ID:</b> ${studentId}</p>
+            <div class="student" style="font-family:var(--itim);">
+                <p style="font-family:var(--itim);"><b style='font-family:var(--itim);'>Student Name:</b> ${studentName}</p>
+                <p style="font-family:var(--itim);"><b style='font-family:var(--itim);'>Student ID:</b> ${studentId}</p>
             </div>
             <form method="POST">
-                <input type="hidden" name="booking_id" value="${bookingId}">
-                <textarea name="message" placeholder="Write a message to the student..." required></textarea>
+                <input type="hidden" name="booking_id" value="${bookingId}" style="font-family:var(--itim);">
+                <textarea name="message" placeholder="Write a message to the student..." style="font-family:var(--itim);" required></textarea>
                 <br>
-                <button type="button" class="back-btn" onclick="document.getElementById('reject-box-${bookingId}').remove()">Back</button>
-                <button type="submit" name="action" value="notify_student" class="notify-btn">Notify Student</button>
+                <button type="button" class="back-btn" onclick="document.getElementById('reject-box-${bookingId}').remove()" style="font-family:var(--itim);">Back</button>
+                <button type="submit" name="action" value="notify_student" class="notify-btn"style="font-family:var(--itim);">Notify Student</button>
             </form>
         `;
 
@@ -235,14 +235,14 @@ $query->close();
                 });
             }
 
-            let html = "<table class='calendar'><thead><tr>";
+            let html = "<table class='calendar' ><thead><tr>";
             const days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
             for(let d of days){ html += "<th>"+d+"</th>"; }
             html += "</tr></thead><tbody><tr>";
 
             let cell = 0;
             for(let i=0;i<startDay;i++){
-                html += "<td class='empty'></td>";
+                html += "<td  class='empty' style='font-family:var(--itim);'></td>";
                 cell++;
             }
 
@@ -255,7 +255,7 @@ $query->close();
             }
 
             while(cell % 7 !== 0){
-                html += "<td class='empty'></td>";
+                html += "<td class='empty' style='font-family:var(--itim);'></td>";
                 cell++;
             }
             html += "</tr></tbody></table>";
@@ -269,15 +269,15 @@ $query->close();
         .then(resp => resp.json())
         .then(data => {
             const container = document.getElementById("appointment-results");
-            container.innerHTML = `<h3>Appointments for ${day}/${month}/${year}</h3>`;
+            container.innerHTML = `<h3 style="font-family:var(--itim);">Appointments for ${day}/${month}/${year}</h3>`;
 
             if(Object.keys(data).length === 0){
-                container.innerHTML += "<p>No appointments found for this day.</p>";
+                container.innerHTML += '<p style="font-family:var(--itim);">No appointments found for this day.</p>';
             } else {
                 for(const counselor in data){
-                    container.innerHTML += `<div class="counselor-block"><h4>${counselor}</h4>`;
+                    container.innerHTML += `<div class="counselor-block" style="font-family:var(--itim);"><h4 style="font-family:var(--itim);">${counselor}</h4>`;
                     data[counselor].forEach(app => {
-                        container.innerHTML += `<p>${app.time}: ${app.student_name} (${app.student_id})</p>`;
+                        container.innerHTML += `<p style="font-family:var(--itim);">${app.time}: ${app.student_name} (${app.student_id})</p>`;
                     });
                     container.innerHTML += "</div>";
                 }
