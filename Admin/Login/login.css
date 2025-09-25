@@ -1,7 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Itim&display=swap');
 
 :root {
-    --primary: #e8b45e;
     --white: #ffffff;
     --black: #000000;
     --max-width: 1500px;
@@ -35,11 +34,12 @@ body {
 /* login */
 .header-bar {
     width: 100%;
-    height: 75px;
+    height: 60px;
     background: #F2ECE5;
     position: fixed;
     top: 0;
-    left: 0;
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 10;
 }
 
@@ -48,12 +48,12 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-top: 80px;
+    padding-top: 60px;
 }
 
 .login-card {
-    width: 600px;
-    padding: 25px 50px;
+    width: 550px;
+    padding: 10px 60px;
     box-shadow: 0px 4px 4px rgba(0,0,0,0.2);
     border: 1px rgba(143,143,143,0.2) solid;
     display: flex;
@@ -65,12 +65,12 @@ body {
 .login-title {
     font-size: 30px;
     text-align: center;
-    margin-top: -50px;
+    margin-top: -45px;
 }
 
 .login-image {
     width: 280px;
-    margin-top: -20px;
+    margin-top: -15px;
 }
 
 .login-form {
@@ -183,17 +183,17 @@ body {
     display: flex;
     justify-content: center;  
     gap: 16px; 
-    width: 20%;              
+    width: 25%;              
     margin: 30px auto 20px;   
     margin-top: 50px;
-    margin-bottom: 80px;
+    margin-bottom: 84px;
 }
 
 /*required */
 #snackbar {
     display: none;            
     position: absolute;       
-    top: 155px;                 
+    top: 142px;                 
     left: 50%;                  
     transform: translateX(-50%);
     width: 80%;                

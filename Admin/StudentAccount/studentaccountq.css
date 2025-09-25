@@ -33,20 +33,20 @@ body {
 
 .content {
     margin-left: 300px;
-    padding: 40px 50px;
+    padding: 40px 40px;
 }
 
 .student-header {
     display: flex;
     flex-direction: column; 
     gap: 12px;
-    margin-bottom: 30px;
+    margin-bottom: 25px;
 }
 
 .student-title {
     color: black;
-    font-size: 32px;
-    margin-bottom: 25px;
+    font-size: 26px;
+    margin-bottom: 20px;
 }
 
 .actions {
@@ -54,6 +54,7 @@ body {
     justify-content: space-between; 
     align-items: center;
     gap: 12px;
+    width: 720px;
 }
 
 /* search */
@@ -64,10 +65,10 @@ body {
 
 .search-box input {
     width: 100%;
-    padding: 8px 12px 8px 36px; 
+    padding: 10px 14px 8px 32px; 
     border: 1px solid #8F8F8F;
     border-radius: 8px;
-    font-size: 16px;
+    font-size: 14px;
     outline: none;
 }
 
@@ -77,34 +78,33 @@ body {
     top: 50%;
     transform: translateY(-50%);
     color: #8F8F8F;
-    font-size: 16px;
+    font-size: 14px;
 }
+
 #notFoundContainer {
-    width: 100%; 
-    height: 530px;          
-    border-radius: 10px;
-    background: #F2ECE5;
-    position: relative;
-    display: flex;               
-    flex-direction: column;      
-    justify-content: center;      
-    align-items: center;       
-    margin: 0;     
-    padding: 0;    
-    display: none;  
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;     
+    background: #F2ECE5;     
+    z-index: 1;
 }
 
 #notFoundContainer .notfound-icon {
-    font-size: 150px;
+    font-size: 100px;
     color: #B6B6B6;
-    margin-bottom: 20px; 
+    margin-bottom: 40px; 
 }
 
 #notFoundContainer .notfound-text {
     color: #B6B6B6;
-    font-size: 34px;
+    font-size: 30px;
     font-weight: 400;
-    text-align: center;  
 }
 
 /* add new */
@@ -116,7 +116,7 @@ body {
     cursor: pointer;
     transition: all 0.2s ease;
     color: var(--white);
-    font-size: 16px;
+    font-size: 14px;
 }
 
 .icon-btn:hover {
@@ -130,20 +130,10 @@ body {
 }
 
 /* table */
-.add-list-container {
-    width: 100%; 
-    margin: 0 auto;       
-    height: 530px;          
-    border-radius: 10px;
-    background: #F2ECE5;
-    padding: 5px;
-    position: relative;
-}
-
 .student-list-container {
-    width: 100%;       
-    margin: 0 auto;                      
-    overflow-x: auto;       
+    width: 720px;       
+    height: 550px;       
+    overflow: auto;      
     border-radius: 10px;
     background: #F2ECE5;
     padding: 5px;
@@ -151,11 +141,9 @@ body {
 }
 
 .student-list table {
-    width: 100%;               
+    width: 100%;
     border-collapse: collapse;
-    table-layout: auto;        
-    word-break: break-word;   
-    white-space: normal;      
+    min-width: 600px; 
 }
 
 .student-list thead tr {
@@ -175,7 +163,7 @@ body {
 .student-list td {
     padding: 12px;
     text-align: center;
-    font-size: 16px;
+    font-size: 14px;
 }
 
 .student-list tr:last-child td {
@@ -184,11 +172,11 @@ body {
 
 .status {
     display: inline-block;
-    min-width: 80px;
+    min-width: 60px;
     text-align: center;
-    padding: 6px 12px;
+    padding: 3px 7px;
     border-radius: 20px;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 400;
     cursor: default;
     transition: all 0.3s ease;
@@ -232,9 +220,9 @@ body {
 
 /* add student */
 .page-title {
-    font-size: 28px;
-    margin-top: 50px;
-    margin-bottom: 30px;
+    font-size: 26px;
+    margin-top: 55px;
+    margin-bottom: 35px;
     text-align: center;
 }
 
@@ -242,7 +230,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 25px;
-    width: 450px;
+    width: 420px;
     margin: 0 auto;
 }
 
@@ -259,7 +247,7 @@ body {
 
 .form-group input {
     height: 50px;
-    padding: 8px 10px;
+    padding: 10px 14px;
     border: 1px solid #ccc;
     background: transparent;
     border-radius: 8px;
@@ -287,7 +275,7 @@ body {
     position: absolute;
     left: 12px;
     color: #8F8F8F;
-    font-size: 16px;
+    font-size: 18px;
 }
 
 .input-with-icon input {
@@ -295,7 +283,7 @@ body {
     padding: 10px 12px 10px 40px;
     border: 1px solid #8F8F8F;
     border-radius: 8px;
-    font-size: 14px;
+    font-size: 16px;
     outline: none;
 }
 
@@ -342,7 +330,7 @@ body {
 }
 
 .success-box .title {
-    font-size: 28px;
+    font-size: 26px;
     font-family: Itim, cursive;
     margin-bottom: 30px;
 }
@@ -376,13 +364,13 @@ body {
     bottom: 60px;
     left: 60%;
     transform: translateX(-50%);
-    width: 75%;
+    width: 50%;
     max-width: 280px;
     color: #dd3730;
     background-color: #ffede9;
     text-align: center;
     padding: 10px 0;
-    font-size: 14px;
+    font-size: 16px;
     border-radius: 8px;
     box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
     z-index: 999;

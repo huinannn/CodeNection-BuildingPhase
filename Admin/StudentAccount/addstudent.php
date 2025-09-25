@@ -8,7 +8,7 @@
     }
 
     $admin_id = $_SESSION['admin_id'];
-    $admin_sql = "SELECT s.school_id, s.school_name, s.school_logo 
+    $admin_sql = "SELECT s.*
                 FROM admin a 
                 JOIN school s ON a.school_id = s.school_id 
                 WHERE a.admin_id = ?";
@@ -32,13 +32,13 @@
     }
 
     $id_sql = "SELECT student_id 
-            FROM student 
-            WHERE student_id LIKE ? 
-            ORDER BY student_id DESC 
-            LIMIT 1";
+                FROM student 
+                WHERE student_id LIKE ? 
+                ORDER BY CAST(SUBSTRING(student_id, LENGTH(?) + 1) AS UNSIGNED) DESC
+                LIMIT 1";
     $id_stmt = $dbConn->prepare($id_sql);
     $likePattern = $prefix . '%';
-    $id_stmt->bind_param("s", $likePattern);
+    $id_stmt->bind_param("ss", $likePattern, $prefix);
     $id_stmt->execute();
     $id_result = $id_stmt->get_result();
     $id_row = $id_result->fetch_assoc();
@@ -123,7 +123,7 @@
             </div>
         </div>
 
-        <div class="student-list-container">
+        <div class="add-list-container">
             <?php if ($success) : ?>
                 <div class="success-box">
                     <div class="icon-check">
@@ -131,7 +131,7 @@
                     </div>
                     <div class="title">Student Account Added</div>
                     <div class="message">The new student account is added successfully!</div>
-                    <button class="icon-btn" onclick="window.location.href='studentaccount.php'">Finish</button>
+                    <button class="add-btn" onclick="window.location.href='studentaccount.php'">Finish</button>
                 </div>
 
             <?php else : ?>
