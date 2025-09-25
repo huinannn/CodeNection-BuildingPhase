@@ -97,7 +97,7 @@
         <ul class="nav">
             <li data-page="studentaccount.php"><img src="../../image/icons/student.png" alt=""><p>Student Accounts</p></li>
             <li data-page="../bookings.php"><img src="../../image/icons/booking.png" alt=""><p>Bookings</p></li>
-            <li data-page="../reviews.php"><img src="../../image/icons/reviews.png" alt=""><p>Reviews</p></li>
+            <li data-page="../reviews_post_happy.php"><img src="../../image/icons/reviews.png" alt=""><p>Reviews</p></li>
             <li data-page="../check-in.php"><img src="../../image/icons/check-in.png" alt=""><p>Personal Check-In</p></li>
         </ul>
         <div class="spacer"></div>
