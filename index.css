@@ -1,0 +1,575 @@
+@import url('https://fonts.googleapis.com/css2?family=Itim&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+:root {
+    --primary: #e8b45e;
+    --white: #ffffff;
+    --black: #000000;
+    --itim: 'Itim', cursive;
+    --max-width: 1920px;
+    --roboto: 'Roboto', sans-serif;
+    --border: 3px #e8b45e solid;
+}
+
+* {
+    font-family: var(--roboto);
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    outline: 0;
+    border: none;
+    text-decoration: none;
+}
+
+body {
+    background-color: #ffffff;
+}
+
+.spacer {
+    flex: 1;
+}
+
+.header {
+    position: sticky;
+    top: 0;
+    max-width: var(--max-width);
+    margin: 0 auto;
+    background-color: white;
+    align-items: center;
+    pad: 10px 30px;
+    display: flex;
+    box-shadow: 0 3px 8px rgba(0,0,8,0.15);
+    z-index: 9999;
+}
+
+.header .header_left, .header .header_right {
+    display: flex;
+    align-items: center;
+    column-gap: 20px;
+}
+
+.header .header_left img {
+    width: 90px;
+}
+
+.header .header_left h1 {
+    font-family: var(--itim);
+    font-weight: 500;
+    color: var(--primary);
+}
+
+.header .header_right {
+    margin-right: 20px;
+}
+
+.header .header_right .nav {
+    display: flex;
+    align-items: center;
+    column-gap: 30px;
+}
+
+.header .header_right .small_nav, #nav {
+    display: none;
+}
+
+.header .header_right .nav a, #nav a {
+    text-decoration: none;
+}
+
+#nav a h1 {
+    padding: 10px 0;
+}
+
+.header .header_right .nav a h1, #nav a h1 {
+    font-family: var(--itim);
+    color: var(--primary);
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.footer {
+    padding: 40px 30px 20px 30px;
+    height: 23rem;
+    margin-top: auto;
+    background-color: #F2ECE5;
+    max-width: var(--max-width);
+    margin: 0 auto;
+    border-top: var(--border);
+    position: sticky;
+    bottom: 0;
+}
+
+.footer .footer_top {
+    display: flex;
+    align-items: first baseline;
+    height: 15rem;
+}
+
+.footer .footer_top h1, .footer .footer_top p {
+    font-family: var(--itim);
+    color: var(--primary);
+    font-size: 1.5rem;
+    font-weight: 300;
+}
+
+.footer .footer_top p {
+    font-size: 1rem;
+}
+
+.footer .left .name, .footer .right .nav a  {
+    display: flex;
+    align-items: center;
+    column-gap: 20px;
+}
+
+.footer .left .name img {
+    width: 100px;
+}
+
+.footer hr {
+    background-color: white;
+    height: 3px;
+    margin: 0 40px;
+    border-radius: 3px;
+    border: none;
+}
+
+.footer .cr {
+    margin: 30px auto;
+    text-align: center;
+    display: block;
+}
+
+.footer .cr p {
+    font-weight: 600;
+}
+
+.content .hero {
+    position: relative;
+    text-align: right;
+    color: white;
+    max-width: var(--max-width);
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.content .hero img {
+    height: auto;
+    display: block;
+    max-width: var(--max-width);
+    width: 100%;
+    margin: 0 auto;
+}
+
+.content .hero .hero_description img {
+    width: clamp(100px, 20vw, 500px);
+    height: auto;
+}
+
+.content .hero .hero_description {
+    position: absolute;
+    top: 30px;              
+    right: 5%;             
+    text-align: right;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    opacity: 0;
+    animation: fadeSlideRight 1s ease forwards;
+    animation-delay: 0.5s;
+}
+
+.content .hero .hero_text h1 {
+    font-size: 5rem;
+    font-family: var(--itim);
+    color: var(--primary);
+}
+
+.content .hero .hero_text p {
+    font-family: var(--itim);
+    font-size: 2rem;
+    font-weight: 400;
+    color: var(--black);
+}
+
+.content .hero .hero_text .btn {
+    margin-top: 30px;
+    padding: 10px 20px;
+    border-radius: 10px;
+    background-color: #e8b45e;
+    color: white;
+    font-family: var(--itim);
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.content .about {
+    max-width: var(--max-width);
+    width: 100%;
+    margin: 50px auto;
+    padding: 0 20px;
+}
+
+.content .about h1 {
+    font-family: var(--itim);
+    color: var(--primary);
+    text-align: center;
+    font-size: 3rem;
+    font-weight: 500;
+    margin-bottom: 30px;
+}
+
+.content .about .about_unicare {
+    display: flex;
+    flex-wrap: wrap;       
+    align-items: center;
+    justify-content: center;
+    gap: 20px;   
+    padding: 0 20px;
+    margin: 0 auto; 
+}
+
+.content .about .about_unicare .img {
+    max-width: clamp(300px, 500px, 800px);
+    flex: 1 1 50%;
+    padding: 10px;
+    opacity: 0;
+    animation: fadeSlideLeft 1s ease forwards;
+}
+
+.content .about .about_unicare .description {
+    max-width: clamp(300px, 500px, 800px);
+    flex: 1 1 50%;
+    padding: 10px;
+    opacity: 0;
+    animation: fadeSlideRight 1s ease forwards;
+}
+
+.content .about .about_unicare .img {
+    text-align: right;  
+}
+
+.content .about .about_unicare .img img {
+    width: clamp(200px, 20vw, 500px);
+    height: auto;
+}
+
+.content .about .about_unicare .description p {
+    font-family: var(--itim);
+    font-size: clamp(1rem, 1.3rem, 1.5rem);
+    font-weight: 500;  
+    text-align: justify;
+}
+
+.content .about .about_unicare .description span {
+    font-family: var(--itim);
+    color: var(--primary);
+    font-size: clamp(1.2rem, 1.5rem, 1.8rem);
+}
+
+.content .about .features {
+    margin: 100px auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 100px 20px;
+    max-width: 1200px;
+    padding: 20px;
+    justify-items: center; 
+    text-align: center;
+}
+
+.content .about .features .each_features {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+    max-width: clamp(300px, 15vw, 450px);
+    width: 100%;
+    height: 200px;
+    background-color: #f8f4ef;
+    border-radius: 20px;
+    padding: 20px;
+    overflow: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.content .about .features .each_features:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+
+.content .about .features .each_features img {
+    width: clamp(150px, 15vw, 200px);
+    height: auto;
+    margin-bottom: clamp(20px, 50px, 90px);
+    margin-left: -60px;
+}
+
+.content .about .features .each_features .description h3 {
+    font-family: var(--itim);
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: var(--primary);
+}
+
+.content .about .features .each_features .description p {
+    font-weight: 500;
+    font-size: .8rem;
+    margin: 10px 0;
+}
+
+.contact_wrapper {
+    display: flex;
+    max-width: clamp(800px, 15vw, 1000px);
+    min-height: 400px;
+    box-shadow: 5px 4px 7px 3px var(--primary);
+    border-radius: 20px;
+    margin: 1rem auto;
+}
+
+.contact_wrapper .left_contact {
+    flex: 1 1 50%;
+    margin: auto 0;
+}
+
+.contact_wrapper .left_contact img {
+    width: 100%;
+    height: 80%;
+    object-fit: cover;
+    overflow: hidden;
+}
+
+.contact_wrapper .right_contact {
+    flex: 1 1 50%;
+}
+
+.contact_wrapper .right_contact .form {
+    padding: 20px;
+
+}
+
+.contact_wrapper .right_contact .form h3 {
+    text-align: center;
+    font-family: var(--itim);
+    font-size: 2rem;
+    font-weight: 500;
+    color: var(--primary);
+    margin: 10px auto;
+}
+
+.contact_wrapper .right_contact .form .input_form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0 , 0, 0.1);
+}
+
+.contact_wrapper .right_contact .form .input_form textarea {
+    height: 80px;
+    resize: none; 
+}
+
+.contact_wrapper .right_contact .form .input_form input,
+.contact_wrapper .right_contact .form .input_form textarea {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid #ccc;
+  padding: 10px 0;
+  font-size: 15px;
+  color: #333;
+  outline: none;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.contact_wrapper .right_contact .form .input_form input:focus,
+.contact_wrapper .right_contact .form .input_form textarea:focus {
+  border-bottom: 2px solid black;
+  color: #000;
+}
+
+.contact_wrapper .right_contact .form .input_form input::placeholder,
+.contact_wrapper .right_contact .form .input_form textarea::placeholder {
+  color: #aaa;
+  transition: all 0.3s ease;
+}
+
+.contact_wrapper .right_contact .form .input_form input:focus::placeholder,
+.contact_wrapper .right_contact .form .input_form textarea:focus::placeholder {
+  transform: translateY(-20px);
+  opacity: 0;
+}
+
+.contact_wrapper .right_contact .form textarea.input {
+  height: 100px;
+  resize: vertical;
+}
+
+.contact_wrapper .right_contact .form input[type="submit"],
+.contact_wrapper .right_contact .form button[type="submit"] {
+  margin-top: 20px;
+  background-color: var(--primary);
+  color: white;
+  padding: 12px;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  text-transform: uppercase;
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}
+
+
+@keyframes fadeSlideLeft {
+    0% {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeSlideRight {
+    0% {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+
+
+@media (max-width: 850px) {
+    .header .header_right .nav {
+        display: none;
+    }
+
+    .header .header_right .small_nav {
+        display: block;
+        cursor: pointer;
+    }
+
+    .header .header_right .small_nav img {
+        width: 30px;
+        height: 30px;
+    }
+
+    #nav {
+        display: none;
+    }
+
+    #nav.show {
+        display: block;
+        width: 100vw;
+        padding: 30px 50px;
+        background-color: white;
+        position: fixed;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+    }
+
+    .footer .footer_top {
+        display: block;
+    }
+
+    .footer .footer_top .right .nav h1 {
+        font-size: 1rem;
+    }
+
+    .footer .footer_top .right .nav img {
+        width: 20px;
+        height: 20px;
+    }
+
+    .footer .cr p {
+        font-size: .7rem;
+    }
+
+    .content .hero .hero_description {             
+        right: 2%;             
+    }
+
+    .content .hero .hero_text h1 {
+        font-size: 3rem;
+    }
+
+    .content .hero .hero_text p {
+        font-size: 1.3rem;
+    }
+
+    .content .hero .hero_text .btn {
+        font-size: 1.2rem;
+    }
+
+    .content .about h1 {
+        font-size: 2rem;
+    }
+
+    .content .about .features .each_features {
+        box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    }
+}
+
+@media (max-width: 750px) {
+    .content .hero .hero_description img {
+        width: clamp(70px, 20vw, 200px);
+        height: auto;      
+    }
+
+    .content .about h1 {
+        font-size: 1.5rem;
+    }
+
+    .contact_wrapper .right_contact {
+        flex: 1 1 100%;
+    }
+    .contact_wrapper .left_contact {
+        display: none;
+    }
+}
+
+@media (max-width: 660px) {
+    .content .about .about_unicare .img {
+        text-align: center;  
+    }
+}
+
+@media (max-width: 530px) {
+    .content .hero .hero_text h1 {
+        font-size: 2rem;
+    }
+
+    .content .hero .hero_text p {
+        font-size: 1rem;
+    }
+
+    .content .hero .hero_text .btn {
+        margin-top: 10px;
+        font-size: .9rem;
+    }
+}
+
+@media (max-width: 430px) {
+    .content .hero .hero_text h1 {
+        font-size: 1.5rem;
+    }
+
+    .content .hero .hero_text p {
+        font-size: .9rem;
+    }
+
+    .content .hero .hero_text .btn {
+        margin-top: 10px;
+        font-size: .8rem;
+    }
+}
