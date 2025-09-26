@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer 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`,
+                    'Authorization': `Bearer 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`,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
