@@ -88,6 +88,9 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         </div>`;
         chatContainer.insertAdjacentHTML("beforeend", userHTML);
+        chatContainer.style.display = 'none';
+        chatContainer.offsetHeight; 
+        chatContainer.style.display = 'flex';
         chatContainer.scrollTop = chatContainer.scrollHeight;
         saveChat();
         userInput.value = "";
