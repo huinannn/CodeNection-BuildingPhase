@@ -87,22 +87,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="chat-bubble">${escapeHtml(message)}</div>
             </div>
         </div>`;
-
         chatContainer.insertAdjacentHTML("beforeend", userHTML);
-        chatContainer.style.display = 'none';
-        chatContainer.offsetHeight; 
-        chatContainer.style.display = 'flex';
         chatContainer.scrollTop = chatContainer.scrollHeight;
-
         saveChat();
         userInput.value = "";
-
-        const prevLatest = chatContainer.querySelector(".latest-user-msg");
-        if (prevLatest && prevLatest !== chatContainer.lastElementChild) {
-            const ts = prevLatest.querySelector(".timestamp");
-            if (ts) ts.style.display = "none";
-            prevLatest.classList.remove("latest-user-msg");
-        }
 
         // typing
         const botTypingHTML = `
@@ -120,31 +108,18 @@ document.addEventListener('DOMContentLoaded', () => {
         chatContainer.insertAdjacentHTML("beforeend", botTypingHTML);
         chatContainer.scrollTop = chatContainer.scrollHeight;
 
-        // call API
         try {
-            const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+            const res = await fetch('chat-api.php', {
                 method: 'POST',
-                headers: {
-                    'Authorization': `Bearer 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`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    model: 'deepseek/deepseek-chat-v3.1:free',
-                    messages: [
-                        { role: 'system', content: 'Answer concisely in 2-3 short sentences.' },
-                        { role: 'user', content: message }
-                    ],
-                    max_tokens: 150
-                })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message })
             });
-
             const data = await res.json();
             const typingEl = chatContainer.querySelector(".bot-message.bot-typing");
             if (typingEl) typingEl.remove();
 
-            const text = data.choices?.[0]?.message?.content || "Sorry, I am currently offline.";
+            const text = data.choices?.[0]?.message?.content || data.reply || "Sorry, I am currently offline.";
             addBotMessage(text);
-
         } catch (err) {
             const typingEl = chatContainer.querySelector(".bot-message.bot-typing");
             if (typingEl) typingEl.remove();
