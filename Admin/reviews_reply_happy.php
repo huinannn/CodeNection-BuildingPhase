@@ -80,7 +80,7 @@
             <div class="subtitle">
                 <h1 onclick="window.location.href='reviews_post_happy.php'">Posts</h1>
                 <div class="vertical"></div>
-                <h1 onclick="window.location.href='reviews_reply_happy.php'">Comments</h1>
+                <h1 onclick="window.location.href='reviews_comment_happy.php'">Comments</h1>
                 <div class="vertical"></div>
                 <h1 class="active">Replies</h1>
                 <div class="spacer"></div>
