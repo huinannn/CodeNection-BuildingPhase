@@ -77,15 +77,17 @@ function getAvailableSlots($dbConn, $counselor_id, $booking_date, $time_slots){
         }
 
         $check = $dbConn->prepare("
-            SELECT * FROM booking
-            WHERE counselor_id = ? AND booking_date = ?
-            AND NOT (booking_end_time < ? OR booking_start_time > ?)
+            SELECT 1 FROM booking
+            WHERE counselor_id = ? 
+              AND booking_date = ? 
+              AND booking_start_time = ? 
+              AND booking_end_time = ?
         ");
         $check->bind_param("isss", $counselor_id, $booking_date, $start, $end);
         $check->execute();
         $result = $check->get_result();
 
-        if($result->num_rows == 0){
+        if($result->num_rows == 0){ // means slot is free
             $available[$start] = $label;
         }
         $check->close();
@@ -260,7 +262,11 @@ p[style*="color:green"], p[style*="color:red"] { font-weight: bold; }
         </select>
 
         <label for="booking_date" style="font-family:var(--itim);">Select Date:</label>
-        <input type="date" name="booking_date" id="booking_date" value="<?= isset($_GET['booking_date']) ? $_GET['booking_date'] : '' ?>" min="<?= date('Y-m-d') ?> " style="width:93.5%;font-family:var(--itim);" required>
+        <input type="date" name="booking_date" id="booking_date" 
+               value="<?= isset($_GET['booking_date']) ? $_GET['booking_date'] : '' ?>" 
+               min="<?= date('Y-m-d') ?>" 
+               style="width:93.5%;font-family:var(--itim);" required
+               onchange="this.form.submit()">
     </form>
 
     <!-- Available Slots and Book Now -->
@@ -270,7 +276,7 @@ p[style*="color:green"], p[style*="color:red"] { font-weight: bold; }
         <input type="hidden" name="booking_date" value="<?= $_GET['booking_date'] ?>">
 
         <label for="start_time" style="font-family:var(--itim);">Select Time Slot:</label>
-        <select name="start_time" id="start_time" style="font-family:var(--itim);"required>
+        <select name="start_time" id="start_time" style="font-family:var(--itim);" required>
             <option value="" style="font-family:var(--itim);">Select</option>
             <?php foreach($available_slots as $start => $label): ?>
                 <option value="<?= $start ?>" style="font-family:var(--itim);"><?= $label ?></option>
@@ -278,7 +284,7 @@ p[style*="color:green"], p[style*="color:red"] { font-weight: bold; }
         </select>
 
         <label for="remark">Remark/Message:</label>
-        <textarea name="remark" id="remark" rows="4" style="height:200px;" required style="font-family:var(--itim);" ></textarea>
+        <textarea name="remark" id="remark" rows="4" style="height:200px;font-family:var(--itim);" required></textarea>
 
         <button type="submit">Book Now</button>
     </form>
