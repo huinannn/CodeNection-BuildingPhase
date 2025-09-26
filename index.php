@@ -30,10 +30,10 @@
         </div>
     </div>
     <div id="nav">
-        <a href="#"><h1>HOME</h1></a>
-        <a href="#"><h1>ABOUT</h1></a>
-        <a href="#"><h1>FEATURES</h1></a>
-        <a href="#"><h1>CONTACT</h1></a>
+        <a href="#hero"><h1>HOME</h1></a>
+        <a href="#about"><h1>ABOUT</h1></a>
+        <a href="#features"><h1>FEATURES</h1></a>
+        <a href="#contact"><h1>CONTACT</h1></a>
     </div>
     <div class="content">
         <div class="hero" id="hero">
