@@ -117,11 +117,13 @@
     <div class="content">
         <div class="student-header">
             <div class="student-title">Add New Student Account</div>
-            <div class="actions">
-                <button class="icon-btn" onclick="window.location.href='studentaccount.php'">
-                    <i class="fa-solid fa-arrow-left"></i> Back
-                </button>
-            </div>
+            <?php if (!$success) : ?>
+                <div class="actions">
+                    <button class="icon-btn" onclick="window.location.href='studentaccount.php'">
+                        <i class="fa-solid fa-arrow-left"></i> Back
+                    </button>
+                </div>
+            <?php endif; ?>
         </div>
 
         <div class="add-list-container">
