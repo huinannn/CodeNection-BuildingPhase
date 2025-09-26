@@ -116,7 +116,7 @@ body { font-family: 'Itim', cursive; background: #fff; margin: 0; padding-bottom
 
 /* Today's date */
 .calendar-today {
-    color: red;
+    color: red !important;
     font-weight: bold;
 }
 
