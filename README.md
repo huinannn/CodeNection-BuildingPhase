@@ -55,7 +55,7 @@
 ### 🔑 Example Login  
 #### Student  
 - **Student ID:** `TP0001`  
-- **School:** Asia Pacific University (APU)  
+- **School Name:** Asia Pacific University (APU)  
 - **Password:** `pass123`  
 
 #### Admin  
