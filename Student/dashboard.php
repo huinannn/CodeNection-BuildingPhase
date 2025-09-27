@@ -177,17 +177,23 @@
         }
         .emotion-title { font-size: 1.1rem; font-weight: 500; margin-bottom: 8px; }
         .emotion-message { font-size: 0.98rem; color: #888; margin-bottom: 10px; }
+        .emotion-chart-container {
+            flex-shrink: 0;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
         .chart-container {
             position: relative;
             width: 100px; /* Set a fixed, equal width and height */
             height: 100px;
         }
         .emotion-chart {
-            width: 100% !important;
-            height: 100% !important;
-            max-height: 100px;
-            min-width: 100px;
-            margin-right: 15px;
+            width: 100%;
+            height: 100%;
+            /* margin-right: 15px; */
             box-shadow: 0 2px 8px rgba(244, 140, 140, 0.18);
             background: #FFF6F0;
             border-radius: 50%;
@@ -497,7 +503,8 @@
                 options: {
                     cutout: '70%',
                     responsive: true,
-                    maintainAspectRatio: false,
+                    maintainAspectRatio: true,
+                    aspectRatio: 1,
                     plugins: { legend: { display: false } }
                 }
             });
