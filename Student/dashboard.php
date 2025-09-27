@@ -433,7 +433,7 @@
         </div>
     </div>
     <div class="action-buttons">
-        <button class="action-btn" onclick="location.href='Chatbot/chatbot.php'">Unibot</button>
+        <button class="action-btn" onclick="location.href='Chatbot/unibot.php'">Unibot</button>
         <button class="action-btn" onclick="location.href='leisure.php'">Leisure</button>
     </div>
     <div class="calendar-section">

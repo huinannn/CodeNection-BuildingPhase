@@ -19,7 +19,7 @@
     <link rel="icon" href="../../image/favicon.png" type="image/x-icon" />
     <link rel="stylesheet" href="../style.css" />
     <link rel="stylesheet" href="../AnswerBook/answerbook.css" />
-    <link rel="stylesheet" href="chatbot.css" />
+    <link rel="stylesheet" href="unibot.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 	<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
@@ -108,6 +108,6 @@
         const studentId = "<?php echo $studentId; ?>";
         const chatKey = `chatMessages_${studentId}`;
     </script>
-<script src="chatbot.js"></script>
+<script src="unibot.js"></script>
 </body>
 </html>
