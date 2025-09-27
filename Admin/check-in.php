@@ -74,8 +74,8 @@
     $evening_done = false;
     foreach ($today_checkins as $row) {
         $hour = (int)date("H", strtotime($row['admin_feeling_datetime']));
-        if ($hour >= 8 && $hour <= 12) $morning_done = true;
-        if ($hour >= 20 && $hour <= 23) $evening_done = true;
+        if ($hour >= 0 && $hour <= 12) $morning_done = true;
+        if ($hour >= 13 && $hour <= 23) $evening_done = true;
     }
 
     // Fetch all moods for the current month
@@ -112,8 +112,8 @@
 
     // Determine prompt state
     $already_done_today = (count($today_checkins) >= 2);
-    $show_morning_prompt = ($currentHour >= 8 && $currentHour < 12 && !$morning_done && !$already_done_today);
-    $show_evening_prompt = ($currentHour >= 20 && $currentHour < 23 && !$evening_done && !$already_done_today);
+    $show_morning_prompt = ($currentHour >= 0 && $currentHour < 12 && !$morning_done && !$already_done_today);
+    $show_evening_prompt = ($currentHour >= 13 && $currentHour < 23 && !$evening_done && !$already_done_today);
 ?>
 
 <!DOCTYPE html>
@@ -130,7 +130,7 @@
         button, input, textarea, select, label {
             font-family: 'Itim', cursive, sans-serif !important;
         }
-        body { font-family: 'Itim', cursive, sans-serif; background: white; margin: 0; }
+        body { font-family: 'Itim', cursive, sans-serif; background: white; margin: 0; margin-left: auto; margin-right: auto; }
         .top-bar { padding-top: 30px; margin-left: 350px; }
         .main-content {
             flex: 1;
@@ -527,8 +527,8 @@
     });
 
     // Prevent logout if missed
-    <?php if (($currentHour >= 8 && $currentHour < 12 && !$morning_done) ||
-            ($currentHour >= 20 && $currentHour < 23 && !$evening_done)): ?>
+    <?php if (($currentHour >= 0 && $currentHour < 12 && !$morning_done) ||
+            ($currentHour >= 13 && $currentHour < 23 && !$evening_done)): ?>
         document.addEventListener("DOMContentLoaded", () => {
             let logoutBtn = document.querySelector("a[href*='logout'], button.logout");
             if (logoutBtn) {
