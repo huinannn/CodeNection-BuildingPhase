@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+  	const chatKey = "unicare_chat_history";
     const chatContainer = document.getElementById("chat-container");
     const userInput = document.getElementById("user-input");
     const sendBtn = document.getElementById("send-btn");
@@ -112,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
         chatContainer.scrollTop = chatContainer.scrollHeight;
 
         try {
-            const res = await fetch('chat-api.php', {
+            const res = await fetch('https://chatbot-cifs.onrender.com/chat-api.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ message })
